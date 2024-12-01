@@ -33,6 +33,10 @@ solution1 ls =
    in
     sum $ zipWith (\l r -> abs (r - l)) lefts rights
 
+-- sum $ zipWith ((abs .) . subtract) lefts rights
+--  sum $ zipWith (subtract >>> (abs .)) lefts rights
+-- sum $ zipWith (subtract >>> (>>>abs)) lefts rights
+
 solution2 :: [(Int, Int)] -> Int
 solution2 ls =
   let
