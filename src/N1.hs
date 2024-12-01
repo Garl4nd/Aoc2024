@@ -6,6 +6,7 @@ import Text.Megaparsec.Char
 import Text.Megaparsec.Char.Lexer as L
 
 import Control.Arrow
+import Control.Monad ((>=>))
 import Data.Either (fromRight)
 import Data.List (sort)
 import Useful (countIf)
@@ -45,4 +46,4 @@ solution2 ls =
 -- >>> solution2 . parseFile <$> readFile "inputs/1.txt"
 -- 23529853
 getSolutions1 :: String -> IO (Int, Int)
-getSolutions1 filename = readFile filename >>= (parseFile >>> (solution1 &&& solution2) >>> return)
+getSolutions1 = readFile >=> (parseFile >>> (solution1 &&& solution2) >>> return)
