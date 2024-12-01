@@ -1,0 +1,187 @@
+cabal-version: 2.2
+
+-- This file has been generated from package.yaml by hpack version 0.37.0.
+--
+-- see: https://github.com/sol/hpack
+
+name:           Aoc2024
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/Aoc2024#readme>
+homepage:       https://github.com/githubuser/Aoc2024#readme
+bug-reports:    https://github.com/githubuser/Aoc2024/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2024 Author name here
+license:        BSD-3-Clause
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    CHANGELOG.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/Aoc2024
+
+library
+  exposed-modules:
+      Debugging
+      InputDownloader
+      Lib
+      N1
+      Useful
+  other-modules:
+      Paths_Aoc2024
+  autogen-modules:
+      Paths_Aoc2024
+  hs-source-dirs:
+      src
+  default-extensions:
+      OverloadedStrings
+      ScopedTypeVariables
+      LambdaCase
+      ViewPatterns
+      MultiWayIf
+  ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      MemoTrie
+    , array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , directory
+    , exceptions
+    , fgl
+    , graphviz
+    , heap
+    , http-conduit
+    , megaparsec
+    , memoize
+    , monad-logger
+    , parallel
+    , random
+    , text
+    , timeit
+    , transformers
+    , vector
+  default-language: Haskell2010
+
+executable aoc24-exe
+  main-is: Main.hs
+  other-modules:
+      Download
+      Paths_Aoc2024
+  autogen-modules:
+      Paths_Aoc2024
+  hs-source-dirs:
+      app
+  default-extensions:
+      OverloadedStrings
+      ScopedTypeVariables
+      LambdaCase
+      ViewPatterns
+      MultiWayIf
+  ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      Aoc2024
+    , MemoTrie
+    , array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , directory
+    , exceptions
+    , fgl
+    , graphviz
+    , heap
+    , http-conduit
+    , megaparsec
+    , memoize
+    , monad-logger
+    , parallel
+    , random
+    , text
+    , timeit
+    , transformers
+    , vector
+  default-language: Haskell2010
+
+executable download-exe
+  main-is: Download.hs
+  other-modules:
+      Main
+      Paths_Aoc2024
+  autogen-modules:
+      Paths_Aoc2024
+  hs-source-dirs:
+      app
+  default-extensions:
+      OverloadedStrings
+      ScopedTypeVariables
+      LambdaCase
+      ViewPatterns
+      MultiWayIf
+  ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -main-is Download.download
+  build-depends:
+      Aoc2024
+    , MemoTrie
+    , array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , directory
+    , exceptions
+    , fgl
+    , graphviz
+    , heap
+    , http-conduit
+    , megaparsec
+    , memoize
+    , monad-logger
+    , parallel
+    , random
+    , text
+    , timeit
+    , transformers
+    , vector
+  default-language: Haskell2010
+
+test-suite Aoc2024-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_Aoc2024
+  autogen-modules:
+      Paths_Aoc2024
+  hs-source-dirs:
+      test
+  default-extensions:
+      OverloadedStrings
+      ScopedTypeVariables
+      LambdaCase
+      ViewPatterns
+      MultiWayIf
+  ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      Aoc2024
+    , MemoTrie
+    , array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , directory
+    , exceptions
+    , fgl
+    , graphviz
+    , heap
+    , http-conduit
+    , megaparsec
+    , memoize
+    , monad-logger
+    , parallel
+    , random
+    , text
+    , timeit
+    , transformers
+    , vector
+  default-language: Haskell2010
