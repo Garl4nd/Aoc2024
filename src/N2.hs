@@ -24,13 +24,14 @@ parseFile file =
    in
     fromRight [] $ runParser fileParser "" file
 
-solution1 :: [(Int, Int)] -> Int
+solution1 :: [[Int]] -> Int
 solution1 ls =
-  let
-    (lefts, rights) = unzip ls
-    distance = (abs .) . subtract
+  let    
+    between x l u  = (x>=l ) and (x<=r)
+    isSafeForward report = all $ zipWith ( \l r -> r - l `between` 1 3 )  report $ drop 1 report        
+    isSafe report = isSafeForward report or isSafeForward (reverse report) 
    in
-    sum $ (zipWith distance `on` sort) lefts rights
+    length $ filter isSafe ls
 
 --    (lefts, rights) = join (***) sort $ unzip ls -- (map fst &&& map snd) ls
 -- (lefts, rights) = (sort *** sort) $ unzip ls -- (map fst &&& map snd) ls
@@ -53,4 +54,5 @@ solution2 ls =
 -- <stderr>: hPutChar: invalid argument (cannot encode character '\8216')
 
 getSolutions2 :: String -> IO (Int, Int)
-getSolutions2 = const $ return (0,0) --  readFile >=> (parseFile >>> (solution1 &&& solution2) >>> return)
+getSolutions2 = readFile >=> (parseFile >>> (solution1 &&& const 0) >>> return)
+  -- const $ return (0,0) --  readFile >=> (parseFile >>> (solution1 &&& solution2) >>> return)
