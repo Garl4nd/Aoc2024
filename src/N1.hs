@@ -6,8 +6,9 @@ import Text.Megaparsec.Char
 import Text.Megaparsec.Char.Lexer as L
 
 import Control.Arrow
-import Control.Monad ((>=>))
+import Control.Monad (join, (>=>))
 import Data.Either (fromRight)
+import Data.Function (on)
 import Data.List (sort)
 import Useful (countIf)
 
@@ -29,9 +30,14 @@ parseFile file =
 solution1 :: [(Int, Int)] -> Int
 solution1 ls =
   let
-    (lefts, rights) = sort <$> unzip ls -- (map fst &&& map snd) ls
+    (lefts, rights) = unzip ls
+    distance = (abs .) . subtract
    in
-    sum $ zipWith (\l r -> abs (r - l)) lefts rights
+    sum $ (zipWith distance `on` sort) lefts rights
+
+--    (lefts, rights) = join (***) sort $ unzip ls -- (map fst &&& map snd) ls
+-- (lefts, rights) = (sort *** sort) $ unzip ls -- (map fst &&& map snd) ls
+-- (lefts, rights) = uncurry ((,) `on` sort) $ unzip ls
 
 -- sum $ zipWith ((abs .) . subtract) lefts rights
 --  sum $ zipWith (subtract >>> (abs .)) lefts rights
@@ -46,7 +52,7 @@ solution2 ls =
     sum $ [l * count l rights | l <- lefts]
 
 -- >>> solution1 . parseFile <$> readFile "inputs/1.txt"
--- 30311288
+-- 1388114
 -- >>> solution2 . parseFile <$> readFile "inputs/1.txt"
 -- 23529853
 getSolutions1 :: String -> IO (Int, Int)
