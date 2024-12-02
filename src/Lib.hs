@@ -1,5 +1,4 @@
 module Lib (
-  runFetchInputToFile,
   module N1,
   -- , module N2
   -- , module N3
@@ -30,7 +29,6 @@ module Lib (
   -- , module N25
 ) where
 
-import InputDownloader (runFetchInputToFile)
 import N1
 
 -- import N2

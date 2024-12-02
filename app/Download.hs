@@ -1,6 +1,6 @@
 module Download (download) where
 
-import Lib (runFetchInputToFile)
+import InputDownloader (runFetchProblemDataToFiles)
 import System.Environment (getArgs)
 
 download :: IO ()
@@ -9,6 +9,8 @@ download = do
   args <- getArgs
   case args of
     [day] ->
-      let fileName = "inputs/" <> day <> ".txt"
-       in runFetchInputToFile 2024 (read day) fileName
+      let inputFileName = "inputs/" <> day <> ".txt"
+          descFileName = "descriptions/" <> day <> ".html"
+       in runFetchProblemDataToFiles 2024 (read day) inputFileName descFileName
+          
     _ -> print "Need one argument!"

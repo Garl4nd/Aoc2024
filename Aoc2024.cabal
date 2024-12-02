@@ -29,6 +29,7 @@ library
       InputDownloader
       Lib
       N1
+      N2
       Useful
   other-modules:
       Paths_Aoc2024
