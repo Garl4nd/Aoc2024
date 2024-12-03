@@ -8,7 +8,7 @@ import Control.Arrow
 import Control.Monad ((>=>))
 import Data.Either (fromRight)
 import Useful (countIf)
-
+import Data.List (inits, tails)
 type SParser = Parsec Void String
 parseFile :: String -> [[Int]]
 parseFile file =
@@ -32,8 +32,9 @@ solution1 = countIf isSafe
 
 solution2 :: [[Int]] -> Int
 solution2 = countIf (isSafe  <||> (any isSafe .  augmented)) where
-  augmented report = [remove n report | n <- [1..length report]]  
-  remove n report = let (l, r) = splitAt (n-1) report in l ++ drop 1 r
+  augmented report = zipWith (++) (inits report) (tail $ tails report ) 
+  -- augmented report = [remove n report | n <- [1..length report]]  
+  -- remove n report = let (l, r) = splitAt (n-1) report in l ++ drop 1 r
 
 getSolutions2 :: String -> IO (Int, Int)
 getSolutions2 = readFile >=> (parseFile >>> (solution1 &&& solution2) >>> return)
