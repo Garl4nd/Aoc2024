@@ -7,6 +7,7 @@ import Text.Megaparsec.Char.Lexer as L
 import Control.Arrow
 import Control.Monad ((>=>))
 import Data.Either (fromRight)
+import Data.Maybe (isJust)
 import Useful (countIf)
 import Data.List (inits, tails)
 type SParser = Parsec Void String
@@ -27,6 +28,16 @@ isSafe  = isSafeForward <||> (isSafeForward . reverse) where
     difInRange l r = (l+1<= r) && (r<=l+3) 
     isSafeForward report = and $ zipWith  difInRange ( drop 1 report)  report        
 
+
+
+isSafe' :: Int -> [Int] -> Bool
+isSafe' lives = isSafeForward lives  <||> (isSafeForward lives . reverse) where
+  isSafeForward :: Int -> [Int]  -> Bool   
+  isSafeForward lives ls  = isJust $ foldr ( \cNum acc ->  case acc of 
+                                                        Nothing -> Nothing 
+                                                        Just (lastNum, lives) -> if inRange cNum lastNum then Just (cNum, lives) else  (if lives >1 then 
+                                                                                          Just (lastNum, lives -1) else Nothing)) (Just (last ls, lives)) $ init ls
+  inRange l r = r>=l+1 && r<=l+3
 solution1 :: [[Int]] -> Int
 solution1 = countIf isSafe
 
