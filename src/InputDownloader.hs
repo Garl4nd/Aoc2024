@@ -1,6 +1,6 @@
 module InputDownloader (runFetchProblemDataToFiles) where
 
-import Control.Monad ()
+import Control.Monad (when, void)
 import Control.Monad.Catch (MonadThrow)
 import Control.Monad.IO.Class (MonadIO (liftIO))
 
@@ -14,6 +14,7 @@ import Network.HTTP.Simple
     ( parseRequest, addRequestHeader, getResponseBody, httpBS )
 import System.Directory
 import System.Environment (getArgs, lookupEnv)
+
 
 
 checkFileExistsWithData :: FilePath -> IO Bool
@@ -36,13 +37,16 @@ fetchInputToFile year day filepath = do
       let route = "https://adventofcode.com/" <> show year <> "/day/" <> show day <> "/input"
       baseRequest <- parseRequest route
       let finalRequest = addRequestHeader "cookie" (B.pack token) baseRequest
-    
+
       {- Send request, retrieve body from response -}
       -- logDebugN $ T.pack $ show finalRequest
       response <- getResponseBody <$> httpBS finalRequest
       {- Write body to the file -}
-      logInfoN "Input download successful"
-      liftIO $ B.writeFile filepath response
+      if T.isPrefixOf "Puzzle inputs differ by user." $ T.Encoding.decodeUtf8  response  then 
+        logErrorN "Couldn't sign in! The input file wasn't saved" 
+      else do 
+        logInfoN "Input download successful"
+        liftIO $ B.writeFile filepath response
 
 
 
