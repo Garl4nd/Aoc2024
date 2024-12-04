@@ -12,11 +12,11 @@ import Data.Maybe ( catMaybes)
 type SParser = Parsec Void String
 
 exprParser1 :: SParser  [(Int, Int)]
-exprParser1 = dbg "exprParser" $ many (skipManyTill anySingle $ try mulParser) 
+exprParser1 =   catMaybes <$> manyTill (skipManyTill anySingle $ Nothing <$ try eof <|> Just <$> try mulParser) eof
 
 exprParser2 :: SParser  [(Int, Int)]
-exprParser2 = dbg "exprParser" $ catMaybes <$> many (skipManyTill anySingle 
-        ( Nothing <$ try ignoredInstructions <|> Just <$> try mulParser))  where 
+exprParser2 =  catMaybes <$> manyTill (skipManyTill anySingle 
+        ( Nothing <$ try ignoredInstructions <|> Nothing <$ try eof <|> Just <$> try mulParser)) eof  where 
         ignoredInstructions =  string "don't()" >> skipManyTill anySingle (string "do()")  
 
 mulParser :: SParser (Int, Int)
@@ -28,10 +28,10 @@ mulParser =  do
     return (f,s)
  
 parseFile1 :: String -> [(Int, Int)]
-parseFile1 file = fromRight [] $ runParser exprParser1 "" (file <>"mul(0,0)")
+parseFile1 file = fromRight [] $ runParser exprParser1 "" file
 
 parseFile2 :: String -> [(Int, Int)]
-parseFile2 file = fromRight [] $ runParser exprParser2 "" (file <>"mul(0,0)")
+parseFile2 file = fromRight [] $ runParser exprParser2 "" file
 
 solution :: [(Int,Int)] -> Int
 solution = sum . map (uncurry (*))
