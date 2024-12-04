@@ -20,12 +20,7 @@ exprParser2 =  catMaybes <$> manyTill (skipManyTill anySingle
         ignoredInstructions =  string "don't()" >> skipManyTill anySingle (string "do()")  
 
 mulParser :: SParser (Int, Int)
-mulParser =  do 
-    void $ string "mul("
-    f <- L.decimal 
-    s <- char ',' >> L.decimal
-    void $ char ')'
-    return (f,s)
+mulParser =  string "mul(" >> (,) <$> (L.decimal <* char ',' ) <*> (L.decimal <* char ')')
  
 parseFile1 :: String -> [(Int, Int)]
 parseFile1 file = fromRight [] $ runParser exprParser1 "" file
