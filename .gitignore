@@ -1,2 +1,3 @@
-inputs/
+inputs/*
+!inputs/.gitkeep
 .stack-work/
