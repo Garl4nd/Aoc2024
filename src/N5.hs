@@ -1,43 +1,70 @@
 module N5 (getSolutions5) where
 
 import Control.Arrow
-import Control.Monad (void, (>=>))
+import Control.Monad ((>=>))
 import Data.Either (fromRight)
-import Data.Maybe (catMaybes)
+import Data.List (partition)
+import qualified Data.Map as M
+import Data.Maybe (isJust)
+import qualified Data.Set as S
 import Data.Void (Void)
 import Text.Megaparsec
 import Text.Megaparsec.Char
 import Text.Megaparsec.Char.Lexer as L
-import Text.Megaparsec.Debug
 
+type OrderMap = M.Map Int [Int]
+type Record = [Int]
 type SParser = Parsec Void String
 
-exprParser1 :::: SParser [(Int, Int)]
-exprParser1 = catMaybes <$> manyTill (skipManyTill anySingle $ Nothing <$ try eof <|> Just <$> try mulParser) eof
+fileParser :: SParser (OrderMap, [Record])
+fileParser = do
+  orderMap <- pairListToOrderMap <$> endBy ((,) <$> (L.decimal <* char '|') <*> L.decimal) newline
+  records <- endBy (sepBy L.decimal $ char ',') newline
+  return (orderMap, filter (not . null) records)
 
-exprParser2 :: SParser [(Int, Int)]
-exprParser2 =
-  catMaybes
-    <$> manyTill
-      ( skipManyTill
-          anySingle
-          (Nothing <$ try ignoredInstructions <|> Nothing <$ try eof <|> Just <$> try mulParser)
-      )
-      eof
+pairListToOrderMap :: [(Int, Int)] -> OrderMap
+pairListToOrderMap = foldr (\(k, v) m -> M.insertWith (++) k [v] m) M.empty
+
+parseFile :: String -> (OrderMap, [Record])
+parseFile file = fromRight (M.empty, []) $ runParser fileParser "" file
+
+isCorrectRecord :: OrderMap -> Record -> Bool
+isCorrectRecord orderMap = isJust . foldr ((=<<) . checkAndUpdateForbidden) (Just S.empty)
  where
-  ignoredInstructions = string "don't()" >> skipManyTill anySingle (string "do()")
+  checkAndUpdateForbidden :: Int -> S.Set Int -> Maybe (S.Set Int)
+  checkAndUpdateForbidden current forbiddenSet
+    | current `S.member` forbiddenSet = Nothing
+    | otherwise = case M.lookup current orderMap of
+        Nothing -> Just forbiddenSet
+        Just nums -> Just $ S.union forbiddenSet (S.fromList nums)
 
-mulParser :: SParser (Int, Int)
-mulParser = string "mul(" >> (,) <$> (L.decimal <* char ',') <*> (L.decimal <* char ')')
+middleSum :: [Record] -> Int
+middleSum = sum . map (\rec -> rec !! (length rec `div` 2))
 
-parseFile1 :: String -> [(Int, Int)]
-parseFile1 file = fromRight [] $ runParser exprParser1 "" file
+solution1 :: (OrderMap, [Record]) -> Int
+solution1 (orderMap, records) =
+  let
+    correctRecords = filter (isCorrectRecord orderMap) records
+   in
+    middleSum correctRecords
 
-parseFile2 :: String -> [(Int, Int)]
-parseFile2 file = fromRight [] $ runParser exprParser2 "" file
+fixRecord :: OrderMap -> Record -> Record
+fixRecord orderMap = foldr (addNumToRecord orderMap) []
 
-solution :: [(Int, Int)] -> Int
-solution = sum . map (uncurry (*))
+addNumToRecord :: OrderMap -> Int -> Record -> Record
+addNumToRecord orderMap num record =
+  let
+    (predecessors, rest) = partition (\k -> num `elem` M.findWithDefault [] k orderMap) record
+   in
+    predecessors ++ num : rest
 
-getSolutions3 :: String -> IO (Int, Int)
-getSolutions3 = readFile >=> (((parseFile1 >>> solution) &&& (parseFile2 >>> solution)) >>> return)
+solution2 :: (OrderMap, [Record]) -> Int
+solution2 (orderMap, records) =
+  let
+    incorrectRecords = filter (not . isCorrectRecord orderMap) records
+    fixedRecords = fixRecord orderMap <$> incorrectRecords
+   in
+    middleSum fixedRecords
+
+getSolutions5 :: String -> IO (Int, Int)
+getSolutions5 = readFile >=> (parseFile >>> (solution1 &&& solution2) >>> return)
