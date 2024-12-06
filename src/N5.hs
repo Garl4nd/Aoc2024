@@ -64,6 +64,5 @@ solution2 (orderMap, records) =
     fixedRecords = fixRecord orderMap <$> incorrectRecords
    in
     middleSum fixedRecords
-
 getSolutions5 :: String -> IO (Int, Int)
 getSolutions5 = readFile >=> (parseFile >>> (solution1 &&& solution2) >>> return)

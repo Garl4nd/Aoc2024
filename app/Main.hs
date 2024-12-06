@@ -9,7 +9,7 @@ import Text.Read (readMaybe)
 
 mainLoop :: IO ()
 mainLoop = do
-  print "Which problem do you want to solve?"
+  putStrLn "Which problem do you want to solve?"
   prompt <- getLine
   unless (prompt `elem` ["e", "end"]) $ do
     let problemId = readMaybe prompt
@@ -17,9 +17,9 @@ mainLoop = do
       Just x -> case solution x of
         Just resIO -> do
           res <- resIO
-          print $ "The solution of problem #" <> show x <> " is: " <> show res
-        Nothing -> print "Not yet solved"
-      Nothing -> print "Not a number" --       return True
+          putStr $ "The solution of problem #" <> show x <> " is: " <> show res
+        Nothing -> putStrLn "Not yet solved"
+      Nothing -> putStrLn "Not a number" --       return True
     mainLoop
 
 solution :: Int -> Maybe (IO (Int, Int))
@@ -61,4 +61,4 @@ solution day = do
 main :: IO ()
 main = do
   mainLoop
-  print "Goodbye!"
+  putStrLn "Goodbye!"

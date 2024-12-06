@@ -5,12 +5,11 @@ import System.Environment (getArgs)
 
 download :: IO ()
 download = do
-  print "Hello from download"
+  putStrLn "Hello from download"
   args <- getArgs
   case args of
     [day] ->
       let inputFileName = "inputs/" <> day <> ".txt"
           descFileName = "descriptions/" <> day <> ".html"
        in runFetchProblemDataToFiles 2024 (read day) inputFileName descFileName
-          
-    _ -> print "Need one argument!"
+    _ -> putStrLn "Need one argument!"
