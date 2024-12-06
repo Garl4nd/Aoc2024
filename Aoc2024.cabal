@@ -33,6 +33,7 @@ library
       N3
       N4
       N5
+      N6
       Useful
   other-modules:
       Paths_Aoc2024

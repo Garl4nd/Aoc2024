@@ -10,8 +10,11 @@ module Useful (
   countIf,
   groupBySorted,
   groupByUnique,
+  strToCharGrid,
+  CharGrid,
 ) where
 
+import qualified Data.Array.Unboxed as A
 import Data.Char (isNumber)
 import Data.Function (on)
 import Data.List (findIndex, groupBy, intercalate, isPrefixOf, sortOn, tails)
@@ -73,3 +76,13 @@ groupBySorted ordFunc ls = map (\grp -> (fst <$> grp, snd . head $ grp)) $ group
 
 countIf :: (a -> Bool) -> [a] -> Int
 countIf p ls = length $ filter p ls
+
+type Position = (Int, Int)
+type CharGrid = A.UArray Position Char
+
+strToCharGrid :: String -> CharGrid
+strToCharGrid file = A.listArray ((1, 1), (numLines, lineSize)) $ concat ls
+ where
+  ls = lines file
+  numLines = length ls
+  lineSize = length $ head ls

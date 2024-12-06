@@ -6,6 +6,7 @@ import Data.Array.Unboxed ((!))
 import qualified Data.Array.Unboxed as A
 
 import Useful (countIf) -- countIf p ls = length $ filter p ls
+
 type Position = (Int, Int)
 type CharGrid = A.UArray Position Char
 
@@ -21,20 +22,20 @@ findAllXmas grid pos = if grid ! pos /= 'X' then 0 else countIf (isMas grid pos)
 
 isMas :: CharGrid -> Position -> (Int, Int) -> Bool
 isMas grid pos (dy, dx) =
-  let    
+  let
     isInRange = A.inRange bounds $ incPosition (3 * dy, 3 * dx) pos
     bounds = A.bounds grid
-    posList = tail . take 4 $ iterate (incPosition (dy, dx)) pos    
+    posList = tail . take 4 $ iterate (incPosition (dy, dx)) pos
     incPosition (dy, dx) (y, x) = (y + dy, x + dx)
-    word = map (grid !) posList 
+    word = map (grid !) posList
    in
     isInRange && word == "MAS"
 
 isX'MAS :: CharGrid -> Position -> Bool
 isX'MAS grid pos@(y, x) = grid ! pos == 'A' && not outOfBounds && matches pair1 && matches pair2
  where
-  pair1 =  (grid ! (y-1 , x-1), grid ! (y+1, x+1))
-  pair2 =  (grid ! (y-1 , x+1), grid ! (y+1, x-1))  
+  pair1 = (grid ! (y - 1, x - 1), grid ! (y + 1, x + 1))
+  pair2 = (grid ! (y - 1, x + 1), grid ! (y + 1, x - 1))
   matches (v1, v2) = v1 == 'M' && v2 == 'S' || v1 == 'S' && v2 == 'M'
   outOfBounds = not $ A.inRange (xmin + 1, xmax - 1) x && A.inRange (ymin + 1, ymax - 1) y
   ((ymin, xmin), (ymax, xmax)) = A.bounds grid
@@ -50,4 +51,3 @@ getSolutions4 = readFile >=> (strToCharGrid >>> (solution1 &&& solution2) >>> re
 
 -- >>> getSolutions4 "inputs/4.txt"
 -- <stderr>: hPutChar: invalid argument (cannot encode character '\8216')
-
