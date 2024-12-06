@@ -16,17 +16,16 @@ type OrderMap = M.Map Int [Int]
 type Record = [Int]
 type SParser = Parsec Void String
 
-fileParser :: SParser (OrderMap, [Record])
-fileParser = do
-  orderMap <- pairListToOrderMap <$> endBy ((,) <$> (L.decimal <* char '|') <*> L.decimal) newline
-  records <- endBy (sepBy L.decimal $ char ',') newline
-  return (orderMap, filter (not . null) records)
-
-pairListToOrderMap :: [(Int, Int)] -> OrderMap
-pairListToOrderMap = foldr (\(k, v) m -> M.insertWith (++) k [v] m) M.empty
-
 parseFile :: String -> (OrderMap, [Record])
 parseFile file = fromRight (M.empty, []) $ runParser fileParser "" file
+ where
+  fileParser :: SParser (OrderMap, [Record])
+  fileParser = do
+    orderMap <- pairListToOrderMap <$> endBy ((,) <$> (L.decimal <* char '|') <*> L.decimal) newline <* newline
+    records <- endBy (sepBy L.decimal $ char ',') newline
+    return (orderMap, records)
+  pairListToOrderMap :: [(Int, Int)] -> OrderMap
+  pairListToOrderMap = foldr (\(k, v) m -> M.insertWith (++) k [v] m) M.empty
 
 isCorrectRecord :: OrderMap -> Record -> Bool
 isCorrectRecord orderMap = isJust . foldr ((=<<) . checkAndUpdateForbidden) (Just S.empty)
@@ -49,14 +48,14 @@ solution1 (orderMap, records) =
     middleSum correctRecords
 
 fixRecord :: OrderMap -> Record -> Record
-fixRecord orderMap = foldr (addNumToRecord orderMap) []
-
-addNumToRecord :: OrderMap -> Int -> Record -> Record
-addNumToRecord orderMap num record =
-  let
-    (predecessors, rest) = partition (\k -> num `elem` M.findWithDefault [] k orderMap) record
-   in
-    predecessors ++ num : rest
+fixRecord orderMap = foldr addNumToRecord []
+ where
+  addNumToRecord :: Int -> Record -> Record
+  addNumToRecord num record =
+    let
+      (predecessors, rest) = partition (\k -> num `elem` M.findWithDefault [] k orderMap) record
+     in
+      predecessors ++ num : rest
 
 solution2 :: (OrderMap, [Record]) -> Int
 solution2 (orderMap, records) =

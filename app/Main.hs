@@ -24,10 +24,10 @@ mainLoop = do
 solution :: Int -> Maybe (IO (Int, Int))
 solution n = case n of
   1 -> Just $ getSolutions1 "inputs/1.txt"
-  -- 2 -> Just $ getSolutions2 "inputs/2.txt"
-  -- 3 -> Just $ getSolutions3 "inputs/3.txt"
-  -- 4 -> Just $ getSolutions4 "inputs/4.txt"
-  -- 5 -> Just $ getSolutions5 "inputs/5.txt"
+  2 -> Just $ getSolutions2 "inputs/2.txt"
+  3 -> Just $ getSolutions3 "inputs/3.txt"
+  4 -> Just $ getSolutions4 "inputs/4.txt"
+  5 -> Just $ getSolutions5 "inputs/5.txt"
   -- 6 -> Just $ getSolutions6 "inputs/6.txt"
   -- 7 -> Just $ getSolutions7 "inputs/7.txt"
   -- 8 -> Just $ getSolutions8 "inputs/8.txt"
