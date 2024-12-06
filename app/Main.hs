@@ -2,9 +2,10 @@ module Main (
   main,
 ) where
 
-import Control.Monad (unless)
+import Control.Monad (unless, (>=>))
 import InputDownloader (runFetchProblemDataToFiles)
 import Lib
+import System.TimeIt (timeItNamed)
 import Text.Read (readMaybe)
 
 mainLoop :: IO ()
@@ -15,7 +16,7 @@ mainLoop = do
     let problemId = readMaybe prompt
     case problemId of
       Just x -> case solution x of
-        Just resIO -> do
+        Just resIO -> timeItNamed "The solution took " $ do
           res <- resIO
           putStr $ "The solution of problem #" <> show x <> " is: " <> show res
         Nothing -> putStrLn "Not yet solved"
@@ -33,7 +34,7 @@ solution day = do
     3 -> Just getSolutions3
     4 -> Just getSolutions4
     5 -> Just getSolutions5
-    -- 6 -> Just $ getSolutions6 "inputs/6.txt"
+    6 -> Just getSolutions6
     -- 7 -> Just $ getSolutions7 "inputs/7.txt"
     -- 8 -> Just $ getSolutions8 "inputs/8.txt"
     -- 9 -> Just $ getSolutions9 "inputs/9.txt"

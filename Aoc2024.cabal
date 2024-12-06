@@ -86,7 +86,7 @@ executable aoc24-exe
       LambdaCase
       ViewPatterns
       MultiWayIf
-  ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -O2 -rtsopts -with-rtsopts=-N
   build-depends:
       Aoc2024
     , MemoTrie

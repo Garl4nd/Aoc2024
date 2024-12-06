@@ -1,18 +1,21 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module N6 () where
+module N6 (getSolutions6) where
 
-import Control.Monad.Trans.Reader (Reader)
-import Data.Array.Unboxed ((!))
+import Control.Arrow
+import Control.Monad (forM, (>=>))
+import Control.Monad.ST (ST, runST)
+import Data.Array.Base (STUArray, freezeSTUArray, modifyArray, readArray, thawSTUArray, writeArray)
+import Data.Array.Unboxed ((!), (//))
 import qualified Data.Array.Unboxed as A
 import Data.List (find, nub, unfoldr)
 import Data.Maybe (fromJust)
-import Debugging (traceWInfo)
-import Useful (CharGrid, strToCharGrid)
+import qualified Data.Set as S
+import Useful (CharGrid, countIf, strToCharGrid) -- type CharGrid = A.UArray (Int, Int) Char
 
 type Position = (Int, Int)
-data Direction = U | D | L | R deriving (Show, Eq)
-data State = State {pos :: Position, dir :: Direction} deriving (Show, Eq)
+data Direction = U | D | L | R deriving (Show, Eq, Ord)
+data State = State {pos :: Position, dir :: Direction} deriving (Show, Eq, Ord)
 
 movePos :: Position -> Direction -> Position
 movePos (y, x) dir = case dir of
@@ -21,42 +24,78 @@ movePos (y, x) dir = case dir of
   L -> (y, x - 1)
   R -> (y, x + 1)
 
--- moveState :: State -> State
--- moveState state@State{pos = p0, dir = d}  = state{pos = movePos p0 d}
 rotate :: Direction -> Direction
 rotate U = R
 rotate R = D
 rotate D = L
 rotate L = U
 
-findPath :: State -> CharGrid -> [Position]
-findPath initState charGrid = unfoldr updateState initState
+findPath :: Bool -> State -> CharGrid -> [State]
+findPath onlyObstacles initState charGrid = takeWhile (inBounds . pos) $ iterate updateState initState
  where
   updateState state@State{pos, dir}
-    | outOfBounds pos = Nothing
-    | not (outOfBounds newPos) && charGrid ! newPos == '#' = Just (pos, state{dir = rotate dir})
-    | otherwise = Just (pos, state{pos = newPos})
+    | inBounds newPos && charGrid ! newPos == '#' = state{dir = rotate dir}
+    | onlyObstacles && inBounds pos = updateState state{pos = newPos}
+    | otherwise = state{pos = newPos}
    where
     newPos = movePos pos dir
-    outOfBounds = not . A.inRange bounds
-    bounds = A.bounds charGrid
+  inBounds = A.inRange bounds
+  bounds = A.bounds charGrid
 
-charToDir :: Char -> Direction
-charToDir '^' = U
-charToDir 'v' = D
-charToDir '<' = L
-charToDir '>' = R
+pathIsLoop :: [State] -> Bool
+pathIsLoop = go S.empty
+ where
+  go :: S.Set State -> [State] -> Bool
+  go _ [] = False
+  go visitedStates (s : restOfPath)
+    | s `S.member` visitedStates = True
+    | otherwise = go (S.insert s visitedStates) restOfPath
+
+dirList :: [Char]
+dirList = ['^', 'v', '<', '>']
 
 getInitialState :: CharGrid -> State
 getInitialState charGrid =
   let
-    initField = fromJust $ find (\(_, c) -> c `elem` ['^', 'v', '<', '>']) $ A.assocs charGrid
+    initField = fromJust $ find (\(_, c) -> c `elem` dirList) $ A.assocs charGrid
     (pos, c) = initField
+    charToDir :: Char -> Direction
+    charToDir '^' = U
+    charToDir 'v' = D
+    charToDir '<' = L
+    charToDir '>' = R
    in
     State{pos, dir = charToDir c}
 
-solution1 :: String -> Int
-solution1 file = length . nub $ findPath initState charGrid
+insertObstacle :: CharGrid -> Position -> CharGrid
+insertObstacle charGrid pos = if charGrid ! pos `elem` '#' : dirList then charGrid else charGrid // [(pos, '#')]
+
+parseFile :: String -> (CharGrid, State)
+parseFile file = let charGrid = strToCharGrid file in (charGrid, getInitialState charGrid)
+
+solution1 :: (CharGrid, State) -> Int
+solution1 (charGrid, initState) = length . nub $ pos <$> findPath False initState charGrid
+
+solution2 :: (CharGrid, State) -> Int
+solution2 (charGrid, initState) = countIf pathIsLoop $ findPath True initState <$> modifiedGrids
  where
-  initState = traceWInfo True "initState" $ getInitialState charGrid
-  charGrid = strToCharGrid file
+  modifiedGrids = insertObstacle charGrid <$> A.indices charGrid
+
+getSolutions6 :: String -> IO (Int, Int)
+getSolutions6 = readFile >=> (parseFile >>> (solution1 &&& solution2') >>> return)
+
+solution2' :: (CharGrid, State) -> Int
+solution2' (charGrid, initState) = runST $ countLoopsST (thawSTUArray charGrid) -- countIf pathIsLoop $ findPath initState <$> modifiedGrids
+ where
+  countLoopsST :: ST s (STUArray s Position Char) -> ST s Int
+  countLoopsST stAr = do
+    ar <- stAr
+    paths <- forM [pos | pos <- A.indices charGrid, charGrid ! pos `notElem` '#' : dirList] $ findPathST ar
+    return $ countIf pathIsLoop paths
+   where
+    findPathST ar obstaclePos = do
+      writeArray ar obstaclePos '#'
+      uAr <- freezeSTUArray ar
+      let path = findPath True initState uAr
+      writeArray ar obstaclePos '.'
+      return path
