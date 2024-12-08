@@ -1,3 +1,5 @@
+{-# LANGUAGE TupleSections #-}
+
 module Useful (
   wordsWhen,
   splitOn,
@@ -10,14 +12,19 @@ module Useful (
   countIf,
   groupBySorted,
   groupByUnique,
+  pairChoices,
+  pairVariations,
   strToCharGrid,
   CharGrid,
+  GridPos,
 ) where
 
+import Control.Monad (join)
 import qualified Data.Array.Unboxed as A
 import Data.Char (isNumber)
 import Data.Function (on)
-import Data.List (findIndex, groupBy, intercalate, isPrefixOf, sortOn, tails)
+import Data.List (findIndex, groupBy, inits, intercalate, isPrefixOf, sortOn, tails)
+import Data.Tuple (swap)
 
 wordsWhen :: (a -> Bool) -> [a] -> [[a]]
 wordsWhen p s =
@@ -77,8 +84,14 @@ groupBySorted ordFunc ls = map (\grp -> (fst <$> grp, snd . head $ grp)) $ group
 countIf :: (a -> Bool) -> [a] -> Int
 countIf p ls = length $ filter p ls
 
-type Position = (Int, Int)
-type CharGrid = A.UArray Position Char
+pairChoices :: [a] -> [(a, a)]
+pairChoices xs = concat $ zipWith (map . (,)) xs (tail $ tails xs) -- [(xs !! i, xs !! j) | i <- [0 .. length xs - 1], j <- [i + 1 .. length xs - 1]]
+
+pairVariations :: [a] -> [(a, a)]
+-- pairVariations xs = [(xs !! i, xs !! j) | i <- [0 .. length xs - 1], j <- [0 .. length xs - 1], i /= j]
+pairVariations = ((++) <*> map swap) . pairChoices -- pairChoices zipWith (\x -> ((++) <*> map swap) . (map . (,)) x) ls (tail $ tails ls) -- [(xs !! i, xs !! j) | i <- [0 .. length xs - 1], j <- [i + 1 .. length xs - 1]]
+type GridPos = (Int, Int)
+type CharGrid = A.UArray GridPos Char
 
 strToCharGrid :: String -> CharGrid
 strToCharGrid file = A.listArray ((1, 1), (numLines, lineSize)) $ concat ls

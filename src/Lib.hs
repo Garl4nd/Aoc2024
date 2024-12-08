@@ -5,8 +5,8 @@ module Lib (
   module N4,
   module N5,
   module N6,
-  module N7
-  -- , module N8
+  module N7,
+  module N8,
   -- , module N9
   -- , module N10
   -- , module N11
@@ -37,7 +37,8 @@ import N5
 import N6
 
 import N7
--- import N8
+import N8
+
 -- import N9
 -- import N10
 -- import N11
