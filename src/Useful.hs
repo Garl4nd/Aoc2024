@@ -6,7 +6,7 @@ module Useful (
   readStrList,
   splitBySubstr,
   writeXY,
-  pairs,
+  consecutivePairs,
   trimSpace,
   trimChar,
   countIf,
@@ -19,9 +19,7 @@ module Useful (
   GridPos,
 ) where
 
-import Control.Monad (join)
 import qualified Data.Array.Unboxed as A
-import Data.Char (isNumber)
 import Data.Function (on)
 import Data.List (findIndex, groupBy, inits, intercalate, isPrefixOf, sortOn, tails)
 import Data.Tuple (swap)
@@ -59,10 +57,10 @@ splitBySubstr delim str =
     Just idx ->
       take idx str : splitBySubstr delim (drop (idx + length delim) str)
 
-pairs :: [a] -> Maybe [(a, a)]
-pairs (x0 : x1 : xs) = ((x0, x1) :) <$> pairs xs
-pairs [_] = Nothing
-pairs [] = Just []
+consecutivePairs :: [a] -> Maybe [(a, a)]
+consecutivePairs (x0 : x1 : xs) = ((x0, x1) :) <$> consecutivePairs xs
+consecutivePairs [_] = Nothing
+consecutivePairs [] = Just []
 
 writeXY :: (Show a) => String -> [a] -> [a] -> IO ()
 writeXY fileName xs ys = do
@@ -82,14 +80,14 @@ groupBySorted ordFunc ls = map (\grp -> (fst <$> grp, snd . head $ grp)) $ group
   mappedList = ordFunc <$> ls
 
 countIf :: (a -> Bool) -> [a] -> Int
-countIf p ls = length $ filter p ls
+countIf  = (length .). filter
 
 pairChoices :: [a] -> [(a, a)]
-pairChoices xs = concat $ zipWith (map . (,)) xs (tail $ tails xs) -- [(xs !! i, xs !! j) | i <- [0 .. length xs - 1], j <- [i + 1 .. length xs - 1]]
-
+--pairChoices xs = concat $ zipWith (\a rest -> [(a, r) | r<-rest] ) xs (tail $ tails xs) -- [(xs !! i, xs !! j) | i <- [0 .. length xs - 1], j <- [i + 1 .. length xs - 1]]
+pairChoices = concat . (zipWith (map . (,)) <*> (tail.tails))  -- just for point free one, more comprehensible  implementations above 
 pairVariations :: [a] -> [(a, a)]
 -- pairVariations xs = [(xs !! i, xs !! j) | i <- [0 .. length xs - 1], j <- [0 .. length xs - 1], i /= j]
-pairVariations = ((++) <*> map swap) . pairChoices -- pairChoices zipWith (\x -> ((++) <*> map swap) . (map . (,)) x) ls (tail $ tails ls) -- [(xs !! i, xs !! j) | i <- [0 .. length xs - 1], j <- [i + 1 .. length xs - 1]]
+pairVariations = ((++) <*> map swap) . pairChoices 
 type GridPos = (Int, Int)
 type CharGrid = A.UArray GridPos Char
 
