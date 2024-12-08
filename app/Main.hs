@@ -38,7 +38,7 @@ maybeSolver day = case day of
   4 -> Just getSolutions4
   5 -> Just getSolutions5
   6 -> Just getSolutions6
-  -- 7 -> Just $ getSolutions7 "inputs/7.txt"
+  7 -> Just getSolutions7 
   -- 8 -> Just $ getSolutions8 "inputs/8.txt"
   -- 9 -> Just $ getSolutions9 "inputs/9.txt"
   -- 10 -> Just $ getSolutions10 "inputs/10.txt"
