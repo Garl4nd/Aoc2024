@@ -25,7 +25,7 @@ solveWith antinodeGenerator charGrid = length $ S.fromList . concatMap antinodes
   bounds = A.bounds charGrid
   freqMap = getFrequencyMap charGrid
 
-antinodeGen1 ((y1, x1), (y2, x2)) = [(y1 + (y1 - y2), x1 + (x1 - x2))]
+antinodeGen1 = take 1 . drop 1 . antinodeGen2 -- ((y1, x1), (y2, x2)) = [(y1 + (y1 - y2), x1 + (x1 - x2))]
 antinodeGen2 ((y1, x1), (y2, x2)) = [(y1 + k * (y1 - y2), x1 + k * (x1 - x2)) | k <- [0 ..]]
 
 getSolutions8 :: String -> IO (Int, Int)
