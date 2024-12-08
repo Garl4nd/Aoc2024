@@ -82,7 +82,7 @@ solution2 (charGrid, initState) = countIf pathIsLoop $ findPath True initState <
   modifiedGrids = insertObstacle charGrid <$> A.indices charGrid
 
 getSolutions6 :: String -> IO (Int, Int)
-getSolutions6 = readFile >=> (parseFile >>> (solution1 &&& solution2') >>> return)
+getSolutions6 = readFile >=> (parseFile >>> (solution1 &&& solution2) >>> return)
 
 solution2' :: (CharGrid, State) -> Int
 solution2' (charGrid, initState) = runST $ countLoopsST (thawSTUArray charGrid) -- countIf pathIsLoop $ findPath initState <$> modifiedGrids
