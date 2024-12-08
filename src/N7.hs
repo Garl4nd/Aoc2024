@@ -4,7 +4,6 @@ import Text.Megaparsec.Char
 import Text.Megaparsec.Char.Lexer as L
 import Data.Void (Void)
 import Data.Either (fromRight)
-import Data.List (foldl')
 type SParser = Parsec Void String
 type Problem = (Int, [Int])
 
@@ -19,27 +18,27 @@ fileParser = let
 parseFile :: String -> [Problem]
 parseFile file = fromRight [] $ runParser fileParser "" file
 
-(|||) :: Int -> Int -> Int
-a ||| b = read $ show a <> show b 
-
 type Op = Int -> Int -> Int
+(|||) :: Op
+--a ||| b = read $ show a <> show b 
+a ||| b = let bBase = floor $ logBase 10 $ fromIntegral b
+              in a* 10^(bBase+1) +b
+
 isSolution :: [Op] -> Problem  -> Bool
-isSolution opList (target, nums) =  target `elem` getViableResults nums where 
+isSolution opList (target, nums) =  target `elem`  getViableResults nums where 
   getViableResults :: [Int] -> [Int]
   getViableResults [] = []
-  getViableResults (fstNum:restNums) = foldl updateResults [fstNum]  restNums where
-    updateResults resultsSoFar a = filter (<= target) $ [(`op` a) | op <- opList ] <*> filter (<= target) resultsSoFar 
+  getViableResults (x:xs) = foldl updateResults [x] xs where
+    updateResults resultsSoFar a = filter (<= target) $ [(`op` a) | op <- opList ] <*> resultsSoFar 
 
-solution :: String -> [Op] -> Int
-solution file opList = let 
-  problemList = parseFile file
-  in sum . map fst  $ filter (isSolution opList)  problemList 
+sumOfSolvables :: [Problem] -> [Op] -> Int
+sumOfSolvables problemList opList = sum . map fst  $ filter (isSolution opList)  problemList 
 
 getSolutions7 :: String -> IO (Int, Int)
 getSolutions7 filename = do 
-  file <- readFile filename
-  let solution1 = solution file [(+), (*)]
-      solution2 = solution file [(+), (*), (|||)]
+  problemList <- parseFile <$> readFile filename
+  let solution1 = sumOfSolvables problemList [(+), (*)]
+      solution2 = sumOfSolvables problemList [(+), (*), (|||)]
   return (solution1, solution2)
 
 --getViableCombos :: Problem -> [Int]
