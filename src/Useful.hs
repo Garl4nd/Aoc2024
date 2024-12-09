@@ -84,7 +84,7 @@ countIf  = (length .). filter
 
 pairChoices :: [a] -> [(a, a)]
 --pairChoices xs = concat $ zipWith (\a rest -> [(a, r) | r<-rest] ) xs (tail $ tails xs) -- [(xs !! i, xs !! j) | i <- [0 .. length xs - 1], j <- [i + 1 .. length xs - 1]]
-pairChoices = concat . (zipWith (map . (,)) <*> (tail.tails))  -- just for point free one, more comprehensible  implementations above 
+pairChoices = concat . (zipWith (map . (,)) <*> (tail.tails))  -- just for point free fun, more comprehensible  implementations above 
 pairVariations :: [a] -> [(a, a)]
 -- pairVariations xs = [(xs !! i, xs !! j) | i <- [0 .. length xs - 1], j <- [0 .. length xs - 1], i /= j]
 pairVariations = ((++) <*> map swap) . pairChoices 
