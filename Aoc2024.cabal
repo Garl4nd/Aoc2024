@@ -36,6 +36,7 @@ library
       N6
       N7
       N8
+      N9
       Useful
   other-modules:
       Paths_Aoc2024

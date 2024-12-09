@@ -23,6 +23,9 @@ import qualified Data.Array.Unboxed as A
 import Data.Function (on)
 import Data.List (findIndex, groupBy, inits, intercalate, isPrefixOf, sortOn, tails)
 import Data.Tuple (swap)
+type GridPos = (Int, Int)
+type CharGrid = A.UArray GridPos Char
+
 
 wordsWhen :: (a -> Bool) -> [a] -> [[a]]
 wordsWhen p s =
@@ -88,8 +91,6 @@ pairChoices = concat . (zipWith (map . (,)) <*> (tail.tails))  -- just for point
 pairVariations :: [a] -> [(a, a)]
 -- pairVariations xs = [(xs !! i, xs !! j) | i <- [0 .. length xs - 1], j <- [0 .. length xs - 1], i /= j]
 pairVariations = ((++) <*> map swap) . pairChoices 
-type GridPos = (Int, Int)
-type CharGrid = A.UArray GridPos Char
 
 strToCharGrid :: String -> CharGrid
 strToCharGrid file = A.listArray ((1, 1), (numLines, lineSize)) $ concat ls
@@ -97,3 +98,8 @@ strToCharGrid file = A.listArray ((1, 1), (numLines, lineSize)) $ concat ls
   ls = lines file
   numLines = length ls
   lineSize = length $ head ls
+
+splitIf :: (a->bool) -> Int ->  [a] -> ([a], [a])
+splitIf p n [] =  ([],[])
+splitIf p 0 ls =  ([], ls)
+splitIf p n (x:xs) = if p x then let (correct, incorrect) = splitIf p (n-1) in (x:correct, )
