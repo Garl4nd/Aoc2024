@@ -7,8 +7,8 @@ module Lib (
   module N6,
   module N7,
   module N8,
-  -- , module N9
-  -- , module N10
+  module N9,
+  -- module N10
   -- , module N11
   -- , module N12
   -- , module N13
@@ -35,11 +35,10 @@ import N3
 import N4
 import N5
 import N6
-
 import N7
 import N8
+import N9
 
--- import N9
 -- import N10
 -- import N11
 -- import N12

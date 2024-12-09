@@ -99,7 +99,4 @@ strToCharGrid file = A.listArray ((1, 1), (numLines, lineSize)) $ concat ls
   numLines = length ls
   lineSize = length $ head ls
 
-splitIf :: (a->bool) -> Int ->  [a] -> ([a], [a])
-splitIf p n [] =  ([],[])
-splitIf p 0 ls =  ([], ls)
-splitIf p n (x:xs) = if p x then let (correct, incorrect) = splitIf p (n-1) in (x:correct, )
+
