@@ -18,6 +18,13 @@ packages:
       size: 687
   original:
     hackage: memoize-1.1.2
+- completed:
+    hackage: ghc-prof-1.4.1.12@sha256:0146d3324470db81f6ed1d84b445f1d1aadaeb2e4e045876f5cd231a0946b713,2117
+    pantry-tree:
+      sha256: 37a45db4d22b7b20bd06343cfc9517cadf84536da9cb694a822f6c857d385675
+      size: 687
+  original:
+    hackage: ghc-prof-1.4.1.12
 snapshots:
 - completed:
     sha256: 08bd13ce621b41a8f5e51456b38d5b46d7783ce114a50ab604d6bbab0d002146

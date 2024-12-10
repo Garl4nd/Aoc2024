@@ -21,7 +21,7 @@ parseFile file = fillDisk 0 $ digitToInt <$> numberList
  where
   numberList = init file
   fillDisk :: ID -> [Int] -> Disk
-  fillDisk id [] = []
+  fillDisk _ [] = []
   fillDisk id [size] = [IdBlock{id, filledSize = size}]
   fillDisk id (filledSize : freeSize : rest) = IdBlock{id, filledSize} : FreeBlock{freeSize} : fillDisk (id + 1) rest
 
@@ -49,29 +49,26 @@ moveLastBlock disk = case dropWhile isFree . reverse $ disk of
     go blockTup (processed, idBlock : rest) = go blockTup (idBlock : processed, rest)
 
 rearrangeDisk :: Disk -> Disk
-rearrangeDisk disk = go disk
- where
-  go disk = case moveLastBlock disk of
-    Nothing -> disk
-    Just (processed, rest) -> processed ++ rearrangeDisk rest
+rearrangeDisk disk = case moveLastBlock disk of
+  Nothing -> disk
+  Just (processed, rest) -> processed ++ rearrangeDisk rest
 
-rearrangeDiskWhole :: Disk -> Disk
-rearrangeDiskWhole disk = foldr tryToMove disk idList
+rearrangeDisk2 :: Disk -> Disk
+rearrangeDisk2 disk = go (disk, [])
  where
-  idList = [0 .. countIf (not . isFree) disk - 1]
-  isId _ (FreeBlock _) = False
-  isId blockId (IdBlock{id}) = id == blockId
-  tryToMove :: ID -> Disk -> Disk
-  tryToMove blockId disk =
-    let (start, block : rest) = break (isId blockId) disk
-     in case insertBlock start block of
-          Just modifiedStart -> modifiedStart ++ FreeBlock{freeSize = filledSize block} : rest
-          Nothing -> disk
-  insertBlock :: Disk -> Block -> Maybe Disk
-  insertBlock _ (FreeBlock _) = Nothing
-  insertBlock disk block@IdBlock{id, filledSize} = case break (\block -> isFree block && freeSize block >= filledSize) disk of
+  go :: (Disk, Disk) -> Disk
+  go (unprocessed, processed) = case span isFree . reverse $ unprocessed of
+    (_, []) -> processed
+    (revEnd, block : revLd) ->
+      let (end, ld) = (reverse revEnd, reverse revLd)
+       in case tryInsertBlock ld block of
+            Just modifiedLd -> go (modifiedLd, FreeBlock{freeSize = filledSize block} : end ++ processed)
+            Nothing -> go (ld, block : end ++ processed)
+  tryInsertBlock :: Disk -> Block -> Maybe Disk
+  tryInsertBlock _ (FreeBlock _) = Nothing
+  tryInsertBlock disk block@IdBlock{id, filledSize} = case break (\block -> isFree block && freeSize block >= filledSize) disk of
     (_, []) -> Nothing
-    (start, FreeBlock{freeSize = freeSize'} : rest) -> Just $ start ++ block : FreeBlock{freeSize = freeSize' - filledSize} : rest
+    (start, FreeBlock{freeSize} : rest) -> Just $ start ++ block : FreeBlock{freeSize = freeSize - filledSize} : rest
 
 unwrapDisk :: Disk -> [Maybe ID]
 unwrapDisk =
@@ -95,7 +92,7 @@ solution1 :: Disk -> Int
 solution1 = rearrangeDisk >>> unwrapDisk >>> checkSum
 
 solution2 :: Disk -> Int
-solution2 = rearrangeDiskWhole >>> unwrapDisk >>> checkSum
+solution2 = rearrangeDisk2 >>> unwrapDisk >>> checkSum
 
 getSolutions9 :: String -> IO (Int, Int)
-getSolutions9 = readFile >=> (parseFile >>> (solution1 &&& const 0) >>> return)
+getSolutions9 = readFile >=> (parseFile >>> (solution1 &&& solution2) >>> return)
