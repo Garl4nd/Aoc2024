@@ -28,7 +28,9 @@ findAllHikesFrom  grid = go where
     | valAt pos == 9 = [[pos]]  
     | otherwise = let  
       hikeableNeighbors = filter ( A.inRange bounds <&&> ((valAt pos +1 == ).valAt))  $  neighbors pos 
-      in concat [[pos: path | path<- paths] | paths <-  go <$> hikeableNeighbors]
+      -- joinHereWithPathsFrom = map (pos:).go 
+      --concatMap joinHereWithPathsFrom hikeableNeighbors
+      in [pos:path | paths <- go <$> hikeableNeighbors, path <-paths] 
   bounds = A.bounds grid
   valAt = (grid !)
 
