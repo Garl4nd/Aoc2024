@@ -1,10 +1,15 @@
 {-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE ViewPatterns #-}
 
 module N9 (getSolutions9) where
 
+import Control.Applicative (Alternative (empty))
 import Control.Arrow
 import Control.Monad ((>=>))
 import Data.Char (digitToInt)
+import Data.Foldable (Foldable (toList))
+import Data.Sequence (Seq ((:<|), (:|>)), ViewL ((:<)), (><))
+import qualified Data.Sequence as S
 import Prelude hiding (id)
 
 type ID = Int
@@ -69,6 +74,23 @@ rearrangeDisk2 disk = go (disk, [])
     (_, []) -> Nothing
     (start, FreeBlock{freeSize} : rest) -> Just $ start ++ block : FreeBlock{freeSize = freeSize - filledSize} : rest
 
+rearrangeDisk2Seq :: S.Seq Block -> S.Seq Block
+rearrangeDisk2Seq disk = go (disk, S.empty)
+ where
+  go :: (S.Seq Block, S.Seq Block) -> S.Seq Block
+  go (unprocessed, processed) = case S.spanr isFree unprocessed of -- span isFree . reverse $ unprocessed of
+    (_, S.viewl -> S.EmptyL) -> processed
+    (end, ld :|> block) -> case tryInsertBlock ld block of
+      Just modifiedLd -> go (modifiedLd, FreeBlock{freeSize = filledSize block} :<| end >< processed)
+      Nothing -> go (ld, block :<| end >< processed)
+  tryInsertBlock :: S.Seq Block -> Block -> Maybe (S.Seq Block)
+  tryInsertBlock _ (FreeBlock _) = Nothing
+  tryInsertBlock disk block@IdBlock{filledSize} = case S.breakl (\block' -> isFree block' && freeSize block' >= filledSize) disk of
+    (_, S.viewl -> S.EmptyL) -> Nothing
+    (start, FreeBlock{freeSize} :<| rest) -> Just $ start >< block :<| FreeBlock{freeSize = freeSize - filledSize} :<| rest
+
+rearrangeDisk2' = toList . rearrangeDisk2Seq . S.fromList
+
 unwrapDisk :: Disk -> [Maybe ID]
 unwrapDisk =
   concatMap
@@ -91,7 +113,7 @@ solution1 :: Disk -> Int
 solution1 = rearrangeDisk >>> unwrapDisk >>> checkSum
 
 solution2 :: Disk -> Int
-solution2 = rearrangeDisk2 >>> unwrapDisk >>> checkSum
+solution2 = rearrangeDisk2' >>> unwrapDisk >>> checkSum
 
 getSolutions9 :: String -> IO (Int, Int)
 getSolutions9 = readFile >=> (parseFile >>> (solution1 &&& solution2) >>> return)
