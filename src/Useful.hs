@@ -15,8 +15,7 @@ module Useful (
   pairChoices,
   pairVariations,
   strToCharGrid,
-  CharGrid,
-  GridPos,
+  CharGrid, CharGridU, GridPos,
 ) where
 
 import qualified Data.Array.Unboxed as A
@@ -24,7 +23,8 @@ import Data.Function (on)
 import Data.List (findIndex, groupBy, inits, intercalate, isPrefixOf, sortOn, tails)
 import Data.Tuple (swap)
 type GridPos = (Int, Int)
-type CharGrid = A.UArray GridPos Char
+type CharGridU = A.UArray GridPos Char
+type CharGrid = A.Array GridPos Char
 
 
 wordsWhen :: (a -> Bool) -> [a] -> [[a]]
@@ -92,7 +92,7 @@ pairVariations :: [a] -> [(a, a)]
 -- pairVariations xs = [(xs !! i, xs !! j) | i <- [0 .. length xs - 1], j <- [0 .. length xs - 1], i /= j]
 pairVariations = ((++) <*> map swap) . pairChoices 
 
-strToCharGrid :: String -> CharGrid
+strToCharGrid :: (A.IArray a e, e~ Char) => String -> a GridPos e
 strToCharGrid file = A.listArray ((1, 1), (numLines, lineSize)) $ concat ls
  where
   ls = lines file

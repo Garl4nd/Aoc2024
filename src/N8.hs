@@ -5,19 +5,19 @@ import Control.Monad ((>=>))
 import qualified Data.Array.Unboxed as A
 import qualified Data.Map as M
 import qualified Data.Set as S
-import Useful (CharGrid, GridPos, pairVariations, strToCharGrid)
+import Useful (CharGridU, GridPos, pairVariations, strToCharGrid)
 
 type Frequency = Char
 type FrequencyMap = M.Map Frequency [GridPos]
 type AntinodeGenerator = ((GridPos, GridPos) -> [GridPos])
 
-getFrequencyMap :: CharGrid -> FrequencyMap
+getFrequencyMap :: CharGridU -> FrequencyMap
 getFrequencyMap charGrid =
   let antennas = filter ((/= '.') . snd) $ A.assocs charGrid
       mapAssocs = [(val, [pos]) | (pos, val) <- antennas]
    in M.fromListWith (++) mapAssocs
 
-solveWith :: AntinodeGenerator -> CharGrid -> Int
+solveWith :: AntinodeGenerator -> CharGridU -> Int
 solveWith antinodeGenerator charGrid = length $ S.fromList . concatMap antinodesForFreq $ M.elems freqMap
  where
   antinodesForFreq :: [GridPos] -> [GridPos]

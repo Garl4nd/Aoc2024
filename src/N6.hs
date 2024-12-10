@@ -11,7 +11,7 @@ import qualified Data.Array.Unboxed as A
 import Data.List (find, nub, unfoldr)
 import Data.Maybe (fromJust)
 import qualified Data.Set as S
-import Useful (CharGrid, countIf, strToCharGrid) -- type CharGrid = A.UArray (Int, Int) Char
+import Useful (CharGridU, countIf, strToCharGrid) -- type CharGridU = A.UArray (Int, Int) Char
 
 type Position = (Int, Int)
 data Direction = U | D | L | R deriving (Show, Eq, Ord)
@@ -30,7 +30,7 @@ rotate R = D
 rotate D = L
 rotate L = U
 
-findPath :: Bool -> State -> CharGrid -> [State]
+findPath :: Bool -> State -> CharGridU -> [State]
 findPath onlyObstacles initState charGrid = takeWhile (inBounds . pos) $ iterate updateState initState
  where
   updateState state@State{pos, dir}
@@ -54,7 +54,7 @@ pathIsLoop = go S.empty
 dirList :: [Char]
 dirList = ['^', 'v', '<', '>']
 
-getInitialState :: CharGrid -> State
+getInitialState :: CharGridU -> State
 getInitialState charGrid =
   let
     initField = fromJust $ find (\(_, c) -> c `elem` dirList) $ A.assocs charGrid
@@ -67,16 +67,16 @@ getInitialState charGrid =
    in
     State{pos, dir = charToDir c}
 
-insertObstacle :: CharGrid -> Position -> CharGrid
+insertObstacle :: CharGridU -> Position -> CharGridU
 insertObstacle charGrid pos = if charGrid ! pos `elem` '#' : dirList then charGrid else charGrid // [(pos, '#')]
 
-parseFile :: String -> (CharGrid, State)
+parseFile :: String -> (CharGridU, State)
 parseFile file = let charGrid = strToCharGrid file in (charGrid, getInitialState charGrid)
 
-solution1 :: (CharGrid, State) -> Int
+solution1 :: (CharGridU, State) -> Int
 solution1 (charGrid, initState) = length . nub $ pos <$> findPath False initState charGrid
 
-solution2 :: (CharGrid, State) -> Int
+solution2 :: (CharGridU, State) -> Int
 solution2 (charGrid, initState) = countIf pathIsLoop $ findPath True initState <$> modifiedGrids
  where
   modifiedGrids = insertObstacle charGrid <$> A.indices charGrid
@@ -84,7 +84,7 @@ solution2 (charGrid, initState) = countIf pathIsLoop $ findPath True initState <
 getSolutions6 :: String -> IO (Int, Int)
 getSolutions6 = readFile >=> (parseFile >>> (solution1 &&& solution2) >>> return)
 
-solution2' :: (CharGrid, State) -> Int
+solution2' :: (CharGridU, State) -> Int
 solution2' (charGrid, initState) = runST $ countLoopsST (thawSTUArray charGrid) -- countIf pathIsLoop $ findPath initState <$> modifiedGrids
  where
   countLoopsST :: ST s (STUArray s Position Char) -> ST s Int
