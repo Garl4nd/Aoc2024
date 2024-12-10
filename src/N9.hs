@@ -5,7 +5,6 @@ module N9 (getSolutions9) where
 import Control.Arrow
 import Control.Monad ((>=>))
 import Data.Char (digitToInt)
-import Useful (countIf)
 import Prelude hiding (id)
 
 type ID = Int
@@ -66,7 +65,7 @@ rearrangeDisk2 disk = go (disk, [])
             Nothing -> go (ld, block : end ++ processed)
   tryInsertBlock :: Disk -> Block -> Maybe Disk
   tryInsertBlock _ (FreeBlock _) = Nothing
-  tryInsertBlock disk block@IdBlock{id, filledSize} = case break (\block -> isFree block && freeSize block >= filledSize) disk of
+  tryInsertBlock disk block@IdBlock{filledSize} = case break (\block' -> isFree block' && freeSize block' >= filledSize) disk of
     (_, []) -> Nothing
     (start, FreeBlock{freeSize} : rest) -> Just $ start ++ block : FreeBlock{freeSize = freeSize - filledSize} : rest
 
