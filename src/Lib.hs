@@ -8,8 +8,8 @@ module Lib (
   module N7,
   module N8,
   module N9,
-  -- module N10
-  -- , module N11
+  module N10,
+  module N11
   -- , module N12
   -- , module N13
   -- , module N14
@@ -38,9 +38,8 @@ import N6
 import N7
 import N8
 import N9
-
--- import N10
--- import N11
+import N10
+import N11
 -- import N12
 -- import N13
 -- import N14
