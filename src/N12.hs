@@ -25,10 +25,11 @@ growRegion charGrid startPos = (val, go S.empty $ S.singleton startPos) where
   go currentSet boundary
     | S.null boundary = currentSet
     | otherwise = let newSet = S.union currentSet boundary
-                      newBoundary = S.unions $ S.map (S.fromList . filter ((`S.notMember` currentSet) <&&> inBounds <&&> ((val==).(charGrid !))) . neighbors ) boundary
+                      newBoundary = S.unions $ S.map (S.fromList . filter ((`S.notMember` currentSet) <&&> inBounds <&&> isSameCrop) . neighbors ) boundary
                   in go newSet newBoundary
   val = charGrid ! startPos 
   inBounds = A.inRange bounds 
+  isSameCrop pos = charGrid ! pos == val
   bounds = A.bounds charGrid
   
 
