@@ -3,12 +3,12 @@ import Control.Arrow
 import Control.Monad ((>=>))
 import qualified Data.Array as A
 import qualified Data.Set as S
+import Data.Set (member, notMember)
 import  Data.Array ((!))
 
 import Useful (strToCharGrid, CharGrid, GridPos, countIf)
 import Data.Foldable (Foldable(toList))
 type PositionSet = S.Set GridPos
-
 
 parseFile :: String -> CharGrid
 parseFile = strToCharGrid
@@ -42,12 +42,11 @@ perimeter :: PositionSet ->  Int
 perimeter posSet = sum $  countIf (`S.notMember` posSet) . neighbors  <$> toList posSet
 
 numOfSides :: PositionSet -> Int
-numOfSides posSet = sum $ numCorners <$>  toList posSet where
+numOfSides region = sum $ numCorners <$>  toList region where
  numCorners  (y,x) = countIf  
   (\(adj1, adj2, corner) -> 
-  (adj1 `S.notMember` posSet && adj2 `S.notMember` posSet) || (adj1 `S.member` posSet && adj2 `S.member` posSet && corner `S.notMember` posSet)) touchingNeighbors  where
-  touchingNeighbors = [((y+dy, x), (y, x+dx), (y+dy, x+dx)) | dy <- [-1, 1], dx <- [-1,1]]
-
+  all (`S.notMember` region) [adj1, adj2] || all (`S.member` region) [adj1,adj2] && (corner `notMember` region))   touching8Neighbors  where
+  touching8Neighbors = [((y+dy, x), (y, x+dx), (y+dy, x+dx)) | dy <- [-1, 1], dx <- [-1,1]]
 solution1 :: CharGrid -> Int 
 solution1 charGrid = sum $ liftA2 (*)  length perimeter  <$> getAllRegions charGrid   
 
