@@ -22,7 +22,7 @@ getRegion charGrid startPos = grow S.empty (S.singleton startPos) where
   grow currentRegion boundary
     | S.null boundary = currentRegion
     | otherwise = let grownRegion = S.union currentRegion boundary
-                      newBoundary = S.unions $ S.map (S.fromList . filter ((`S.notMember` currentRegion) <&&> inBounds <&&> isSameCrop) . neighbors ) boundary
+                      newBoundary = S.unions $ S.map (S.fromList . filter ((`notMember` currentRegion) <&&> inBounds <&&> isSameCrop) . neighbors ) boundary
                   in grow grownRegion newBoundary
   val = charGrid ! startPos 
   inBounds = A.inRange $ A.bounds charGrid 
@@ -39,13 +39,13 @@ getAllRegions charGrid = go [] $ S.fromList  (A.indices charGrid) where
                         go (newRegion : foundRegions) newUnassignedSet 
 
 perimeter :: PositionSet ->  Int 
-perimeter posSet = sum $  countIf (`S.notMember` posSet) . neighbors  <$> toList posSet
+perimeter posSet = sum $  countIf (`notMember` posSet) . neighbors  <$> toList posSet
 
 numOfSides :: PositionSet -> Int
 numOfSides region = sum $ numCorners <$>  toList region where
  numCorners  (y,x) = countIf  
   (\(adj1, adj2, corner) -> 
-  all (`S.notMember` region) [adj1, adj2] || all (`S.member` region) [adj1,adj2] && (corner `notMember` region))   touching8Neighbors  where
+  all (`notMember` region) [adj1, adj2] || all (`member` region) [adj1,adj2] && (corner `notMember` region))   touching8Neighbors  where
   touching8Neighbors = [((y+dy, x), (y, x+dx), (y+dy, x+dx)) | dy <- [-1, 1], dx <- [-1,1]]
 solution1 :: CharGrid -> Int 
 solution1 charGrid = sum $ liftA2 (*)  length perimeter  <$> getAllRegions charGrid   
