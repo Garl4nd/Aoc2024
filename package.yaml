@@ -41,7 +41,8 @@ dependencies:
 - http-conduit
 - directory
 - hmatrix
-
+- Chart-diagrams
+- gnuplot 
 #- regex-pcre-builtin
 
 default-extensions:

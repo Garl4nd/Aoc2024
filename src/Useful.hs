@@ -1,4 +1,4 @@
-{-# LANGUAGE TupleSections #-}
+{-# LANGUAGE FlexibleContexts #-}
 
 module Useful (
   wordsWhen,
@@ -16,17 +16,19 @@ module Useful (
   pairVariations,
   strToCharGrid,
   charGridToStr,
-  CharGrid, CharGridU, GridPos,
+  CharGrid,
+  CharGridU,
+  GridPos,
 ) where
 
 import qualified Data.Array.Unboxed as A
 import Data.Function (on)
 import Data.List (findIndex, groupBy, inits, intercalate, isPrefixOf, sortOn, tails)
 import Data.Tuple (swap)
+
 type GridPos = (Int, Int)
 type CharGridU = A.UArray GridPos Char
 type CharGrid = A.Array GridPos Char
-
 
 wordsWhen :: (a -> Bool) -> [a] -> [[a]]
 wordsWhen p s =
@@ -84,24 +86,23 @@ groupBySorted ordFunc ls = map (\grp -> (fst <$> grp, snd . head $ grp)) $ group
   mappedList = ordFunc <$> ls
 
 countIf :: (a -> Bool) -> [a] -> Int
-countIf  = (length .). filter
+countIf = (length .) . filter
 
 pairChoices :: [a] -> [(a, a)]
---pairChoices xs = concat $ zipWith (\a rest -> [(a, r) | r<-rest] ) xs (tail $ tails xs) -- [(xs !! i, xs !! j) | i <- [0 .. length xs - 1], j <- [i + 1 .. length xs - 1]]
-pairChoices = concat . (zipWith (map . (,)) <*> (tail.tails))  -- just for point free fun, more comprehensible  implementations above 
+-- pairChoices xs = concat $ zipWith (\a rest -> [(a, r) | r<-rest] ) xs (tail $ tails xs) -- [(xs !! i, xs !! j) | i <- [0 .. length xs - 1], j <- [i + 1 .. length xs - 1]]
+pairChoices = concat . (zipWith (map . (,)) <*> (tail . tails)) -- just for point free fun, more comprehensible  implementations above
 pairVariations :: [a] -> [(a, a)]
 -- pairVariations xs = [(xs !! i, xs !! j) | i <- [0 .. length xs - 1], j <- [0 .. length xs - 1], i /= j]
-pairVariations = ((++) <*> map swap) . pairChoices 
+pairVariations = ((++) <*> map swap) . pairChoices
 
-strToCharGrid :: (A.IArray a e, e~ Char) => String -> a GridPos e
+strToCharGrid :: (A.IArray a Char) => String -> a GridPos Char
 strToCharGrid file = A.listArray ((1, 1), (numLines, lineSize)) $ concat ls
  where
   ls = lines file
   numLines = length ls
   lineSize = length $ head ls
 
-charGridToStr :: (A.IArray a e, e~ Char) => a GridPos e -> [String]
-charGridToStr charGrid = let rows = [[charGrid A.! (y, x) | x <- [xmin..xmax] ]| y<- [ymin..ymax]]
-                             ((ymin, xmin), (ymax, xmax)) = A.bounds charGrid in show <$> rows   
-
-
+charGridToStr :: (A.IArray a Char) => a GridPos Char -> [String]
+charGridToStr charGrid = [[charGrid A.! (y, x) | x <- [xmin .. xmax]] | y <- [ymin .. ymax]]
+ where
+  ((ymin, xmin), (ymax, xmax)) = A.bounds charGrid
