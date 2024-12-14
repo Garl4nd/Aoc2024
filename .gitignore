@@ -1,4 +1,5 @@
 inputs/*
 !inputs/.gitkeep
 Aoc2024.cabal
+outputs/*
 .stack-work/

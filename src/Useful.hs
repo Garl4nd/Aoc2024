@@ -15,6 +15,7 @@ module Useful (
   pairChoices,
   pairVariations,
   strToCharGrid,
+  charGridToStr,
   CharGrid, CharGridU, GridPos,
 ) where
 
@@ -98,5 +99,9 @@ strToCharGrid file = A.listArray ((1, 1), (numLines, lineSize)) $ concat ls
   ls = lines file
   numLines = length ls
   lineSize = length $ head ls
+
+charGridToStr :: (A.IArray a e, e~ Char) => a GridPos e -> [String]
+charGridToStr charGrid = let rows = [[charGrid A.! (y, x) | x <- [xmin..xmax] ]| y<- [ymin..ymax]]
+                             ((ymin, xmin), (ymax, xmax)) = A.bounds charGrid in show <$> rows   
 
 
