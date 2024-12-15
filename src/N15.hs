@@ -46,14 +46,21 @@ parseFile file =
    in
     (gridAr, mapMaybe charToDir directions, initPos)
 
-animateRobot :: [Direction] -> RobotMover s ()
-animateRobot [] = return ()
-animateRobot (currentInstruction : remDirections) = do
-  moveRobotAndCrates currentInstruction
-  animateRobot remDirections
+runAnimation :: (CharGridU, [Direction], GridPos) -> CharGridU
+runAnimation (ar, directions, initPos) = runST $ do
+  star <- thawSTUArray ar
+  pos <- newSTRef initPos
+  runReaderT (animate directions) (star, pos)
+  freezeSTUArray star
 
-moveRobotAndCrates :: forall s. Direction -> RobotMover s ()
-moveRobotAndCrates dir = do
+animate :: [Direction] -> RobotMover s ()
+animate [] = return ()
+animate (currentInstruction : remDirections) = do
+  moveRobotAndBoxes currentInstruction
+  animate remDirections
+
+moveRobotAndBoxes :: forall s. Direction -> RobotMover s ()
+moveRobotAndBoxes dir = do
   let move = moveDir dir
   (ar, currentPosRef) <- ask
   currentPos <- lift $ readSTRef currentPosRef
@@ -64,18 +71,15 @@ moveRobotAndCrates dir = do
   case moveVal of
     '#' -> return ()
     _ -> do
-      maybeMoves <- moveableCrates movePos dir
+      maybeMoves <- moveableBoxes movePos dir
       case maybeMoves of
         Nothing -> return ()
         Just moves -> do
-          lift $ do
-            vals <- mapM (readArray ar) moves
-            mapM_ (\pos -> writeArray ar pos '.') $ reverse moves
-            mapM_ (\(pos, val) -> writeArray ar (move pos) val) $ zip moves vals
+          moveBoxes moves dir
           moveRobot movePos
 
-moveableCrates :: GridPos -> Direction -> RobotMover s (Maybe [GridPos])
-moveableCrates pos dir = do
+moveableBoxes :: GridPos -> Direction -> RobotMover s (Maybe [GridPos])
+moveableBoxes pos dir = do
   (ar, _) <- ask
   bounds <- lift $ getBounds ar
   let move = moveDir dir
@@ -87,7 +91,7 @@ moveableCrates pos dir = do
         '#' -> return Nothing
         '.' -> return $ Just []
         'O' -> do
-          maybeLs <- moveableCrates (move pos) dir
+          maybeLs <- moveableBoxes (move pos) dir
           case maybeLs of
             Just ls -> return $ Just (pos : ls)
             _ -> return Nothing
@@ -95,18 +99,27 @@ moveableCrates pos dir = do
           if dir `elem` [L, R]
             then do
               let rightPos = move pos
-              maybeLs <- moveableCrates (move rightPos) dir
+              maybeLs <- moveableBoxes (move rightPos) dir
               case maybeLs of
                 Just ls -> return $ Just (pos : rightPos : ls)
                 _ -> return Nothing
             else do
               let otherPos = if val == '[' then right pos else left pos
 
-              maybeLs1 <- moveableCrates (move pos) dir
-              maybeLs2 <- moveableCrates (move otherPos) dir
+              maybeLs1 <- moveableBoxes (move pos) dir
+              maybeLs2 <- moveableBoxes (move otherPos) dir
               case (maybeLs1, maybeLs2) of
                 (Just ls1, Just ls2) -> return $ Just (pos : otherPos : ls1 ++ ls2)
                 _ -> return Nothing
+
+moveBoxes :: [GridPos] -> Direction -> RobotMover s ()
+moveBoxes moves dir = do
+  (ar, _) <- ask
+  let move = moveDir dir
+  lift $ do
+    vals <- mapM (readArray ar) moves
+    mapM_ (\pos -> writeArray ar pos '.') $ reverse moves
+    mapM_ (\(pos, val) -> writeArray ar (move pos) val) $ zip moves vals
 
 moveRobot :: GridPos -> RobotMover s ()
 moveRobot movePos = do
@@ -125,19 +138,14 @@ complicateInput (c : rest)
   | c == 'O' = "[]" ++ complicateInput rest
   | c == '@' = "@." ++ complicateInput rest
   | otherwise = c : complicateInput rest
-evolveAr :: (CharGridU, [Direction], GridPos) -> CharGridU
-evolveAr (ar, directions, initPos) = runST $ do
-  star <- thawSTUArray ar
-  pos <- newSTRef initPos
-  runReaderT (animateRobot directions) (star, pos)
-  freezeSTUArray star
 
 gpsCoordinateSum :: Char -> CharGridU -> Int
 gpsCoordinateSum symbol charGrid =
   let coords = filter (\pos -> charGrid ! pos == symbol) $ A.indices charGrid
    in sum $ map (\(y, x) -> 100 * (y - 1) + x - 1) coords
-solution1 = gpsCoordinateSum 'O' . evolveAr
-solution2 = gpsCoordinateSum '[' . evolveAr
+
+solution1 = gpsCoordinateSum 'O' . runAnimation
+solution2 = gpsCoordinateSum '[' . runAnimation
 
 getSolutions15 :: String -> IO (Int, Int)
 getSolutions15 filename =
@@ -152,7 +160,7 @@ test inputFile = do
   saveGridToFile "outputs/origAr.txt" ar
   let modFile = "outputs/modar.txt"
   writeFile modFile ""
-  mapM_ (\dirs -> appendGridToFile modFile (evolveAr (ar, dirs, initPos)) >> appendFile modFile "\n\n") $ inits dirs
+  mapM_ (\dirs -> appendGridToFile modFile (runAnimation (ar, dirs, initPos)) >> appendFile modFile "\n\n") $ inits dirs
 
 test2 :: String -> IO ()
 test2 inputFile = do
@@ -160,4 +168,4 @@ test2 inputFile = do
   saveGridToFile "outputs/origAr2.txt" ar
   let modFile = "outputs/modar2.txt"
   writeFile modFile ""
-  mapM_ (\dirs -> appendGridToFile modFile (evolveAr (ar, dirs, initPos)) >> appendFile modFile (("\n" <> if null dirs then "" else (show $ last dirs)) <> "\n")) $ inits dirs
+  mapM_ (\dirs -> appendGridToFile modFile (runAnimation (ar, dirs, initPos)) >> appendFile modFile (("\n" <> if null dirs then "" else (show $ last dirs)) <> "\n")) $ inits dirs
