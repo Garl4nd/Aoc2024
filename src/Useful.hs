@@ -16,6 +16,8 @@ module Useful (
   pairVariations,
   strToCharGrid,
   charGridToStr,
+  saveGridToFile,
+  appendGridToFile,
   CharGrid,
   CharGridU,
   GridPos,
@@ -106,3 +108,16 @@ charGridToStr :: (A.IArray a Char) => a GridPos Char -> [String]
 charGridToStr charGrid = [[charGrid A.! (y, x) | x <- [xmin .. xmax]] | y <- [ymin .. ymax]]
  where
   ((ymin, xmin), (ymax, xmax)) = A.bounds charGrid
+
+saveGridToFile :: (A.IArray a Char) => String -> a GridPos Char -> IO ()
+saveGridToFile filename charGrid =
+  let
+    content = intercalate "\n" $ charGridToStr charGrid
+   in
+    writeFile filename content
+appendGridToFile :: (A.IArray a Char) => String -> a GridPos Char -> IO ()
+appendGridToFile filename charGrid =
+  let
+    content = intercalate "\n" $ charGridToStr charGrid
+   in
+    appendFile filename content
