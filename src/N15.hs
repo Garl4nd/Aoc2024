@@ -2,9 +2,10 @@
 
 module N15 (getSolutions15) where
 
-import Control.Monad (unless)
+import Control.Monad (guard, unless)
 import Control.Monad.ST (ST, runST)
 import Control.Monad.Trans.Class (MonadTrans (lift))
+import Control.Monad.Trans.Maybe (MaybeT (runMaybeT), hoistMaybe)
 import Control.Monad.Trans.Reader (ReaderT, ask, runReaderT)
 import Data.Array.Base (MArray (getBounds), STUArray, freezeSTUArray, modifyArray, readArray, thawSTUArray, writeArray)
 import Data.Array.Unboxed ((!))
@@ -71,46 +72,39 @@ moveRobotAndBoxes dir = do
   case moveVal of
     '#' -> return ()
     _ -> do
-      maybeMoves <- moveableBoxes movePos dir
+      maybeMoves <- runMaybeT $ moveableBoxes movePos dir
       case maybeMoves of
         Nothing -> return ()
         Just moves -> do
           moveBoxes moves dir
           moveRobot movePos
 
-moveableBoxes :: GridPos -> Direction -> RobotMover s (Maybe [GridPos])
+moveableBoxes :: GridPos -> Direction -> MaybeT (RobotMover s) [GridPos]
 moveableBoxes pos dir = do
-  (ar, _) <- ask
-  bounds <- lift $ getBounds ar
+  (ar, _) <- lift ask
+  bounds <- lift . lift $ getBounds ar
   let move = moveDir dir
   if not $ A.inRange bounds pos
-    then return Nothing
+    then hoistMaybe Nothing
     else do
-      val <- lift $ ar `readArray` pos
+      val <- lift . lift $ ar `readArray` pos
       case val of
-        '#' -> return Nothing
-        '.' -> return $ Just []
+        '#' -> hoistMaybe Nothing
+        '.' -> return []
         'O' -> do
-          maybeLs <- moveableBoxes (move pos) dir
-          case maybeLs of
-            Just ls -> return $ Just (pos : ls)
-            _ -> return Nothing
+          ls <- moveableBoxes (move pos) dir
+          return (pos : ls)
         _ ->
           if dir `elem` [L, R]
             then do
               let rightPos = move pos
-              maybeLs <- moveableBoxes (move rightPos) dir
-              case maybeLs of
-                Just ls -> return $ Just (pos : rightPos : ls)
-                _ -> return Nothing
+              ls <- moveableBoxes (move rightPos) dir
+              return (pos : rightPos : ls)
             else do
               let otherPos = if val == '[' then right pos else left pos
-
-              maybeLs1 <- moveableBoxes (move pos) dir
-              maybeLs2 <- moveableBoxes (move otherPos) dir
-              case (maybeLs1, maybeLs2) of
-                (Just ls1, Just ls2) -> return $ Just (pos : otherPos : ls1 ++ ls2)
-                _ -> return Nothing
+              ls1 <- moveableBoxes (move pos) dir
+              ls2 <- moveableBoxes (move otherPos) dir
+              return (pos : otherPos : ls1 ++ ls2)
 
 moveBoxes :: [GridPos] -> Direction -> RobotMover s ()
 moveBoxes moves dir = do
