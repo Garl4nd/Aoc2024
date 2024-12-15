@@ -95,9 +95,9 @@ moveableBoxes pos dir = do
         _ ->
           if dir `elem` [L, R]
             then do
-              let rightPos = move pos
-              ls <- moveableBoxes (move rightPos) dir
-              return (pos : rightPos : ls)
+              let otherPos = move pos
+              ls <- moveableBoxes (move otherPos) dir
+              return (pos : otherPos : ls)
             else do
               let otherPos = if val == '[' then right pos else left pos
               ls1 <- moveableBoxes (move pos) dir
