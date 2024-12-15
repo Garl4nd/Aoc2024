@@ -54,8 +54,8 @@ runAnimation (ar, directions, initPos) = runST $ do
 
 animate :: [Direction] -> RobotMover s ()
 animate [] = return ()
-animate (currentInstruction : remDirections) = do
-  moveRobotAndBoxes currentInstruction
+animate (currentDirection : remDirections) = do
+  moveRobotAndBoxes currentDirection
   animate remDirections
 
 moveRobotAndBoxes :: Direction -> RobotMover s ()
