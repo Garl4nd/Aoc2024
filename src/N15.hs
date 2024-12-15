@@ -1,5 +1,3 @@
-{-# LANGUAGE ScopedTypeVariables #-}
-
 module N15 (getSolutions15) where
 
 import Control.Monad (guard, unless)
@@ -60,7 +58,7 @@ animate (currentInstruction : remDirections) = do
   moveRobotAndBoxes currentInstruction
   animate remDirections
 
-moveRobotAndBoxes :: forall s. Direction -> RobotMover s ()
+moveRobotAndBoxes :: Direction -> RobotMover s ()
 moveRobotAndBoxes dir = do
   let move = moveDir dir
   (ar, currentPosRef) <- ask
