@@ -1,6 +1,6 @@
 module N15 (getSolutions15) where
-
-import Control.Monad (guard, unless)
+import Control.Arrow hiding (left, right) 
+import Control.Monad (guard, unless, (>=>), join)
 import Control.Monad.ST (ST, runST)
 import Control.Monad.Trans.Class (MonadTrans (lift))
 import Control.Monad.Trans.Maybe (MaybeT (runMaybeT), hoistMaybe)
@@ -139,12 +139,10 @@ gpsCoordinateSum symbol charGrid =
 solution1 = gpsCoordinateSum 'O' . runAnimation
 solution2 = gpsCoordinateSum '[' . runAnimation
 
+both = join (***)
 getSolutions15 :: String -> IO (Int, Int)
-getSolutions15 filename =
-  do
-    input <- readFile filename
-    let complicatedInput = complicateInput input
-    return (solution1 . parseFile $ input, solution2 . parseFile $ complicatedInput)
+getSolutions15 = readFile >=> ((id &&& complicateInput) >>> both (parseFile  >>> runAnimation) >>> (gpsCoordinateSum 'O' *** gpsCoordinateSum '[') >>> return)
+
 
 test :: String -> IO ()
 test inputFile = do
