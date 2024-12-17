@@ -109,7 +109,7 @@ runDijkstraST graph start ends =  extractFromST $ dijkstraLoop graph initState  
                             return DijkstraStateST {finalStatesST = S.empty, distanceMapST = stAr, nodeQueueST = H.singleton ( Dist 0, start), destsST = S.fromList ends } -- runDijkstraSTLow graph start ends
 
 solveWDijkstraST :: (Show node, LabeledGraph graph node) => graph -> node  -> [node] -> DistanceMap node
-solveWDijkstraST graph start ends = distanceMap $ runDijkstraST graph start ends
+solveWDijkstraST   = ((distanceMap.).) . runDijkstraST 
 
 solveAugmentedGraph :: ArrayGraph AugPos -> GridPos -> GridPos ->  Distance
 solveAugmentedGraph graph start end = let initStates = [(start, dir) | dir <- [H] ]
@@ -131,27 +131,24 @@ nodeMapToAugmentedGraph nodeMap  = A.listArray augBounds listVals where
     augCoords = [((y,x), dir) | y <- [ymin..ymax], x <- [xmin..xmax], dir <- [H,V]]
     listVals = [  genAugEdges augCoord bounds nodeMap | augCoord <- augCoords]
 
-projectDistMap :: DistanceMap AugPos -> DistanceMap GridPos
-projectDistMap distMap = let 
-    ((posMin, _), (posMax, _)) = A.bounds distMap 
-    in A.array (posMin, posMax) [(pos, min (distMap ! (pos, H)) (distMap ! (pos, V)) ) | pos <- A.range (posMin, posMax)]
-    --projectedVals = map (\((pos, dir), val) -> (pos, min (distMap ! )) )
 
 makeGraph :: String -> ArrayGraph AugPos 
 makeGraph = nodeMapToAugmentedGraph . strToCharGrid
 
 getCompleteDistMap :: CharGrid -> DistanceMap AugPos 
 getCompleteDistMap ar =  let     
-    pois = [(pos,dir) | (pos, val) <- A.assocs ar, val /= '#', dir <- [H,V]]
+    -- pois = [(pos,dir) | (pos, val) <- A.assocs ar, val /= '#', dir <- [H,V]]
+    pois = [((yMin +1, xMax -1),H), ((yMin +1, xMax -1),V)]
     graph = nodeMapToAugmentedGraph ar 
     (((yMin, xMin),_), ((yMax, xMax),_)) = A.bounds graph 
     in solveWDijkstraST graph ((yMax-1, xMin+1), H) pois  
+
 type Path = [GridPos]
 trace :: Show a => String -> a -> a
 trace = traceWInfo False
 
 bestPaths :: CharGrid ->  AugPos -> GridPos -> [Path]
-bestPaths ar start endPos = go augEnd where  
+bestPaths grid start endPos = go augEnd where  
     go :: AugPos -> [Path]
     go pos
             | pos == start = [[fst pos]]
@@ -159,9 +156,9 @@ bestPaths ar start endPos = go augEnd where
                 neighbors = trace "neighbors" $ reversedGraph ! (trace "current pos" pos)
                 departureNodes = trace "source nodes" $ [node | (node, val) <- neighbors, addDist (trace "dists" $ distMap ! node) val == trace "currentDist" (distMap ! pos) ]
                 in [fst pos:  path |  path <- concatMap go  departureNodes  ]
-    graph = nodeMapToAugmentedGraph ar
+    graph = nodeMapToAugmentedGraph grid
     reversedGraph = graph -- for directional graphs
-    distMap = getCompleteDistMap ar     
+    distMap = distanceMap $ runDijkstraST graph start [(endPos,H), (endPos, V)] -- getCompleteDistMap ar     
     augEnd = let bestDir = if distMap ! (endPos,H) < distMap ! (endPos,V) then H else V in (endPos, bestDir)
     
             
@@ -171,7 +168,6 @@ solution1 file = let graph =  makeGraph file -- <$> readFile "inputs\\16_test.tx
                  in  solveAugmentedGraph graph (yMax-1, xMin+1) (yMin+1, xMax -1)
 
 solution2:: String -> Int
-solution2 file =  let
-     ar = strToCharGrid file 
-     ((yMin, xMin), (yMax, xMax)) = A.bounds ar
-     in length . nub  $ concat (bestPaths ar ((yMax -1, xMin +1), H)  ((yMin+1, xMax -1)))
+solution2 file =  length .nub  . concat $ bestPaths grid ((yMax -1, xMin +1), H)  (yMin+1, xMax -1) where
+     grid = strToCharGrid file 
+     ((yMin, xMin), (yMax, xMax)) = A.bounds grid
