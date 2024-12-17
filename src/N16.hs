@@ -6,27 +6,24 @@
 {-# LANGUAGE Rank2Types #-}
 
 module N16
-    () where
-
+    (getSolutions16) where
+import Control.Arrow
+import Control.Monad ((>=>))
 import  qualified Data.Array.Unboxed as A
-import Data.Array.Unboxed ((!), (//))
+import Data.Array.Unboxed ((!))
 import qualified Data.Heap as H
 import qualified Data.Set as S
-import Useful (strToCharGrid, charGridToStr, CharGrid, GridPos )
+import Useful (strToCharGrid, CharGrid, GridPos )
 import GHC.List (foldl')
 import Control.Monad.ST 
-
-import Data.Array.ST (runSTArray, newArray, writeArray, readArray, thaw, STArray)--, unsafeThaw)
-
+import Data.Array.ST (runSTArray, newArray, writeArray, readArray, STArray)--, unsafeThaw)
 import Control.Monad (forM_, forM)
-import Debugging (traceWInfo)
 import Data.List (nub)
 
 
-data Dir = L | U | D | R deriving (Show, Eq, Ord, A.Ix)
-data RedDir = H | V deriving (Show, Eq, Ord, A.Ix)
+data Orientation = H | V deriving (Show, Eq, Ord, A.Ix)
 
-type AugPos = (GridPos, RedDir) 
+type AugPos = (GridPos, Orientation) 
 type NumType = Int
 type Edges node  = [(node, NumType)]
 type ArrayGraph node = A.Array node (Edges node)
@@ -35,6 +32,9 @@ type DistanceMapST node s = STArray s node Distance
 
 data Distance =  Dist NumType | Inf deriving (Eq, Show)
 --type Distance = NumType
+distanceToInt :: Distance -> Int 
+distanceToInt Inf = 1000000000
+distanceToInt (Dist n) = n 
 
 class A.Ix node =>  LabeledGraph graph node  where
     getEdges ::graph -> node -> [(node, NumType)]
@@ -112,62 +112,55 @@ solveWDijkstraST :: (Show node, LabeledGraph graph node) => graph -> node  -> [n
 solveWDijkstraST   = ((distanceMap.).) . runDijkstraST 
 
 solveAugmentedGraph :: ArrayGraph AugPos -> GridPos -> GridPos ->  Distance
-solveAugmentedGraph graph start end = let initStates = [(start, dir) | dir <- [H] ]
-                                          endStates =  [(end, dir) | dir <- [H, V]]                                  
+solveAugmentedGraph graph start end = let initStates = [(start, ori) | ori <- [H] ]
+                                          endStates =  [(end, ori) | ori <- [H, V]]                                  
                                           in minimum $ concat [
                                           let distMap =  solveWDijkstraST graph initState endStates in map (distMap !) endStates | initState <- initStates]
 
 genAugEdges :: AugPos ->  (GridPos, GridPos) -> CharGrid ->  Edges AugPos
-genAugEdges augpos@(pos, dir) ((ymin, xmin), (ymax, xmax)) nodeAr  = if nodeAr ! pos == '#' then [] else edges where          
+genAugEdges augpos@(pos, ori) ((ymin, xmin), (ymax, xmax)) nodeAr  = if nodeAr ! pos == '#' then [] else edges where          
      neighbors ((y,x), H) = [((y,x+1),H),((y,x-1),H), ((y,x),V)]
      neighbors ((y,x), V) = [((y-1,x), V),((y+1,x),V), ((y,x),H)]
-     edges = [(neighbor, if neiDir == dir then 1 else 1000)| neighbor@(neiPos, neiDir) <- neighbors augpos, inBounds neiPos, nodeAr ! neiPos /= '#'     ]
+     edges = [(neighbor, if neiDir == ori then 1 else 1000)| neighbor@(neiPos, neiDir) <- neighbors augpos, inBounds neiPos, nodeAr ! neiPos /= '#'     ]
      inBounds (y,x) = ymin <= y && y <= ymax && xmin <= x && x <= xmax                                        
 
 nodeMapToAugmentedGraph :: CharGrid ->  ArrayGraph AugPos
 nodeMapToAugmentedGraph nodeMap  = A.listArray augBounds listVals where
     bounds@((ymin, xmin), (ymax, xmax)) = A.bounds nodeMap
     augBounds = (((ymin, xmin), H), ((ymax, xmax), V))    
-    augCoords = [((y,x), dir) | y <- [ymin..ymax], x <- [xmin..xmax], dir <- [H,V]]
+    augCoords = [((y,x), ori) | y <- [ymin..ymax], x <- [xmin..xmax], ori <- [H,V]]
     listVals = [  genAugEdges augCoord bounds nodeMap | augCoord <- augCoords]
 
-
-makeGraph :: String -> ArrayGraph AugPos 
-makeGraph = nodeMapToAugmentedGraph . strToCharGrid
-
-getCompleteDistMap :: CharGrid -> DistanceMap AugPos 
-getCompleteDistMap ar =  let     
-    -- pois = [(pos,dir) | (pos, val) <- A.assocs ar, val /= '#', dir <- [H,V]]
-    pois = [((yMin +1, xMax -1),H), ((yMin +1, xMax -1),V)]
-    graph = nodeMapToAugmentedGraph ar 
-    (((yMin, xMin),_), ((yMax, xMax),_)) = A.bounds graph 
-    in solveWDijkstraST graph ((yMax-1, xMin+1), H) pois  
-
 type Path = [GridPos]
-trace :: Show a => String -> a -> a
-trace = traceWInfo False
+
 
 bestPaths :: CharGrid ->  AugPos -> GridPos -> [Path]
 bestPaths grid start endPos = go augEnd where  
     go :: AugPos -> [Path]
-    go pos
-            | pos == start = [[fst pos]]
+    go augPos@(pos, _)
+            | augPos == start = [[pos]]
             | otherwise = let 
-                neighbors = trace "neighbors" $ reversedGraph ! (trace "current pos" pos)
-                departureNodes = trace "source nodes" $ [node | (node, val) <- neighbors, addDist (trace "dists" $ distMap ! node) val == trace "currentDist" (distMap ! pos) ]
-                in [fst pos:  path |  path <- concatMap go  departureNodes  ]
+                neighbors =  reversedGraph !  augPos
+                departureNodes = [node | (node, val) <- neighbors, addDist (distMap ! node) val == distMap ! augPos ]
+                in [pos:  path |  path <- concatMap go  departureNodes  ]
     graph = nodeMapToAugmentedGraph grid
-    reversedGraph = graph -- for directional graphs
+    reversedGraph = graph -- actually reverse for directed graphs
     distMap = distanceMap $ runDijkstraST graph start [(endPos,H), (endPos, V)] -- getCompleteDistMap ar     
     augEnd = let bestDir = if distMap ! (endPos,H) < distMap ! (endPos,V) then H else V in (endPos, bestDir)
     
             
-solution1:: String -> Distance 
-solution1 file = let graph =  makeGraph file -- <$> readFile "inputs\\16_test.txt"
+solution1:: CharGrid -> Int
+solution1 grid = let graph =  nodeMapToAugmentedGraph grid -- <$> readFile "inputs\\16_test.txt"
                      (((yMin, xMin),_), ((yMax, xMax),_)) = A.bounds graph 
-                 in  solveAugmentedGraph graph (yMax-1, xMin+1) (yMin+1, xMax -1)
+                     start = (yMax-1, xMin+1)
+                     end = (yMin+1, xMax -1)
+                 in  distanceToInt $ solveAugmentedGraph  graph start end
 
-solution2:: String -> Int
-solution2 file =  length .nub  . concat $ bestPaths grid ((yMax -1, xMin +1), H)  (yMin+1, xMax -1) where
-     grid = strToCharGrid file 
-     ((yMin, xMin), (yMax, xMax)) = A.bounds grid
+solution2:: CharGrid -> Int
+solution2 grid =  length .nub  . concat $ bestPaths grid (start,H) end where    
+    start = (yMax-1, xMin+1)
+    end = (yMin+1, xMax -1) 
+    ((yMin, xMin), (yMax, xMax)) = A.bounds grid
+
+getSolutions16 :: String -> IO (Int, Int)
+getSolutions16 = readFile >=> (strToCharGrid >>> (solution1 &&& solution2) >>> return)
