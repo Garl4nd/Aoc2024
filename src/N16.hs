@@ -17,8 +17,10 @@ import GHC.List (foldl')
 import Control.Monad.ST 
 
 import Data.Array.ST (runSTArray, newArray, writeArray, readArray, thaw, STArray)--, unsafeThaw)
-import Debug.Trace 
+
 import Control.Monad (forM_, forM)
+import Debugging (traceWInfo)
+import Data.List (nub)
 
 
 data Dir = L | U | D | R deriving (Show, Eq, Ord, A.Ix)
@@ -71,7 +73,7 @@ data DijkstraStateST node s = DijkstraStateST    {
 dijkstraLoop :: forall node graph s. (Show node, LabeledGraph graph node) => graph -> ST s (DijkstraStateST node s) ->  ST s (DijkstraStateST node s)
 dijkstraLoop graph dsST = do
     ds@DijkstraStateST {finalStatesST = fs, distanceMapST = dm, nodeQueueST = nq, destsST = dsts}  <- dsST    
-    if S.null $ dsts  then 
+    if S.null dsts  then 
         dsST -- return ds
     else
         case H.view nq of 
@@ -88,25 +90,7 @@ dijkstraLoop graph dsST = do
                     forM_ updateList $ \(pos, newDist) -> writeArray dm pos newDist                    
                     dijkstraLoop graph  (return $ ds {finalStatesST = S.insert  minNode fs, distanceMapST = dm, nodeQueueST = updatedQueue, destsST = S.delete minNode dsts } )
 
-aStarLoop :: forall node graph s. (Show node, LabeledGraph graph node) => graph -> ST s (DijkstraStateST node s) ->  ST s (DijkstraStateST node s)
-aStarLoop graph dsST = do
-    ds@DijkstraStateST {finalStatesST = fs, distanceMapST = dm, nodeQueueST = nq, destsST = dsts}  <- dsST    
-    if S.null $ dsts  then 
-        dsST -- return ds
-    else
-        case H.view nq of 
-            Nothing ->  dsST -- return ds
-            Just (distNode, nq')  ->   processNode distNode where
-                processNode :: (Distance, node) ->  ST s (DijkstraStateST node s)
-                processNode (_, minNode) 
-                    |  S.member minNode fs =  dijkstraLoop graph (return $ ds {nodeQueueST = nq'}  )                                 
-                processNode (dist, minNode) = do                                                             
-                    let candidateList = [ (neighbor, newDist) | (neighbor, edgeVal) <- getEdges graph  minNode, S.notMember neighbor fs,  let newDist = addDist dist  edgeVal]
-                    currentDists <- forM candidateList (\(neigh, _) -> readArray dm neigh)
-                    let updateList = [ (neighbor, newDist) | ((neighbor, newDist), currentDist) <- zip candidateList currentDists, newDist <= currentDist  ] 
-                        updatedQueue = foldl' (\q (node, dist')    ->  H.insert (dist', node) q  ) nq' updateList             
-                    forM_ updateList $ \(pos, newDist) -> writeArray dm pos newDist                    
-                    dijkstraLoop graph  (return $ ds {finalStatesST = S.insert  minNode fs, distanceMapST = dm, nodeQueueST = updatedQueue, destsST = S.delete minNode dsts } )
+
 
 runDijkstraST ::  forall graph node. (Show node, LabeledGraph graph node) => graph -> node -> [node]  -> DijkstraState node
 runDijkstraST graph start ends =  extractFromST $ dijkstraLoop graph initState  where
@@ -134,9 +118,10 @@ solveAugmentedGraph graph start end = let initStates = [(start, dir) | dir <- [H
                                           let distMap =  solveWDijkstraST graph initState endStates in map (distMap !) endStates | initState <- initStates]
 
 genAugEdges :: AugPos ->  (GridPos, GridPos) -> CharGrid ->  Edges AugPos
-genAugEdges (pos, dir) ((ymin, xmin), (ymax, xmax)) nodeAr  = if nodeAr ! pos == '#' then [] else edges where          
-     neighbors (y,x) = [((y+1, x), V), ((y-1, x), V), ((y, x+1), H), ((y, x-1), H)]
-     edges = [(neighbor, if neiDir == dir then 1 else 1001)| neighbor@(neiPos, neiDir) <- neighbors pos, inBounds neiPos, nodeAr ! neiPos /= '#'     ]
+genAugEdges augpos@(pos, dir) ((ymin, xmin), (ymax, xmax)) nodeAr  = if nodeAr ! pos == '#' then [] else edges where          
+     neighbors ((y,x), H) = [((y,x+1),H),((y,x-1),H), ((y,x),V)]
+     neighbors ((y,x), V) = [((y-1,x), V),((y+1,x),V), ((y,x),H)]
+     edges = [(neighbor, if neiDir == dir then 1 else 1000)| neighbor@(neiPos, neiDir) <- neighbors augpos, inBounds neiPos, nodeAr ! neiPos /= '#'     ]
      inBounds (y,x) = ymin <= y && y <= ymax && xmin <= x && x <= xmax                                        
 
 nodeMapToAugmentedGraph :: CharGrid ->  ArrayGraph AugPos
@@ -155,7 +140,38 @@ projectDistMap distMap = let
 makeGraph :: String -> ArrayGraph AugPos 
 makeGraph = nodeMapToAugmentedGraph . strToCharGrid
 
+getCompleteDistMap :: CharGrid -> DistanceMap AugPos 
+getCompleteDistMap ar =  let     
+    pois = [(pos,dir) | (pos, val) <- A.assocs ar, val /= '#', dir <- [H,V]]
+    graph = nodeMapToAugmentedGraph ar 
+    (((yMin, xMin),_), ((yMax, xMax),_)) = A.bounds graph 
+    in solveWDijkstraST graph ((yMax-1, xMin+1), H) pois  
+type Path = [GridPos]
+trace :: Show a => String -> a -> a
+trace = traceWInfo False
+
+bestPaths :: CharGrid ->  AugPos -> GridPos -> [Path]
+bestPaths ar start endPos = go augEnd where  
+    go :: AugPos -> [Path]
+    go pos
+            | pos == start = [[fst pos]]
+            | otherwise = let 
+                neighbors = trace "neighbors" $ reversedGraph ! (trace "current pos" pos)
+                departureNodes = trace "source nodes" $ [node | (node, val) <- neighbors, addDist (trace "dists" $ distMap ! node) val == trace "currentDist" (distMap ! pos) ]
+                in [fst pos:  path |  path <- concatMap go  departureNodes  ]
+    graph = nodeMapToAugmentedGraph ar
+    reversedGraph = graph -- for directional graphs
+    distMap = getCompleteDistMap ar     
+    augEnd = let bestDir = if distMap ! (endPos,H) < distMap ! (endPos,V) then H else V in (endPos, bestDir)
+    
+            
 solution1:: String -> Distance 
 solution1 file = let graph =  makeGraph file -- <$> readFile "inputs\\16_test.txt"
                      (((yMin, xMin),_), ((yMax, xMax),_)) = A.bounds graph 
-                 in  solveAugmentedGraph graph (yMin+1, xMax -1) (yMax-1, xMin+1)
+                 in  solveAugmentedGraph graph (yMax-1, xMin+1) (yMin+1, xMax -1)
+
+solution2:: String -> Int
+solution2 file =  let
+     ar = strToCharGrid file 
+     ((yMin, xMin), (yMax, xMax)) = A.bounds ar
+     in length . nub  $ concat (bestPaths ar ((yMax -1, xMin +1), H)  ((yMin+1, xMax -1)))
