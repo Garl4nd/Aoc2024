@@ -12,7 +12,7 @@ import  qualified Data.Array.Unboxed as A
 import Data.Array.Unboxed ((!), (//))
 import qualified Data.Heap as H
 import qualified Data.Set as S
-import Useful (strToCharGrid, CharGrid)
+import Useful (strToCharGrid, charGridToStr, CharGrid, GridPos )
 import GHC.List (foldl')
 import Control.Monad.ST 
 
@@ -21,11 +21,10 @@ import Debug.Trace
 import Control.Monad (forM_, forM)
 
 
-type Pos2D = (Int, Int)
 data Dir = L | U | D | R deriving (Show, Eq, Ord, A.Ix)
 data RedDir = H | V deriving (Show, Eq, Ord, A.Ix)
 
-type AugPos = (Pos2D, RedDir) 
+type AugPos = (GridPos, RedDir) 
 type NumType = Int
 type Edges node  = [(node, NumType)]
 type ArrayGraph node = A.Array node (Edges node)
@@ -128,24 +127,35 @@ runDijkstraST graph start ends =  extractFromST $ dijkstraLoop graph initState  
 solveWDijkstraST :: (Show node, LabeledGraph graph node) => graph -> node  -> [node] -> DistanceMap node
 solveWDijkstraST graph start ends = distanceMap $ runDijkstraST graph start ends
 
-solveAugmentedGraph :: ArrayGraph AugPos -> Pos2D -> Pos2D ->  Distance
-solveAugmentedGraph graph start end = let initStates = [(start, dir) | dir <- [H, V] ]
+solveAugmentedGraph :: ArrayGraph AugPos -> GridPos -> GridPos ->  Distance
+solveAugmentedGraph graph start end = let initStates = [(start, dir) | dir <- [H] ]
                                           endStates =  [(end, dir) | dir <- [H, V]]                                  
                                           in minimum $ concat [
                                           let distMap =  solveWDijkstraST graph initState endStates in map (distMap !) endStates | initState <- initStates]
 
-genAugEdges :: AugPos ->  (Pos2D, Pos2D) -> CharGrid ->  Edges AugPos
-genAugEdges (pos, dir) ((ymin, xmin), (ymax, xmax)) nodeAr  = edges where          
-     neighbors (y,x) = [((y+a, x+b), neiDir) | a<- [-1,1], b<- [-1,1], neiDir <- [H,V]]
-     edges = [(neighbor, if neiDir == dir then 1 else 1000)| neighbor@(neiPos, neiDir) <- neighbors pos, inBounds neiPos, nodeAr ! neiPos /= '#'     ]
+genAugEdges :: AugPos ->  (GridPos, GridPos) -> CharGrid ->  Edges AugPos
+genAugEdges (pos, dir) ((ymin, xmin), (ymax, xmax)) nodeAr  = if nodeAr ! pos == '#' then [] else edges where          
+     neighbors (y,x) = [((y+1, x), V), ((y-1, x), V), ((y, x+1), H), ((y, x-1), H)]
+     edges = [(neighbor, if neiDir == dir then 1 else 1001)| neighbor@(neiPos, neiDir) <- neighbors pos, inBounds neiPos, nodeAr ! neiPos /= '#'     ]
      inBounds (y,x) = ymin <= y && y <= ymax && xmin <= x && x <= xmax                                        
 
 nodeMapToAugmentedGraph :: CharGrid ->  ArrayGraph AugPos
 nodeMapToAugmentedGraph nodeMap  = A.listArray augBounds listVals where
     bounds@((ymin, xmin), (ymax, xmax)) = A.bounds nodeMap
     augBounds = (((ymin, xmin), H), ((ymax, xmax), V))    
-    augCoords = [((y,x), dir) | x <- [xmin..xmax], y <- [ymin..ymax], dir <- [H,V]]
+    augCoords = [((y,x), dir) | y <- [ymin..ymax], x <- [xmin..xmax], dir <- [H,V]]
     listVals = [  genAugEdges augCoord bounds nodeMap | augCoord <- augCoords]
+
+projectDistMap :: DistanceMap AugPos -> DistanceMap GridPos
+projectDistMap distMap = let 
+    ((posMin, _), (posMax, _)) = A.bounds distMap 
+    in A.array (posMin, posMax) [(pos, min (distMap ! (pos, H)) (distMap ! (pos, V)) ) | pos <- A.range (posMin, posMax)]
+    --projectedVals = map (\((pos, dir), val) -> (pos, min (distMap ! )) )
 
 makeGraph :: String -> ArrayGraph AugPos 
 makeGraph = nodeMapToAugmentedGraph . strToCharGrid
+
+solution1:: String -> Distance 
+solution1 file = let graph =  makeGraph file -- <$> readFile "inputs\\16_test.txt"
+                     (((yMin, xMin),_), ((yMax, xMax),_)) = A.bounds graph 
+                 in  solveAugmentedGraph graph (yMin+1, xMax -1) (yMax-1, xMin+1)

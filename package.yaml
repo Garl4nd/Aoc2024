@@ -40,9 +40,9 @@ dependencies:
 - exceptions
 - http-conduit
 - directory
-- hmatrix
-- Chart-diagrams
-- gnuplot 
+#- hmatrix
+#- Chart-diagrams
+#- gnuplot 
 #- regex-pcre-builtin
 
 default-extensions:
