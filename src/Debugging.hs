@@ -8,6 +8,7 @@ traceWInfo active infoStr x =
     then trace ("\n** " ++ infoStr ++ " " ++ show x ++ "**\n") x
     else x
 
+
 traceWInfo2 :: (Show a) => Bool -> [Char] -> a -> b -> b
 traceWInfo2 active infoStr x passThrough =
   if active
