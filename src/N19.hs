@@ -3,7 +3,7 @@
 module N18 (getSolutions18) where
 import Control.Monad ((>=>))
 import Control.Arrow 
-import GraphUtils (runDijkstraST, ArrayGraph, Distance (Dist, Inf), distanceToInt, distanceMap, DijkstraState (distanceMap), DistanceMap, bestPaths)
+import GraphUtils (runDijkstraST, ArrayGraph, Distance (Dist), distanceToInt, distanceMap, DijkstraState (distanceMap), DistanceMap, bestPaths)
 import Useful (CharGrid, wordsWhen, neighbors4, GridPos, saveGridToFile)
 import qualified Data.Array as A
 import Data.Array ((!), (//))
@@ -53,7 +53,10 @@ binarySearch p ls@(s:rest)
 solution2 :: [GridPos] -> String
 solution2  coordsList =  let (y,x) = coordsList !! n in show x<>","<> show y where   
   n = fromJust .  binarySearch (not . isSolvable) $ [0..length coordsList-1]
-  isSolvable n = solveForN n coordsList /= Inf     
+  isSolvable n = case solveForN n coordsList of 
+    Dist _ -> True 
+    _ -> False 
+
 -- >>> solution2 . parseFile <$> readFile "inputs/18.txt"
 -- <stderr>: hPutChar: invalid argument (cannot encode character '\8216')
 

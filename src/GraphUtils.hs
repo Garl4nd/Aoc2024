@@ -5,7 +5,7 @@
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE Rank2Types #-}
 
-module GraphUtils (runDijkstraST, addDist, distanceToInt, distanceMap, bestPaths, LabeledGraph, ArrayGraph, Distance (Dist), Num, DijkstraState, DistanceMap) where 
+module GraphUtils (runDijkstraST, addDist, distanceToInt, distanceMap, bestPaths, LabeledGraph, ArrayGraph, Distance (Dist, Inf), Num, DijkstraState, DistanceMap) where 
 
 import qualified Data.Array as A 
 import Data.Array ((!))
