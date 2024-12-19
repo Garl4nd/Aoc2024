@@ -26,7 +26,7 @@ mainLoop = do
     mainLoop
 
 -- solver :: Int -> Maybe (IO (Int, Int))
-maybeSolver :: Int -> Maybe (String -> IO (Int, Int))
+maybeSolver :: Show a => Int -> Maybe (String -> IO a )
 maybeSolver day = case day of
   --  solver <- maybeSolver
   -- Just $ do runFetchProblemDataToFiles 2024 day inputFile ("descriptions/" <> show day <> ".html") >> solver inputFile

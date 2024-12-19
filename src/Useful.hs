@@ -18,6 +18,7 @@ module Useful (
   charGridToStr,
   saveGridToFile,
   appendGridToFile,
+  neighbors4, neighbors8, neighborsDiag,
   CharGrid,
   CharGridU,
   GridPos,
@@ -25,7 +26,7 @@ module Useful (
 
 import qualified Data.Array.Unboxed as A
 import Data.Function (on)
-import Data.List (findIndex, groupBy, inits, intercalate, isPrefixOf, sortOn, tails)
+import Data.List (findIndex, groupBy, intercalate, isPrefixOf, sortOn, tails)
 import Data.Tuple (swap)
 
 type GridPos = (Int, Int)
@@ -115,6 +116,17 @@ saveGridToFile filename charGrid =
     content = intercalate "\n" $ charGridToStr charGrid
    in
     writeFile filename content
+
+neighbors4 :: GridPos -> [GridPos]
+neighbors4 (y,x) = [(y+a, x+b) | a<- [-1..1], b<- [-1..1], a==0 && b /=0 || a /=0 && b ==0]
+
+neighbors8 :: GridPos -> [GridPos]
+neighbors8 (y,x) = [(y+a, x+b) | a<- [-1..1], b<- [-1..1], not (a==0 && b ==0)]
+
+neighborsDiag :: GridPos -> [GridPos]
+neighborsDiag (y,x) = [(y+a ,x+b) | a<- [-1,1], b <- [-1,1]] 
+
+
 appendGridToFile :: (A.IArray a Char) => String -> a GridPos Char -> IO ()
 appendGridToFile filename charGrid =
   let
