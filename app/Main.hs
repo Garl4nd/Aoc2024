@@ -5,9 +5,11 @@ module Main (
 import Control.Monad (unless, (>=>))
 import InputDownloader (runFetchProblemDataToFiles)
 import Lib
+import Lib (getSolutions20)
 import System.TimeIt (timeItNamed)
 import Text.Read (readMaybe)
 import Useful (splitOn)
+
 mainLoop :: IO ()
 mainLoop = do
   putStrLn "Which problem do you want to solve?"
@@ -26,7 +28,7 @@ mainLoop = do
     mainLoop
 
 -- solver :: Int -> Maybe (IO (Int, Int))
-maybeSolver ::  Int -> Maybe (String -> IO (Int,Int))
+maybeSolver :: Int -> Maybe (String -> IO (Int, Int))
 maybeSolver day = case day of
   --  solver <- maybeSolver
   -- Just $ do runFetchProblemDataToFiles 2024 day inputFile ("descriptions/" <> show day <> ".html") >> solver inputFile
@@ -45,20 +47,16 @@ maybeSolver day = case day of
   11 -> Just getSolutions11
   12 -> Just getSolutions12
   13 -> Just getSolutions13
-  14 -> Just $ getSolutions14
-  15 -> Just $ getSolutions15
-  16 -> Just $ getSolutions16
-  17 -> Just $ getSolutions17
-  18 -> Just $ \filename -> do 
-    (a,b) <- getSolutions18  filename
-    let [bx, by] = splitOn ',' b  
-    return (a, read $ bx<>by)
-
-  -- 172 -> Just $ getSolutions17Old "inputs/17.txt"
-  -- 173 -> Just $ getSolutions17Astar "inputs/17.txt"
-  -- 18 -> Just $ getSolutions18 "inputs/18.txt"
-  -- 19 -> Just $ getSolutions19 "inputs/19.txt"
-  -- 20 -> Just $ getSolutions20 "inputs/20.txt"
+  14 -> Just getSolutions14
+  15 -> Just getSolutions15
+  16 -> Just getSolutions16
+  17 -> Just getSolutions17
+  18 -> Just $ \filename -> do
+    (a, b) <- getSolutions18 filename
+    let [bx, by] = splitOn ',' b
+    return (a, read $ bx <> by)
+  19 -> Just getSolutions19
+  20 -> Just getSolutions20
   -- 21 -> Just $ getSolutions21 "inputs/21.txt"
   -- 22 -> Just $ getSolutions22 "inputs/22.txt"
   -- 23 -> Just $ getSolutions23 "inputs/23.txt"
