@@ -27,13 +27,8 @@ mainLoop = do
       Nothing -> putStrLn "Not a number" --       return True
     mainLoop
 
--- solver :: Int -> Maybe (IO (Int, Int))
 maybeSolver :: Int -> Maybe (String -> IO (Int, Int))
 maybeSolver day = case day of
-  --  solver <- maybeSolver
-  -- Just $ do runFetchProblemDataToFiles 2024 day inputFile ("descriptions/" <> show day <> ".html") >> solver inputFile
-  -- where
-  -- maybeSolver = case day of
   1 -> Just getSolutions1
   2 -> Just getSolutions2
   3 -> Just getSolutions3

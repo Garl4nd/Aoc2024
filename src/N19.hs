@@ -37,6 +37,12 @@ insertWith f acc ks = go acc ks
 insert :: (Ord k) => [k] -> Trie k [k] -> Trie k [k]
 insert = insertWith (\accum key -> accum ++ [key]) []
 
+insertWord :: (Ord k) => [k] -> v -> Trie k v -> Trie k v
+insertWord word translation = insertWith const translation word
+
+fromAssocList :: (Ord k) => [([k], v)] -> Trie k v
+fromAssocList = foldr (\(word, trans) trie -> insertWord word trans trie) emptyTrie
+
 fromList :: (Ord k) => [[k]] -> Trie k [k]
 fromList ks = foldr insert emptyTrie ks
 
