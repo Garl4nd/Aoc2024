@@ -1,84 +1,82 @@
 {-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
-module N18 (getSolutions18) where
+module N19 (getSolutions19) where
+
+import Control.Arrow
 import Control.Monad ((>=>))
-import Control.Arrow 
-import GraphUtils (runDijkstraST, ArrayGraph, Distance (Dist), distanceToInt, distanceMap, DijkstraState (distanceMap), DistanceMap, bestPaths)
-import Useful (CharGrid, wordsWhen, neighbors4, GridPos, saveGridToFile)
-import qualified Data.Array as A
-import Data.Array ((!), (//))
-import Data.Maybe (fromJust)
-import Data.Tuple (swap)
+import Data.Function.Memoize (Memoizable, memoFix)
+import qualified Data.Map as M
+import Data.Maybe (maybeToList)
+import Useful (countIf, readStrList, splitBySubstr, trimSpace)
 
-parseFile :: String -> [GridPos]
-parseFile file = coordsList where
-  coordsList = map parseCoords . lines $ file   
-  parseCoords  line = let [x,y] = map read . wordsWhen (==',')  $ line in (y,x)
+type TrieMap k v = M.Map k (Trie k v)
 
-dims :: (Int, Int)
-dims = (70,70)
+data Trie k v = Node {val :: Maybe v, trieMap :: (TrieMap k v)} deriving (Show)
 
-makeGrid :: Int -> [GridPos] ->  CharGrid 
-makeGrid n coordsList  =  A.accumArray (const id) '.' ((0, 0), dims) [(coords, '#') | coords <- take (n +1) coordsList]
+parseInput :: String -> ([String], [String])
+parseInput file =
+  let [p1, p2] = splitBySubstr "\n\n" file
+   in (trimSpace <$> splitBySubstr "," p1, lines p2)
+emptyTrie :: Trie k v
+emptyTrie = Node Nothing M.empty
 
+insertWith :: forall k v. (Ord k) => (v -> k -> v) -> v -> [k] -> Trie k v -> Trie k v
+insertWith f acc [] = id
+insertWith f acc ks = go acc ks
+ where
+  go :: v -> [k] -> Trie k v -> Trie k v
+  go accum [] node = node{val = Just accum}
+  go accum (key : rest) node@Node{trieMap} = case M.lookup key trieMap of
+    Just trie -> node{trieMap = modifiedMap}
+     where
+      modifiedMap = M.insert key modifiedTrie trieMap
+      modifiedTrie = go (accum `f` key) rest trie
+    Nothing -> node{trieMap = M.insert key (go (accum `f` key) rest emptyTrie) trieMap}
 
-makeGraph :: CharGrid -> ArrayGraph GridPos
-makeGraph charGrid = A.array bounds edgeAssocs where 
-  bounds = A.bounds charGrid 
-  edgeAssocs = map makeEdges $ A.indices charGrid
-  makeEdges pos =  (pos, if not (valid pos) then [] else [ (nei,1) | nei <- neighbors4 pos, valid nei]) 
-  valid pos' = A.inRange bounds pos' && charGrid ! pos' /= '#'
+insert :: (Ord k) => [k] -> Trie k [k] -> Trie k [k]
+insert = insertWith (\accum key -> accum ++ [key]) []
 
-type Path = [GridPos]
+fromList :: (Ord k) => [[k]] -> Trie k [k]
+fromList ks = foldr insert emptyTrie ks
 
+fromListWith :: (Ord k) => (v -> k -> v) -> v -> [[k]] -> Trie k v
+fromListWith f acc ks = foldr (insertWith f acc) emptyTrie ks
 
-solveForN :: Int -> [GridPos]  -> Distance
-solveForN n coordsList =  distMap ! dims where 
-  distMap :: A.Array GridPos Distance 
-  distMap = distanceMap $   runDijkstraST graph (0,0) [dims]
-  graph = makeGraph . makeGrid n $  coordsList 
+toList :: forall k v. (Ord k) => Trie k v -> [v]
+toList Node{val, trieMap} = maybeToList val ++ (concatMap toList $ M.elems trieMap)
 
-solution1 :: [GridPos] -> Int 
-solution1  =  distanceToInt . solveForN 1024 
+type Memo f = f -> f
+allPrefixSufixes :: (Ord k) => Trie k v -> [k] -> [(v, [k])]
+allPrefixSufixes _ [] = []
+allPrefixSufixes Node{trieMap} (key : rest) =
+  case M.lookup key trieMap of
+    Just trie@Node{val} -> currentResult ++ allPrefixSufixes trie rest
+     where
+      currentResult = case val of
+        Just prefix -> [(prefix, rest)]
+        _ -> []
+    Nothing -> []
 
-binarySearch :: Show a => (a->Bool) -> [a] -> Maybe a 
-binarySearch _ [] = Nothing
-binarySearch p [x] = if p x then Just x else Nothing
-binarySearch p ls@(s:rest)
-  | p s = Just s  
-  | otherwise = if p  mid then binarySearch p (left++[mid])  else binarySearch p (mid:right) where
-     nHalf = length  ls `div` 2 -1 
-     (left, mid:right) =  splitAt nHalf rest 
+formable :: forall k v. (Ord k, Memoizable k) => Trie k v -> [k] -> Bool
+formable trie = memoFix formableM
+ where
+  formableM :: Memo ([k] -> Bool)
+  formableM _ [] = True
+  formableM formableM word = any formableM [sufix | (_, sufix) <- allPrefixSufixes trie word]
 
-solution2 :: [GridPos] -> String
-solution2  coordsList =  let (y,x) = coordsList !! n in show x<>","<> show y where   
-  n = fromJust .  binarySearch (not . isSolvable) $ [0..length coordsList-1]
-  isSolvable n = case solveForN n coordsList of 
-    Dist _ -> True 
-    _ -> False 
+numOfDesigns :: forall k v. (Ord k, Memoizable k) => Trie k v -> [k] -> Int
+numOfDesigns trie = memoFix countM
+ where
+  countM :: Memo ([k] -> Int)
+  countM _ [] = 1
+  countM countM word = sum $ countM <$> [sufix | (_, sufix) <- allPrefixSufixes trie word]
 
--- >>> solution2 . parseFile <$> readFile "inputs/18.txt"
--- <stderr>: hPutChar: invalid argument (cannot encode character '\8216')
+solution1 :: ([String], [String]) -> Int
+solution1 (prefixes, words) = let trie = fromList prefixes in countIf (formable trie) words
 
-getDists :: CharGrid -> DistanceMap GridPos
-getDists  charGrid  =  distMap  where 
-  distMap :: A.Array GridPos Distance 
-  distMap = distanceMap $   runDijkstraST graph (0,0) [dims]
-  graph = makeGraph charGrid 
+solution2 :: ([String], [String]) -> Int
+solution2 (prefixes, words) = let trie = fromList prefixes in sum $ numOfDesigns trie <$> words
 
-
-getSolutions18 :: String -> IO (Int, String)
-getSolutions18 = readFile >=> (parseFile >>> (solution1 &&&  solution2) >>> return)
-
-saveGraphPaths :: String -> Int -> String -> IO () 
-saveGraphPaths outputFile n inputFile  = do 
-  coordList <- parseFile <$> readFile inputFile
-  let paths = bestPathsForN n coordList 
-      grid = makeGrid n coordList 
-      filledGrid = grid // ((coordList !! n, 'N'):[(pos, toEnum (fromEnum '0' + id)) | (path, id) <- zip paths [1..], pos <- path ] )
-  saveGridToFile outputFile filledGrid
-  
-bestPathsForN :: Int -> [GridPos] -> [Path]
-bestPathsForN n coordsList = let 
-  graph = makeGraph . makeGrid n $  coordsList 
-  in bestPaths graph (0,0) dims
+getSolutions19 :: String -> IO (Int, Int)
+getSolutions19 = readFile >=> (parseInput >>> (solution1 &&& solution2) >>> return)

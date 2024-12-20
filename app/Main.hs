@@ -7,7 +7,7 @@ import InputDownloader (runFetchProblemDataToFiles)
 import Lib
 import System.TimeIt (timeItNamed)
 import Text.Read (readMaybe)
-
+import Useful (splitOn)
 mainLoop :: IO ()
 mainLoop = do
   putStrLn "Which problem do you want to solve?"
@@ -26,7 +26,7 @@ mainLoop = do
     mainLoop
 
 -- solver :: Int -> Maybe (IO (Int, Int))
-maybeSolver :: Show a => Int -> Maybe (String -> IO a )
+maybeSolver ::  Int -> Maybe (String -> IO (Int,Int))
 maybeSolver day = case day of
   --  solver <- maybeSolver
   -- Just $ do runFetchProblemDataToFiles 2024 day inputFile ("descriptions/" <> show day <> ".html") >> solver inputFile
@@ -49,6 +49,11 @@ maybeSolver day = case day of
   15 -> Just $ getSolutions15
   16 -> Just $ getSolutions16
   17 -> Just $ getSolutions17
+  18 -> Just $ \filename -> do 
+    (a,b) <- getSolutions18  filename
+    let [bx, by] = splitOn ',' b  
+    return (a, read $ bx<>by)
+
   -- 172 -> Just $ getSolutions17Old "inputs/17.txt"
   -- 173 -> Just $ getSolutions17Astar "inputs/17.txt"
   -- 18 -> Just $ getSolutions18 "inputs/18.txt"

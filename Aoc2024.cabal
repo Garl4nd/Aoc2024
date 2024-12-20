@@ -63,7 +63,8 @@ library
       MultiWayIf
   ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      MemoTrie
+      Chart-diagrams
+    , MemoTrie
     , array
     , base >=4.7 && <5
     , bytestring
@@ -71,8 +72,10 @@ library
     , directory
     , exceptions
     , fgl
+    , gnuplot
     , graphviz
     , heap
+    , hmatrix
     , http-conduit
     , megaparsec
     , memoize
@@ -103,6 +106,7 @@ executable aoc24-exe
   ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -O2 -rtsopts -with-rtsopts=-N
   build-depends:
       Aoc2024
+    , Chart-diagrams
     , MemoTrie
     , array
     , base >=4.7 && <5
@@ -111,8 +115,10 @@ executable aoc24-exe
     , directory
     , exceptions
     , fgl
+    , gnuplot
     , graphviz
     , heap
+    , hmatrix
     , http-conduit
     , megaparsec
     , memoize
@@ -143,6 +149,7 @@ executable download-exe
   ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -main-is Download.download
   build-depends:
       Aoc2024
+    , Chart-diagrams
     , MemoTrie
     , array
     , base >=4.7 && <5
@@ -151,8 +158,10 @@ executable download-exe
     , directory
     , exceptions
     , fgl
+    , gnuplot
     , graphviz
     , heap
+    , hmatrix
     , http-conduit
     , megaparsec
     , memoize
@@ -183,6 +192,7 @@ test-suite Aoc2024-test
   ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Aoc2024
+    , Chart-diagrams
     , MemoTrie
     , array
     , base >=4.7 && <5
@@ -191,8 +201,10 @@ test-suite Aoc2024-test
     , directory
     , exceptions
     , fgl
+    , gnuplot
     , graphviz
     , heap
+    , hmatrix
     , http-conduit
     , megaparsec
     , memoize
