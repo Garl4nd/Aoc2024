@@ -1,5 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TupleSections #-}
 
 module N19 (getSolutions19) where
 
@@ -7,18 +8,18 @@ import Control.Arrow
 import Control.Monad ((>=>))
 import Data.Function.Memoize (Memoizable, memoFix)
 import qualified Data.Map as M
-import Data.Maybe (maybeToList)
+import Data.Maybe (maybeToList, catMaybes, mapMaybe)
 import Useful (countIf, readStrList, splitBySubstr, trimSpace)
 
 type TrieMap k v = M.Map k (Trie k v)
 
-data Trie k v = Node {val :: Maybe v, trieMap :: (TrieMap k v)} deriving (Show)
+data Ord k => Trie k v = Node {val :: Maybe v, trieMap :: (TrieMap k v)} deriving (Show)
 
 parseInput :: String -> ([String], [String])
 parseInput file =
   let [p1, p2] = splitBySubstr "\n\n" file
    in (trimSpace <$> splitBySubstr "," p1, lines p2)
-emptyTrie :: Trie k v
+emptyTrie :: Ord k => Trie k v
 emptyTrie = Node Nothing M.empty
 
 insertWith :: forall k v. (Ord k) => (v -> k -> v) -> v -> [k] -> Trie k v -> Trie k v
@@ -44,15 +45,40 @@ fromAssocList :: (Ord k) => [([k], v)] -> Trie k v
 fromAssocList = foldr (\(word, trans) trie -> insertWord word trans trie) emptyTrie
 
 fromList :: (Ord k) => [[k]] -> Trie k [k]
-fromList ks = foldr insert emptyTrie ks
+fromList  = foldr insert emptyTrie 
 
 fromListWith :: (Ord k) => (v -> k -> v) -> v -> [[k]] -> Trie k v
-fromListWith f acc ks = foldr (insertWith f acc) emptyTrie ks
+fromListWith f acc  = foldr (insertWith f acc) emptyTrie
 
+instance Ord k => Semigroup (Trie k v) where 
+  trieA <> trieB = foldr (uncurry insertWord) trieA $ toAssocList trieB 
+instance Ord k => Monoid (Trie k v) where 
+  mempty = emptyTrie
+instance Ord k => Functor (Trie k) where 
+  fmap f Node{val, trieMap} = Node{trieMap = fmap f <$> trieMap, val = f <$> val}
 toList :: forall k v. (Ord k) => Trie k v -> [v]
-toList Node{val, trieMap} = maybeToList val ++ (concatMap toList $ M.elems trieMap)
+toList Node{val, trieMap} = maybeToList val ++ concatMap toList ( M.elems trieMap)
+
+toAssocList :: forall k v. (Ord k) => Trie k v -> [([k],v)]
+toAssocList = go [] where  -- maybeToList (([],) <$> val) ++ concat [go [k] trie | (k, trie) <- M.assocs trieMap] where 
+  go :: [k]-> Trie k v->[([k], v)]
+  go kAcc Node{val, trieMap} = maybeToList ((kAcc,) <$> val) ++ concat ([go (kAcc++[key]) trie | (key, trie) <-  M.assocs trieMap])  
+
 
 type Memo f = f -> f
+
+findSubtrie :: (Ord k) => Trie k v -> [k] -> Maybe (Trie k v)
+findSubtrie trie [] = Just trie 
+findSubtrie Node{trieMap} (key : rest) =
+  case M.lookup key trieMap of
+    Just trie@Node{val} -> findSubtrie trie rest 
+    Nothing -> Nothing 
+
+suffixAssocs :: (Ord k) => Trie k v -> [k] -> [([k], v)]
+suffixAssocs trie ks =  case findSubtrie trie ks of 
+  Just subtrie -> toAssocList subtrie 
+  Nothing -> []
+
 allPrefixSufixes :: (Ord k) => Trie k v -> [k] -> [(v, [k])]
 allPrefixSufixes _ [] = []
 allPrefixSufixes Node{trieMap} (key : rest) =
