@@ -49,6 +49,7 @@ library
       N7
       N8
       N9
+      Trie
       Useful
   other-modules:
       Paths_Aoc2024
