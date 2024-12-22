@@ -52,7 +52,7 @@ maybeSolver day = case day of
     return (a, read $ bx <> by)
   19 -> Just getSolutions19
   20 -> Just getSolutions20
-  -- 21 -> Just $ getSolutions21 "inputs/21.txt"
+  21 -> Just getSolutions21
   -- 22 -> Just $ getSolutions22 "inputs/22.txt"
   -- 23 -> Just $ getSolutions23 "inputs/23.txt"
   -- 24 -> Just $ getSolutions24 "inputs/24.txt"

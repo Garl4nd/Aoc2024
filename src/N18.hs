@@ -8,7 +8,7 @@ import Data.Array ((!), (//))
 import qualified Data.Array as A
 import Data.Maybe (fromJust)
 import Data.Tuple (swap)
-import GraphUtils (ArrayGraph, DijkstraState (distanceMap), Distance (Dist, Inf), DistanceMap, bestPaths, distanceMap, distanceToInt, runDijkstraST)
+import GraphUtils (ArrayGraph, Distance (Dist, Inf), DistanceMap, bestPaths, distanceMap, distanceToInt, runDijkstraST)
 import Useful (CharGrid, GridPos, neighbors4, saveGridToFile, wordsWhen)
 
 parseFile :: String -> [GridPos]

@@ -19,7 +19,7 @@ module Lib (
   module N18,
   module N19,
   module N20,
-  -- , module N21
+  module N21,
   -- , module N22
   -- , module N23
   -- , module AltN16
@@ -40,6 +40,7 @@ import N18
 import N19
 import N2
 import N20
+import N21
 import N3
 import N4
 import N5
@@ -48,7 +49,6 @@ import N7
 import N8
 import N9
 
--- import N21
 -- import N22
 -- import N23
 -- import N24
