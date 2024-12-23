@@ -1,3 +1,5 @@
+{-# LANGUAGE BangPatterns #-}
+
 module N22 (getSolutions22) where
 
 import Control.Arrow
@@ -6,6 +8,7 @@ import Control.Parallel.Strategies
 import Data.Bits (Bits (xor))
 import Data.Function ((&))
 import Data.List (nub, tails)
+import qualified Data.Map as M
 import Data.Maybe (fromMaybe)
 import qualified Data.Set as S
 import Trie
@@ -56,8 +59,7 @@ possibleSeqs :: SeqList
 possibleSeqs = [[a, b, c, d] | let r = [-9 .. 9], a <- r, b <- r, c <- r, d <- r]
 
 type SeqList = [[Int]]
-type SeqSet = S.Set [Int]
-allDifSeqs :: [([Int], Int)] -> SeqSet
+allDifSeqs :: [([Int], Int)] -> S.Set [Int]
 allDifSeqs = S.fromList . map fst
 
 score :: [SeqTrie] -> [Int] -> Int
@@ -70,7 +72,7 @@ maxScore seqs tries =
   let
     scores = score tries <$> seqs
    in
-    maximum scores -- `using` parListChunk 100 rdeepseq) -- parScores
+    maximum (scores `using` parListChunk 64 rdeepseq) -- parScores
 
 solution1 :: [Int] -> Int
 solution1 nums = sum sNums
@@ -80,12 +82,23 @@ solution1 nums = sum sNums
 solution2 :: [Int] -> Int
 solution2 nums =
   let
-    seqDicts = difSeqDict <$> nums
-    tries = fromAssocList <$> seqDicts
-    seqs = possibleSeqs -- S.toList $ S.unions $ allDifSeqs <$> seqDicts
+    seqDicts = (difSeqDict <$> nums) `using` parList rdeepseq
+    tries = (fromAssocList <$> seqDicts) `using` parList rseq
+    seqs = (S.toList $ S.unions $ allDifSeqs <$> seqDicts) `using` parList rdeepseq
    in
     maxScore seqs tries --
 
+solution2' :: [Int] -> Int
+solution2' nums =
+  let
+    seqDicts = (difSeqDict <$> nums) `using` parList rdeepseq
+    tries = (fromAssocList <$> seqDicts) `using` parList rseq
+    -- seqMaps =
+    -- subTries3 = [findSubtrie trie <$> seq3s | trie <- tries]
+    seq3s = take 3 <$> seqs
+    seqs = (S.toList $ S.unions $ allDifSeqs <$> seqDicts) `using` parList rdeepseq
+   in
+    maxScore seqs tries --
 parseFile :: String -> [Int]
 parseFile = map read . lines
 

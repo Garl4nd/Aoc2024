@@ -1,334 +1,595 @@
-	Tue Dec 10 01:55 2024 Time and Allocation Profiling Report  (Final)
+	Tue Dec 24 00:24 2024 Time and Allocation Profiling Report  (Final)
 
 	   aoc24-exe +RTS -N -p -RTS
 
-	total time  =        2.37 secs   (8079 ticks @ 1000 us, 12 processors)
-	total alloc = 26,172,337,976 bytes  (excludes profiling overheads)
+	total time  =      146.98 secs   (501207 ticks @ 1000 us, 12 processors)
+	total alloc = 28,325,386,352 bytes  (excludes profiling overheads)
 
-COST CENTRE                     MODULE SRC                        %time %alloc
+COST CENTRE                    MODULE    SRC                         %time %alloc
 
-rearrangeDisk2.tryInsertBlock   N9     src/N9.hs:(68,3)-(71,130)   65.8   61.7
-rearrangeDisk2.tryInsertBlock.\ N9     src/N9.hs:69:77-120         11.2    0.0
-rearrangeDisk2.go               N9     src/N9.hs:(60,3)-(66,56)     9.0   14.7
-rearrangeDisk2.go.(...)         N9     src/N9.hs:63:11-53           8.4   14.7
-moveLastBlock                   N9     src/N9.hs:(36,1)-(49,85)     2.5    4.3
-moveLastBlock.(...)             N9     src/N9.hs:39:9-74            2.5    4.3
+findSubtrie                    Trie      src/Trie.hs:(72,1)-(76,22)   72.7    0.7
+insertWithConst.go             Trie      src/Trie.hs:(33,3)-(39,71)    4.3   11.9
+findSubtrie_$sfindSubtrie      Trie      src/Trie.hs:72:1-11           3.9    0.0
+score                          N22       src/N22.hs:(66,1)-(68,47)     2.7   30.9
+findSubtrie                    Trie      src/Trie.hs:72:1-11           2.1    0.0
+insertWithConst.go.modifiedMap Trie      src/Trie.hs:37:7-53           2.0    5.6
+go1                            N22       <no location info>            1.6    4.9
+$wgo2                          N22       <no location info>            1.4    0.0
+findByKey                      Trie      src/Trie.hs:79:1-39           1.4    0.0
+difSeqDict.difValPairs         N22       src/N22.hs:49:5-76            1.0    5.5
+tailsGo                        N22       <no location info>            0.5    4.2
+thenMix'nPrune                 N22       src/N22.hs:20:1-38            0.5    6.3
+$sinsert_$sgo4                 N22       <no location info>            0.5    7.8
+$s$wsplitS                     N22       <no location info>            0.3    2.8
+difSeqDict                     N22       src/N22.hs:(46,1)-(51,49)     0.3    2.2
+lvl24                          N22       <no location info>            0.3    1.1
+go                             N22       <no location info>            0.2    1.4
+mix                            N22       src/N22.hs:16:1-9             0.2    1.6
+digitAndDifSeqs.digitSeq       N22       src/N22.hs:40:5-43            0.2    1.4
+insertWithConst                Trie      src/Trie.hs:(29,1)-(39,71)    0.2    1.4
+prune                          N22       src/N22.hs:17:1-24            0.2    1.6
+nextNumber                     N22       src/N22.hs:32:1-53            0.1    1.6
+genSequence                    N22       src/N22.hs:35:1-32            0.1    3.0
+digitAndDifSeqs                N22       src/N22.hs:(38,1)-(43,28)     0.1    1.3
+allDifSeqs                     N22       src/N22.hs:63:1-33            0.1    1.5
 
 
-                                                                                                                                                                         individual      inherited
-COST CENTRE                                     MODULE                         SRC                                                                  no.       entries  %time %alloc   %time %alloc
+                                                                                                                                                                           individual      inherited
+COST CENTRE                                       MODULE                         SRC                                                                  no.       entries  %time %alloc   %time %alloc
 
-MAIN                                            MAIN                           <built-in>                                                           20638           0    0.1    0.0   100.0  100.0
- main                                           Main                           app/Main.hs:67:1-4                                                   41276           1    0.0    0.0    99.9  100.0
-  main5                                         Main                           <no location info>                                                   41277           1    0.0    0.0    99.9  100.0
-   main1                                        Main                           <no location info>                                                   41280           0    0.0    0.0    99.9  100.0
-    main                                        Main                           app/Main.hs:(67,1)-(69,21)                                           41281           0    0.0    0.0    99.9  100.0
-     main4                                      Main                           <no location info>                                                   41284           0    0.0    0.0    99.9  100.0
-      mainLoop                                  Main                           app/Main.hs:(12,1)-(26,12)                                           41285           0    0.0    0.0    99.9  100.0
-       mainLoop.inputFile                       Main                           app/Main.hs:20:15-57                                                 41313           1    0.0    0.0     0.0    0.0
-       mainLoop.problemId                       Main                           app/Main.hs:16:9-36                                                  41289           1    0.0    0.0     0.0    0.0
-        lvl6                                    Main                           <no location info>                                                   41293           0    0.0    0.0     0.0    0.0
-       maybeSolver                              Main                           app/Main.hs:(30,1)-(62,14)                                           41294           1    0.0    0.0    99.9  100.0
-        getSolutions1                           N9                             <no location info>                                                   41468           0    0.0    0.0    99.9  100.0
-         getSolutions9                          N9                             src/N9.hs:98:1-81                                                    41469           0    0.0    0.0    99.9  100.0
-          parseFile                             N9                             src/N9.hs:(20,1)-(26,117)                                            41491           1    0.0    0.0     0.0    0.0
-           getSolutions9_$sfillDisk             N9                             src/N9.hs:24:3-10                                                    41493       10000    0.0    0.0     0.0    0.0
-            parseFile.fillDisk                  N9                             src/N9.hs:(24,3)-(26,117)                                            41494       10000    0.0    0.0     0.0    0.0
-           parseFile.numberList                 N9                             src/N9.hs:22:3-24                                                    41492           1    0.0    0.0     0.0    0.0
-          solution1                             N9                             src/N9.hs:92:1-9                                                     41474           0    0.0    0.0     5.2    8.6
-           solution1                            N9                             src/N9.hs:92:1-53                                                    41475           0    0.0    0.0     5.2    8.6
-            rearrangeDisk                       N9                             src/N9.hs:52:1-13                                                    41488        4692    0.0    0.0     5.1    8.6
-             rearrangeDisk                      N9                             src/N9.hs:(52,1)-(54,59)                                             41489        4692    0.0    0.0     5.1    8.6
-              moveLastBlock                     N9                             src/N9.hs:(36,1)-(49,85)                                             41490        4692    2.5    4.3     5.0    8.6
-               isFree                           N9                             src/N9.hs:32:1-6                                                     41495        9382    0.0    0.0     0.0    0.0
-                isFree                          N9                             src/N9.hs:(32,1)-(33,16)                                             41496        9382    0.0    0.0     0.0    0.0
-               moveLastBlock.(...)              N9                             src/N9.hs:39:9-74                                                    41498        4691    2.5    4.3     2.5    4.3
-                $wgo1                           N9                             src/N9.hs:42:5-6                                                     41499        5570    0.0    0.0     0.0    0.0
-                 moveLastBlock.go               N9                             src/N9.hs:(42,5)-(49,85)                                             41500       14430    0.0    0.0     0.0    0.0
-                  $s$wgo                        N9                             src/N9.hs:42:5-6                                                     41501        8860    0.0    0.0     0.0    0.0
-               moveLastBlock.processed          N9                             src/N9.hs:39:9-74                                                    41497        4691    0.0    0.0     0.0    0.0
-               moveLastBlock.rest               N9                             src/N9.hs:39:9-74                                                    41507        4691    0.0    0.0     0.0    0.0
-            checkSum                            N9                             src/N9.hs:82:1-8                                                     41478           0    0.0    0.0     0.1    0.0
-             checkSum                           N9                             src/N9.hs:(82,1)-(89,12)                                             41479           0    0.0    0.0     0.1    0.0
-              getSolutions9_go                  N9                             <no location info>                                                   41480       50580    0.0    0.0     0.1    0.0
-               g                                N9                             <no location info>                                                   41505       50579    0.0    0.0     0.0    0.0
-                checkSum.\                      N9                             src/N9.hs:(85,25)-(87,29)                                            41506       50579    0.0    0.0     0.0    0.0
-               lvl5                             N9                             <no location info>                                                   41503       50579    0.0    0.0     0.0    0.0
-            unwrapDisk                          N9                             src/N9.hs:74:1-10                                                    41485           0    0.0    0.0     0.0    0.0
-             unwrapDisk                         N9                             src/N9.hs:(74,1)-(79,5)                                              41486           0    0.0    0.0     0.0    0.0
-              getSolutions9_go1                 N9                             <no location info>                                                   41487       14432    0.0    0.0     0.0    0.0
-               unwrapDisk.\                     N9                             src/N9.hs:78:36-65                                                   41502       14430    0.0    0.0     0.0    0.0
-               unwrapDisk.\                     N9                             src/N9.hs:77:32-57                                                   41508           1    0.0    0.0     0.0    0.0
-                $wxs1                           N9                             <no location info>                                                   41509           5    0.0    0.0     0.0    0.0
-          solution2                             N9                             src/N9.hs:95:1-9                                                     41513           0    0.0    0.0    94.6   91.3
-           solution2                            N9                             src/N9.hs:95:1-54                                                    41514           0    0.0    0.0    94.6   91.3
-            rearrangeDisk2                      N9                             src/N9.hs:(57,1)-(71,130)                                            41521           1    0.0    0.0    94.4   91.2
-             $wgo                               N9                             src/N9.hs:60:3-4                                                     41522       14851    0.0    0.0    94.4   91.2
-              rearrangeDisk2.go                 N9                             src/N9.hs:(60,3)-(66,56)                                             41523       14851    9.0   14.7    94.4   91.2
-               isFree                           N9                             src/N9.hs:32:1-6                                                     41524       24849    0.0    0.0     0.0    0.0
-                isFree                          N9                             src/N9.hs:(32,1)-(33,16)                                             41525       24849    0.0    0.0     0.0    0.0
-               rearrangeDisk2.go.(...)          N9                             src/N9.hs:63:11-53                                                   41526       14850    8.4   14.7     8.4   14.7
-               rearrangeDisk2.go.end            N9                             src/N9.hs:63:11-53                                                   41536       14850    0.0    0.0     0.0    0.0
-               rearrangeDisk2.go.ld             N9                             src/N9.hs:63:11-53                                                   41527       14850    0.0    0.0     0.0    0.0
-               rearrangeDisk2.tryInsertBlock    N9                             src/N9.hs:(68,3)-(71,130)                                            41528       14850   65.8   61.7    77.0   61.7
-                rearrangeDisk2.tryInsertBlock.\ N9                             src/N9.hs:69:77-120                                                  41529   110814843   11.2    0.0    11.2    0.0
-                 isFree                         N9                             src/N9.hs:(32,1)-(33,16)                                             41530   110814843    0.0    0.0     0.0    0.0
-                 freeSize                       N9                             src/N9.hs:12:65-72                                                   41531    37901121    0.0    0.0     0.0    0.0
-               filledSize                       N9                             src/N9.hs:12:33-42                                                   41539        4850    0.0    0.0     0.0    0.0
-            checkSum                            N9                             src/N9.hs:82:1-8                                                     41515           0    0.0    0.0     0.2    0.1
-             checkSum                           N9                             src/N9.hs:(82,1)-(89,12)                                             41516           0    0.0    0.0     0.2    0.1
-              getSolutions9_go                  N9                             <no location info>                                                   41517       95573    0.1    0.0     0.1    0.1
-               g                                N9                             <no location info>                                                   41534       95572    0.0    0.0     0.0    0.0
-                checkSum.\                      N9                             src/N9.hs:(85,25)-(87,29)                                            41535       95572    0.0    0.0     0.0    0.0
-               lvl5                             N9                             <no location info>                                                   41533       95572    0.1    0.0     0.1    0.0
-            unwrapDisk                          N9                             src/N9.hs:74:1-10                                                    41518           0    0.0    0.0     0.0    0.0
-             unwrapDisk                         N9                             src/N9.hs:(74,1)-(79,5)                                              41519           0    0.0    0.0     0.0    0.0
-              getSolutions9_go1                 N9                             <no location info>                                                   41520       24850    0.0    0.0     0.0    0.0
-               unwrapDisk.\                     N9                             src/N9.hs:77:32-57                                                   41537       14849    0.0    0.0     0.0    0.0
-                $wxs1                           N9                             <no location info>                                                   41538       44998    0.0    0.0     0.0    0.0
-               unwrapDisk.\                     N9                             src/N9.hs:78:36-65                                                   41532       10000    0.0    0.0     0.0    0.0
-       timeItNamed                              System.TimeIt                  System/TimeIt.hs:(24,1)-(27,12)                                      41470           1    0.0    0.0     0.0    0.0
-        timeItT                                 System.TimeIt                  System/TimeIt.hs:(32,1)-(38,17)                                      41471           1    0.0    0.0     0.0    0.0
-         timeItT.t                              System.TimeIt                  System/TimeIt.hs:37:9-40                                             41542           1    0.0    0.0     0.0    0.0
-       lvl28                                    Main                           <no location info>                                                   41298           0    0.0    0.0     0.0    0.0
-       lvl7                                     Main                           <no location info>                                                   41467           0    0.0    0.0     0.0    0.0
-       runFetchProblemDataToFiles               InputDownloader                src/InputDownloader.hs:74:1-26                                       41299           0    0.0    0.0     0.0    0.0
-        runFetchProblemDataToFiles              InputDownloader                src/InputDownloader.hs:74:1-206                                      41300           1    0.0    0.0     0.0    0.0
-         runLoggingT                            Control.Monad.Logger           Control/Monad/Logger.hs:581:35-45                                    41302           2    0.0    0.0     0.0    0.0
-         runStdoutLoggingT                      Control.Monad.Logger           Control/Monad/Logger.hs:797:1-56                                     41301           2    0.0    0.0     0.0    0.0
-         fetchDescriptionToFile                 InputDownloader                src/InputDownloader.hs:(54,1)-(65,52)                                41404           1    0.0    0.0     0.0    0.0
-          >>=                                   Control.Monad.Logger           Control/Monad/Logger.hs:(617,5)-(620,12)                             41405           1    0.0    0.0     0.0    0.0
-           >>=.\                                Control.Monad.Logger           Control/Monad/Logger.hs:(617,42)-(620,12)                            41406           1    0.0    0.0     0.0    0.0
-            >>=.\.(...)                         Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    41414           1    0.0    0.0     0.0    0.0
-             logDebugN                          Control.Monad.Logger           Control/Monad/Logger.hs:924:1-39                                     41423           0    0.0    0.0     0.0    0.0
-              logWithoutLoc                     Control.Monad.Logger           Control/Monad/Logger.hs:921:1-41                                     41424           0    0.0    0.0     0.0    0.0
-               monadLoggerLog                   Control.Monad.Logger           Control/Monad/Logger.hs:675:5-75                                     41425           0    0.0    0.0     0.0    0.0
-                monadLoggerLog.\                Control.Monad.Logger           Control/Monad/Logger.hs:675:47-75                                    41426           1    0.0    0.0     0.0    0.0
-                 defaultOutput                  Control.Monad.Logger           Control/Monad/Logger.hs:(718,1)-(721,42)                             41427           1    0.0    0.0     0.0    0.0
-                  defaultOutput.ls              Control.Monad.Logger           Control/Monad/Logger.hs:721:5-42                                     41428           1    0.0    0.0     0.0    0.0
-                   defaultLogStrBS              Control.Monad.Logger           Control/Monad/Logger.hs:(728,1)-(731,21)                             41429           1    0.0    0.0     0.0    0.0
-                    defaultLogStr               Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             41437           1    0.0    0.0     0.0    0.0
-                     mappend                    System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:56:10-22                             41438           5    0.0    0.0     0.0    0.0
-                      <>                        System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:55:5-62                              41439           5    0.0    0.0     0.0    0.0
-                     defaultLogLevelStr         Control.Monad.Logger           Control/Monad/Logger.hs:(734,1)-(736,60)                             41440           1    0.0    0.0     0.0    0.0
-                      toLogStr                  System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:80:5-54                              41443           1    0.0    0.0     0.0    0.0
-                      show                      Control.Monad.Logger           Control/Monad/Logger.hs:181:19-30                                    41441           0    0.0    0.0     0.0    0.0
-                       showsPrec                Control.Monad.Logger           Control/Monad/Logger.hs:181:19-30                                    41442           1    0.0    0.0     0.0    0.0
-                     isDefaultLoc               Control.Monad.Logger           Control/Monad/Logger.hs:(914,1)-(915,22)                             41444           1    0.0    0.0     0.0    0.0
-                    fromLogStr                  System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:174:1-51                             41445           1    0.0    0.0     0.0    0.0
-                     fromBuilder                System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:42:1-46                              41446           0    0.0    0.0     0.0    0.0
-                      defaultLogStr             Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             41447           0    0.0    0.0     0.0    0.0
-                       fromString               System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              41450           0    0.0    0.0     0.0    0.0
-                        toLogStr                System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:5-99                             41451           0    0.0    0.0     0.0    0.0
-                         defaultLogLevelStr     Control.Monad.Logger           Control/Monad/Logger.hs:(734,1)-(736,60)                             41454           0    0.0    0.0     0.0    0.0
-                          toLogStr              System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:80:5-54                              41455           0    0.0    0.0     0.0    0.0
-                           toBuilder            System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:38:1-24                              41456           0    0.0    0.0     0.0    0.0
-                            mappend             System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:56:10-22                             41458           0    0.0    0.0     0.0    0.0
-                             <>                 System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:55:5-62                              41459           0    0.0    0.0     0.0    0.0
-                              mempty            System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:57:5-42                              41460           0    0.0    0.0     0.0    0.0
-                              toLogStr          System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:96:5-65                              41461           0    0.0    0.0     0.0    0.0
-                       mappend                  System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:56:10-22                             41448           0    0.0    0.0     0.0    0.0
-                        <>                      System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:55:5-62                              41449           0    0.0    0.0     0.0    0.0
-                 toLogStr                       System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:96:5-65                              41430           1    0.0    0.0     0.0    0.0
-             lvl28                              Main                           <no location info>                                                   41422           0    0.0    0.0     0.0    0.0
-            >>=.\.f'                            Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    41413           1    0.0    0.0     0.0    0.0
-            checkFileExistsWithData             InputDownloader                <no location info>                                                   41408           1    0.0    0.0     0.0    0.0
-             checkFileExistsWithData            InputDownloader                src/InputDownloader.hs:(21,1)-(27,23)                                41409           1    0.0    0.0     0.0    0.0
-            liftIO                              Control.Monad.Logger           Control/Monad/Logger.hs:623:5-32                                     41407           1    0.0    0.0     0.0    0.0
-             checkFileExistsWithData            InputDownloader                <no location info>                                                   41410           0    0.0    0.0     0.0    0.0
-              checkFileExistsWithData           InputDownloader                src/InputDownloader.hs:(21,1)-(27,23)                                41411           0    0.0    0.0     0.0    0.0
-         fetchInputToFile                       InputDownloader                src/InputDownloader.hs:(30,1)-(49,46)                                41303           1    0.0    0.0     0.0    0.0
-          >>=                                   Control.Monad.Logger           Control/Monad/Logger.hs:(617,5)-(620,12)                             41304           2    0.0    0.0     0.0    0.0
-           >>=.\                                Control.Monad.Logger           Control/Monad/Logger.hs:(617,42)-(620,12)                            41305           2    0.0    0.0     0.0    0.0
-            >>=.\.(...)                         Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    41316           2    0.0    0.0     0.0    0.0
-             liftIO                             Control.Monad.Logger           Control/Monad/Logger.hs:623:5-32                                     41324           0    0.0    0.0     0.0    0.0
-              x54                               InputDownloader                <no location info>                                                   41326           1    0.0    0.0     0.0    0.0
-              lvl28                             Main                           <no location info>                                                   41325           0    0.0    0.0     0.0    0.0
-             logDebugN                          Control.Monad.Logger           Control/Monad/Logger.hs:924:1-39                                     41332           0    0.0    0.0     0.0    0.0
-              logWithoutLoc                     Control.Monad.Logger           Control/Monad/Logger.hs:921:1-41                                     41333           0    0.0    0.0     0.0    0.0
-               monadLoggerLog                   Control.Monad.Logger           Control/Monad/Logger.hs:675:5-75                                     41334           0    0.0    0.0     0.0    0.0
-                monadLoggerLog.\                Control.Monad.Logger           Control/Monad/Logger.hs:675:47-75                                    41335           1    0.0    0.0     0.0    0.0
-                 defaultOutput                  Control.Monad.Logger           Control/Monad/Logger.hs:(718,1)-(721,42)                             41336           1    0.0    0.0     0.0    0.0
-                  defaultOutput.ls              Control.Monad.Logger           Control/Monad/Logger.hs:721:5-42                                     41337           1    0.0    0.0     0.0    0.0
-                   defaultLogStrBS              Control.Monad.Logger           Control/Monad/Logger.hs:(728,1)-(731,21)                             41338           1    0.0    0.0     0.0    0.0
-                    defaultLogStr               Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             41347           1    0.0    0.0     0.0    0.0
-                     mappend                    System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:56:10-22                             41348           5    0.0    0.0     0.0    0.0
-                      <>                        System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:55:5-62                              41349           5    0.0    0.0     0.0    0.0
-                     defaultLogLevelStr         Control.Monad.Logger           Control/Monad/Logger.hs:(734,1)-(736,60)                             41359           1    0.0    0.0     0.0    0.0
-                      toLogStr                  System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:80:5-54                              41363           1    0.0    0.0     0.0    0.0
-                      show                      Control.Monad.Logger           Control/Monad/Logger.hs:181:19-30                                    41361           0    0.0    0.0     0.0    0.0
-                       showsPrec                Control.Monad.Logger           Control/Monad/Logger.hs:181:19-30                                    41362           1    0.0    0.0     0.0    0.0
-                     isDefaultLoc               Control.Monad.Logger           Control/Monad/Logger.hs:(914,1)-(915,22)                             41376           1    0.0    0.0     0.0    0.0
-                    fromLogStr                  System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:174:1-51                             41386           1    0.0    0.0     0.0    0.0
-                     fromBuilder                System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:42:1-46                              41388           0    0.0    0.0     0.0    0.0
-                      defaultLogStr             Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             41389           0    0.0    0.0     0.0    0.0
-                       fromString               System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              41392           0    0.0    0.0     0.0    0.0
-                        toLogStr                System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:5-99                             41393           0    0.0    0.0     0.0    0.0
-                         defaultLogLevelStr     Control.Monad.Logger           Control/Monad/Logger.hs:(734,1)-(736,60)                             41396           0    0.0    0.0     0.0    0.0
-                          toLogStr              System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:80:5-54                              41397           0    0.0    0.0     0.0    0.0
-                           toBuilder            System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:38:1-24                              41398           0    0.0    0.0     0.0    0.0
-                            mappend             System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:56:10-22                             41400           0    0.0    0.0     0.0    0.0
-                             <>                 System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:55:5-62                              41401           0    0.0    0.0     0.0    0.0
-                              mempty            System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:57:5-42                              41402           0    0.0    0.0     0.0    0.0
-                              toLogStr          System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:96:5-65                              41403           0    0.0    0.0     0.0    0.0
-                       mappend                  System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:56:10-22                             41390           0    0.0    0.0     0.0    0.0
-                        <>                      System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:55:5-62                              41391           0    0.0    0.0     0.0    0.0
-                 toLogStr                       System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:96:5-65                              41340           1    0.0    0.0     0.0    0.0
-             lvl28                              Main                           <no location info>                                                   41331           0    0.0    0.0     0.0    0.0
-            >>=.\.f'                            Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    41315           2    0.0    0.0     0.0    0.0
-            checkFileExistsWithData             InputDownloader                <no location info>                                                   41309           1    0.0    0.0     0.0    0.0
-             checkFileExistsWithData            InputDownloader                src/InputDownloader.hs:(21,1)-(27,23)                                41310           1    0.0    0.0     0.0    0.0
-            liftIO                              Control.Monad.Logger           Control/Monad/Logger.hs:623:5-32                                     41306           1    0.0    0.0     0.0    0.0
-             checkFileExistsWithData            InputDownloader                <no location info>                                                   41311           0    0.0    0.0     0.0    0.0
-              checkFileExistsWithData           InputDownloader                src/InputDownloader.hs:(21,1)-(27,23)                                41312           0    0.0    0.0     0.0    0.0
-            lvl28                               Main                           <no location info>                                                   41323           0    0.0    0.0     0.0    0.0
- CAF                                            GHC.Conc.Signal                <entire-module>                                                      41208           0    0.0    0.0     0.0    0.0
- CAF                                            GHC.Event.Poll                 <entire-module>                                                      41193           0    0.0    0.0     0.0    0.0
- CAF                                            GHC.Event.Thread               <entire-module>                                                      41192           0    0.0    0.0     0.0    0.0
- CAF                                            GHC.Float                      <entire-module>                                                      41185           0    0.0    0.0     0.0    0.0
- CAF                                            GHC.IO.Encoding                <entire-module>                                                      41172           0    0.0    0.0     0.0    0.0
- CAF                                            GHC.IO.Encoding.Iconv          <entire-module>                                                      41170           0    0.0    0.0     0.0    0.0
- CAF                                            GHC.IO.Exception               <entire-module>                                                      41164           0    0.0    0.0     0.0    0.0
- CAF                                            GHC.IO.FD                      <entire-module>                                                      41163           0    0.0    0.0     0.0    0.0
- CAF                                            GHC.IO.Handle.FD               <entire-module>                                                      41161           0    0.0    0.0     0.0    0.0
- CAF                                            GHC.IO.Handle.Internals        <entire-module>                                                      41160           0    0.0    0.0     0.0    0.0
- CAF                                            GHC.Weak.Finalize              <entire-module>                                                      41123           0    0.0    0.0     0.0    0.0
- CAF                                            Text.Printf                    <entire-module>                                                      41111           0    0.0    0.0     0.0    0.0
- CAF                                            Data.Text.Array                <entire-module>                                                      41027           0    0.0    0.0     0.0    0.0
- CAF                                            Data.Text.Internal             <entire-module>                                                      41024           0    0.0    0.0     0.0    0.0
- CAF:$fMonadIOLoggingT1                         Control.Monad.Logger           <no location info>                                                   40113           0    0.0    0.0     0.0    0.0
-  liftIO                                        Control.Monad.Logger           Control/Monad/Logger.hs:623:5-32                                     41307           0    0.0    0.0     0.0    0.0
-   lift                                         Control.Monad.Logger           Control/Monad/Logger.hs:658:5-27                                     41308           1    0.0    0.0     0.0    0.0
- CAF:$fMonoidLogStr1                            System.Log.FastLogger.LogStr   <no location info>                                                   40025           0    0.0    0.0     0.0    0.0
-  mempty                                        System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:57:5-42                              41366           0    0.0    0.0     0.0    0.0
- CAF:$fMonoidLogStr2                            System.Log.FastLogger.LogStr   <no location info>                                                   40024           0    0.0    0.0     0.0    0.0
-  toBuilder                                     System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:38:1-24                              41364           1    0.0    0.0     0.0    0.0
- CAF:$fMonoidLogStr_$cmempty                    System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:57:5-10                              40026           0    0.0    0.0     0.0    0.0
-  mempty                                        System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:57:5-42                              41365           1    0.0    0.0     0.0    0.0
- CAF:$fShowBlock_z0                             N9                             <no location info>                                                   40249           0    0.0    0.0     0.0    0.0
-  $fShowBlock_z0                                N9                             <no location info>                                                   41504           1    0.0    0.0     0.0    0.0
- CAF:$fShowLogLevel_$cshow                      Control.Monad.Logger           Control/Monad/Logger.hs:181:19-30                                    40162           0    0.0    0.0     0.0    0.0
-  show                                          Control.Monad.Logger           Control/Monad/Logger.hs:181:19-30                                    41360           1    0.0    0.0     0.0    0.0
- CAF:checkSum                                   N9                             src/N9.hs:82:1-8                                                     40251           0    0.0    0.0     0.0    0.0
-  checkSum                                      N9                             src/N9.hs:82:1-8                                                     41476           1    0.0    0.0     0.0    0.0
-   checkSum                                     N9                             src/N9.hs:(82,1)-(89,12)                                             41477           1    0.0    0.0     0.0    0.0
- CAF:defaultLoc                                 Control.Monad.Logger           Control/Monad/Logger.hs:911:1-10                                     40118           0    0.0    0.0     0.0    0.0
-  defaultLoc                                    Control.Monad.Logger           Control/Monad/Logger.hs:911:1-64                                     41339           1    0.0    0.0     0.0    0.0
- CAF:fromBuilder                                System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:42:1-11                              40030           0    0.0    0.0     0.0    0.0
-  fromBuilder                                   System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:42:1-46                              41387           1    0.0    0.0     0.0    0.0
- CAF:getSolutions1                              N9                             <no location info>                                                   40273           0    0.0    0.0     0.0    0.0
-  getSolutions1                                 N9                             <no location info>                                                   41465           1    0.0    0.0     0.0    0.0
-   getSolutions9                                N9                             src/N9.hs:98:1-81                                                    41466           1    0.0    0.0     0.0    0.0
- CAF:getSolutions2                              N9                             <no location info>                                                   40250           0    0.0    0.0     0.0    0.0
-  getSolutions2                                 N9                             <no location info>                                                   41481           1    0.0    0.0     0.0    0.0
-   checkSum                                     N9                             src/N9.hs:(82,1)-(89,12)                                             41482           0    0.0    0.0     0.0    0.0
- CAF:lvl16_rdrj                                 InputDownloader                <no location info>                                                   40840           0    0.0    0.0     0.0    0.0
-  lvl16                                         InputDownloader                <no location info>                                                   41341           1    0.0    0.0     0.0    0.0
-   runFetchProblemDataToFiles                   InputDownloader                src/InputDownloader.hs:74:1-206                                      41342           0    0.0    0.0     0.0    0.0
-    fetchInputToFile                            InputDownloader                src/InputDownloader.hs:(30,1)-(49,46)                                41343           0    0.0    0.0     0.0    0.0
-     >>=                                        Control.Monad.Logger           Control/Monad/Logger.hs:(617,5)-(620,12)                             41344           0    0.0    0.0     0.0    0.0
-      >>=.\                                     Control.Monad.Logger           Control/Monad/Logger.hs:(617,42)-(620,12)                            41345           0    0.0    0.0     0.0    0.0
-       >>=.\.(...)                              Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    41346           0    0.0    0.0     0.0    0.0
- CAF:lvl1_rbH2                                  Main                           <no location info>                                                   40904           0    0.0    0.0     0.0    0.0
-  lvl1                                          Main                           <no location info>                                                   41286           1    0.0    0.0     0.0    0.0
- CAF:lvl1_rdr1                                  InputDownloader                <no location info>                                                   40832           0    0.0    0.0     0.0    0.0
-  lvl1                                          InputDownloader                <no location info>                                                   41327           1    0.0    0.0     0.0    0.0
- CAF:lvl20_rbHl                                 Main                           <no location info>                                                   40918           0    0.0    0.0     0.0    0.0
-  lvl20                                         Main                           <no location info>                                                   41541           1    0.0    0.0     0.0    0.0
- CAF:lvl22_rdrr                                 InputDownloader                <no location info>                                                   40844           0    0.0    0.0     0.0    0.0
-  lvl22                                         InputDownloader                <no location info>                                                   41431           1    0.0    0.0     0.0    0.0
-   runFetchProblemDataToFiles                   InputDownloader                src/InputDownloader.hs:74:1-206                                      41432           0    0.0    0.0     0.0    0.0
-    fetchDescriptionToFile                      InputDownloader                src/InputDownloader.hs:(54,1)-(65,52)                                41433           0    0.0    0.0     0.0    0.0
-     >>=                                        Control.Monad.Logger           Control/Monad/Logger.hs:(617,5)-(620,12)                             41434           0    0.0    0.0     0.0    0.0
-      >>=.\                                     Control.Monad.Logger           Control/Monad/Logger.hs:(617,42)-(620,12)                            41435           0    0.0    0.0     0.0    0.0
-       >>=.\.(...)                              Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    41436           0    0.0    0.0     0.0    0.0
- CAF:lvl27_rbHs                                 Main                           <no location info>                                                   40921           0    0.0    0.0     0.0    0.0
-  lvl27                                         Main                           <no location info>                                                   41412           1    0.0    0.0     0.0    0.0
- CAF:lvl28_rbHt                                 Main                           <no location info>                                                   40922           0    0.0    0.0     0.0    0.0
-  lvl28                                         Main                           <no location info>                                                   41295           1    0.0    0.0     0.0    0.0
-   mainLoop                                     Main                           app/Main.hs:(12,1)-(26,12)                                           41296           0    0.0    0.0     0.0    0.0
-    runFetchProblemDataToFiles                  InputDownloader                src/InputDownloader.hs:74:1-26                                       41297           1    0.0    0.0     0.0    0.0
-     runFetchProblemDataToFiles                 InputDownloader                src/InputDownloader.hs:74:1-206                                      41317           0    0.0    0.0     0.0    0.0
-      fetchDescriptionToFile                    InputDownloader                src/InputDownloader.hs:(54,1)-(65,52)                                41415           0    0.0    0.0     0.0    0.0
-       >>=                                      Control.Monad.Logger           Control/Monad/Logger.hs:(617,5)-(620,12)                             41416           0    0.0    0.0     0.0    0.0
-        >>=.\                                   Control.Monad.Logger           Control/Monad/Logger.hs:(617,42)-(620,12)                            41417           0    0.0    0.0     0.0    0.0
-         >>=.\.(...)                            Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    41418           0    0.0    0.0     0.0    0.0
-          logDebugN                             Control.Monad.Logger           Control/Monad/Logger.hs:924:1-39                                     41419           1    0.0    0.0     0.0    0.0
-           logWithoutLoc                        Control.Monad.Logger           Control/Monad/Logger.hs:921:1-41                                     41420           1    0.0    0.0     0.0    0.0
-            monadLoggerLog                      Control.Monad.Logger           Control/Monad/Logger.hs:675:5-75                                     41421           1    0.0    0.0     0.0    0.0
-      fetchInputToFile                          InputDownloader                src/InputDownloader.hs:(30,1)-(49,46)                                41318           0    0.0    0.0     0.0    0.0
-       >>=                                      Control.Monad.Logger           Control/Monad/Logger.hs:(617,5)-(620,12)                             41319           0    0.0    0.0     0.0    0.0
-        >>=.\                                   Control.Monad.Logger           Control/Monad/Logger.hs:(617,42)-(620,12)                            41320           0    0.0    0.0     0.0    0.0
-         >>=.\.(...)                            Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    41321           0    0.0    0.0     0.0    0.0
-          liftIO                                Control.Monad.Logger           Control/Monad/Logger.hs:623:5-32                                     41322           1    0.0    0.0     0.0    0.0
-          logDebugN                             Control.Monad.Logger           Control/Monad/Logger.hs:924:1-39                                     41328           1    0.0    0.0     0.0    0.0
-           logWithoutLoc                        Control.Monad.Logger           Control/Monad/Logger.hs:921:1-41                                     41329           1    0.0    0.0     0.0    0.0
-            monadLoggerLog                      Control.Monad.Logger           Control/Monad/Logger.hs:675:5-75                                     41330           1    0.0    0.0     0.0    0.0
- CAF:lvl29_rbHu                                 Main                           <no location info>                                                   40923           0    0.0    0.0     0.0    0.0
-  lvl29                                         Main                           <no location info>                                                   41540           1    0.0    0.0     0.0    0.0
- CAF:lvl32_rbHx                                 Main                           <no location info>                                                   40924           0    0.0    0.0     0.0    0.0
-  lvl32                                         Main                           <no location info>                                                   41314           1    0.0    0.0     0.0    0.0
- CAF:lvl3_rbH4                                  Main                           <no location info>                                                   40905           0    0.0    0.0     0.0    0.0
-  lvl3                                          Main                           <no location info>                                                   41287           1    0.0    0.0     0.0    0.0
- CAF:lvl50_rgf4                                 Control.Monad.Logger           <no location info>                                                   40164           0    0.0    0.0     0.0    0.0
-  defaultLogStr                                 Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             41350           0    0.0    0.0     0.0    0.0
-   fromString                                   System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              41351           1    0.0    0.0     0.0    0.0
-    toLogStr                                    System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:5-99                             41352           1    0.0    0.0     0.0    0.0
-     toLogStr.\                                 System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:50-68                            41358           1    0.0    0.0     0.0    0.0
- CAF:lvl56_rgff                                 Control.Monad.Logger           <no location info>                                                   40168           0    0.0    0.0     0.0    0.0
-  defaultLogStr                                 Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             41367           0    0.0    0.0     0.0    0.0
-   fromString                                   System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              41368           1    0.0    0.0     0.0    0.0
-    toLogStr                                    System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:5-99                             41369           1    0.0    0.0     0.0    0.0
-     toLogStr.\                                 System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:50-68                            41375           1    0.0    0.0     0.0    0.0
- CAF:lvl5_rbH6                                  Main                           <no location info>                                                   40906           0    0.0    0.0     0.0    0.0
-  lvl5                                          Main                           <no location info>                                                   41288           1    0.0    0.0     0.0    0.0
- CAF:lvl67_rgfw                                 Control.Monad.Logger           <no location info>                                                   40174           0    0.0    0.0     0.0    0.0
-  defaultLogStr                                 Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             41377           0    0.0    0.0     0.0    0.0
-   fromString                                   System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              41378           1    0.0    0.0     0.0    0.0
-    toLogStr                                    System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:5-99                             41379           1    0.0    0.0     0.0    0.0
-     toLogStr.\                                 System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:50-68                            41385           1    0.0    0.0     0.0    0.0
- CAF:lvl6_rbH7                                  Main                           <no location info>                                                   40907           0    0.0    0.0     0.0    0.0
-  lvl6                                          Main                           <no location info>                                                   41290           1    0.0    0.0     0.0    0.0
-   mainLoop                                     Main                           app/Main.hs:(12,1)-(26,12)                                           41291           0    0.0    0.0     0.0    0.0
-    mainLoop.problemId                          Main                           app/Main.hs:16:9-36                                                  41292           0    0.0    0.0     0.0    0.0
- CAF:lvl7_rbH8                                  Main                           <no location info>                                                   40908           0    0.0    0.0     0.0    0.0
-  lvl7                                          Main                           <no location info>                                                   41462           1    0.0    0.0     0.0    0.0
-   mainLoop                                     Main                           app/Main.hs:(12,1)-(26,12)                                           41463           0    0.0    0.0     0.0    0.0
-    maybeSolver                                 Main                           app/Main.hs:(30,1)-(62,14)                                           41464           0    0.0    0.0     0.0    0.0
- CAF:lvl8_rJW5                                  N9                             <no location info>                                                   40258           0    0.0    0.0     0.0    0.0
-  lvl8                                          N9                             <no location info>                                                   41510           1    0.0    0.0     0.0    0.0
- CAF:main1                                      Main                           <no location info>                                                   40927           0    0.0    0.0     0.0    0.0
-  main1                                         Main                           <no location info>                                                   41278           1    0.0    0.0     0.0    0.0
-   main                                         Main                           app/Main.hs:(67,1)-(69,21)                                           41279           1    0.0    0.0     0.0    0.0
- CAF:main2                                      Main                           <no location info>                                                   40926           0    0.0    0.0     0.0    0.0
-  main2                                         Main                           <no location info>                                                   41543           1    0.0    0.0     0.0    0.0
- CAF:main4                                      Main                           <no location info>                                                   40925           0    0.0    0.0     0.0    0.0
-  main4                                         Main                           <no location info>                                                   41282           1    0.0    0.0     0.0    0.0
-   mainLoop                                     Main                           app/Main.hs:(12,1)-(26,12)                                           41283           1    0.0    0.0     0.0    0.0
- CAF:solution1                                  N9                             src/N9.hs:92:1-9                                                     40260           0    0.0    0.0     0.0    0.0
-  solution1                                     N9                             src/N9.hs:92:1-9                                                     41472           1    0.0    0.0     0.0    0.0
-   solution1                                    N9                             src/N9.hs:92:1-53                                                    41473           1    0.0    0.0     0.0    0.0
- CAF:solution2                                  N9                             src/N9.hs:95:1-9                                                     40262           0    0.0    0.0     0.0    0.0
-  solution2                                     N9                             src/N9.hs:95:1-9                                                     41511           1    0.0    0.0     0.0    0.0
-   solution2                                    N9                             src/N9.hs:95:1-54                                                    41512           1    0.0    0.0     0.0    0.0
- CAF:t2_rgfc                                    Control.Monad.Logger           <no location info>                                                   40167           0    0.0    0.0     0.0    0.0
-  defaultLogStr                                 Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             41370           0    0.0    0.0     0.0    0.0
-   fromString                                   System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              41371           0    0.0    0.0     0.0    0.0
-    unstreamChunks/outer                        Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(71,15)-(77,43) 41372           2    0.0    0.0     0.0    0.0
-     unstreamChunks/resize                      Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(81,72)-(85,38) 41373           1    0.0    0.0     0.0    0.0
-      unstreamChunks/inner                      Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(88,17)-(92,59) 41374           2    0.0    0.0     0.0    0.0
- CAF:t5_rgft                                    Control.Monad.Logger           <no location info>                                                   40173           0    0.0    0.0     0.0    0.0
-  defaultLogStr                                 Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             41380           0    0.0    0.0     0.0    0.0
-   fromString                                   System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              41381           0    0.0    0.0     0.0    0.0
-    unstreamChunks/outer                        Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(71,15)-(77,43) 41382           2    0.0    0.0     0.0    0.0
-     unstreamChunks/resize                      Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(81,72)-(85,38) 41383           1    0.0    0.0     0.0    0.0
-      unstreamChunks/inner                      Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(88,17)-(92,59) 41384           1    0.0    0.0     0.0    0.0
- CAF:t_rgf1                                     Control.Monad.Logger           <no location info>                                                   40163           0    0.0    0.0     0.0    0.0
-  defaultLogStr                                 Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             41353           0    0.0    0.0     0.0    0.0
-   fromString                                   System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              41354           0    0.0    0.0     0.0    0.0
-    unstreamChunks/outer                        Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(71,15)-(77,43) 41355           2    0.0    0.0     0.0    0.0
-     unstreamChunks/resize                      Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(81,72)-(85,38) 41356           1    0.0    0.0     0.0    0.0
-      unstreamChunks/inner                      Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(88,17)-(92,59) 41357           1    0.0    0.0     0.0    0.0
- CAF:unwrapDisk                                 N9                             src/N9.hs:74:1-10                                                    40259           0    0.0    0.0     0.0    0.0
-  unwrapDisk                                    N9                             src/N9.hs:74:1-10                                                    41483           1    0.0    0.0     0.0    0.0
-   unwrapDisk                                   N9                             src/N9.hs:(74,1)-(79,5)                                              41484           1    0.0    0.0     0.0    0.0
+MAIN                                              MAIN                           <built-in>                                                           23722           0    0.0    0.0   100.0  100.0
+ main                                             Main                           app/Main.hs:68:1-4                                                   47444           1    0.0    0.0   100.0  100.0
+  main5                                           Main                           <no location info>                                                   47445           1    0.0    0.0   100.0  100.0
+   main1                                          Main                           <no location info>                                                   47448           0    0.0    0.0   100.0  100.0
+    main                                          Main                           app/Main.hs:(68,1)-(70,21)                                           47449           0    0.0    0.0   100.0  100.0
+     main4                                        Main                           <no location info>                                                   47452           0    0.0    0.0   100.0  100.0
+      mainLoop                                    Main                           app/Main.hs:(15,1)-(31,12)                                           47453           0    0.0    0.0   100.0  100.0
+       mainLoop.inputFile                         Main                           app/Main.hs:25:15-57                                                 47481           1    0.0    0.0     0.0    0.0
+       mainLoop.problemId                         Main                           app/Main.hs:21:9-36                                                  47457           1    0.0    0.0     0.0    0.0
+        lvl6                                      Main                           <no location info>                                                   47461           0    0.0    0.0     0.0    0.0
+       maybeSolver                                Main                           app/Main.hs:(34,1)-(63,14)                                           47462           1    0.0    0.0   100.0  100.0
+        getSolutions1                             N22                            <no location info>                                                   47636           0    0.0    0.0   100.0  100.0
+         getSolutions22                           N22                            src/N22.hs:106:1-82                                                  47637           0    0.0    0.0   100.0  100.0
+          solution1                               N22                            src/N22.hs:(78,1)-(80,48)                                            47640           1    0.0    0.0     0.3    7.3
+           $wgo2                                  N22                            <no location info>                                                   47646        2449    0.0    0.0     0.0    0.0
+           solution1.sNums                        N22                            src/N22.hs:80:3-48                                                   47641           1    0.0    0.0     0.3    7.3
+            lvl26                                 N22                            <no location info>                                                   47647        2448    0.0    0.0     0.3    7.3
+             solution1.sNums.\                    N22                            src/N22.hs:80:22-42                                                  47648        2448    0.0    0.0     0.3    7.3
+              genSequence                         N22                            src/N22.hs:35:1-11                                                   47651           0    0.0    0.0     0.3    7.3
+               genSequence                        N22                            src/N22.hs:35:1-32                                                   47652           0    0.0    1.5     0.3    7.3
+                nextNumber                        N22                            src/N22.hs:32:1-10                                                   47655           0    0.0    0.0     0.3    5.8
+                 nextNumber                       N22                            src/N22.hs:32:1-53                                                   47656           0    0.0    0.8     0.3    5.8
+                  secretDiv                       N22                            src/N22.hs:29:1-9                                                    47674           0    0.0    0.0     0.1    1.7
+                   secretDiv                      N22                            src/N22.hs:29:1-39                                                   47675           0    0.0    0.0     0.1    1.7
+                    thenMix'nPrune                N22                            src/N22.hs:20:1-38                                                   47676           0    0.0    1.1     0.1    1.7
+                     mix                          N22                            src/N22.hs:16:1-3                                                    47679           0    0.0    0.0     0.0    0.3
+                      mix                         N22                            src/N22.hs:16:1-9                                                    47680           0    0.0    0.3     0.0    0.3
+                     prune                        N22                            src/N22.hs:17:1-5                                                    47677           0    0.0    0.0     0.0    0.3
+                      prune                       N22                            src/N22.hs:17:1-24                                                   47678           0    0.0    0.3     0.0    0.3
+                  secretMult                      N22                            src/N22.hs:23:1-10                                                   47684           0    0.0    0.0     0.1    1.7
+                   secretMult                     N22                            src/N22.hs:23:1-36                                                   47685           0    0.0    0.0     0.1    1.7
+                    thenMix'nPrune                N22                            src/N22.hs:20:1-38                                                   47686           0    0.0    1.1     0.1    1.7
+                     mix                          N22                            src/N22.hs:16:1-3                                                    47689           0    0.0    0.0     0.0    0.3
+                      mix                         N22                            src/N22.hs:16:1-9                                                    47690           0    0.0    0.3     0.0    0.3
+                     prune                        N22                            src/N22.hs:17:1-5                                                    47687           0    0.0    0.0     0.0    0.3
+                      prune                       N22                            src/N22.hs:17:1-24                                                   47688           0    0.0    0.3     0.0    0.3
+                  secretMult2                     N22                            src/N22.hs:26:1-11                                                   47660           0    0.0    0.0     0.1    1.7
+                   secretMult2                    N22                            src/N22.hs:26:1-39                                                   47661           0    0.0    0.0     0.1    1.7
+                    thenMix'nPrune                N22                            src/N22.hs:20:1-38                                                   47662           0    0.0    1.1     0.1    1.7
+                     mix                          N22                            src/N22.hs:16:1-3                                                    47669           0    0.0    0.0     0.0    0.3
+                      mix                         N22                            src/N22.hs:16:1-9                                                    47670           0    0.0    0.3     0.0    0.3
+                     prune                        N22                            src/N22.hs:17:1-5                                                    47665           0    0.0    0.0     0.0    0.3
+                      prune                       N22                            src/N22.hs:17:1-24                                                   47666           0    0.0    0.3     0.0    0.3
+          solution2                               N22                            src/N22.hs:(83,1)-(89,23)                                            47696           1    0.0    0.0    99.7   92.6
+           maxScore                               N22                            src/N22.hs:(71,1)-(75,53)                                            47697           1    0.0    0.0    85.2   31.7
+            $w$wgo3                               N22                            <no location info>                                                   47929       40951    0.0    0.0     0.0    0.0
+            maxScore.scores                       N22                            src/N22.hs:73:5-33                                                   47709           1    0.0    0.0    85.2   31.6
+             score                                N22                            src/N22.hs:(66,1)-(68,47)                                            47865       40943    2.7   30.9    85.1   31.6
+              $wgo2                               N22                            <no location info>                                                   47902    98597713    1.4    0.0     1.4    0.0
+              score.scoreSingle                   N22                            src/N22.hs:68:3-47                                                   47903       40623    0.8    0.0    81.0    0.7
+               findByKey                          Trie                           src/Trie.hs:79:1-39                                                  47913           0    1.4    0.0    80.1    0.7
+                findSubtrie                       Trie                           src/Trie.hs:72:1-11                                                  47914   100012289    2.1    0.0    78.7    0.7
+                 findSubtrie                      Trie                           src/Trie.hs:(72,1)-(76,22)                                           47915   297773174   72.7    0.7    76.6    0.7
+                  findSubtrie_$sfindSubtrie       Trie                           src/Trie.hs:72:1-11                                                  47926   245928090    3.9    0.0     3.9    0.0
+                val                               Trie                           src/Trie.hs:9:34-36                                                  47927     4708588    0.1    0.0     0.1    0.0
+               v                                  N22                            <no location info>                                                   47912           0    0.0    0.0     0.0    0.0
+            using                                 Control.Parallel.Strategies    Control/Parallel/Strategies.hs:338:1-35                              47698           1    0.0    0.0     0.0    0.1
+             parListChunk                         Control.Parallel.Strategies    Control/Parallel/Strategies.hs:(600,1)-(602,67)                      47702           1    0.0    0.0     0.0    0.1
+              chunk                               Control.Parallel.Strategies    Control/Parallel/Strategies.hs:(605,1)-(606,57)                      47708         641    0.0    0.0     0.0    0.0
+               chunk.(...)                        Control.Parallel.Strategies    Control/Parallel/Strategies.hs:606:36-57                             47853         640    0.0    0.0     0.0    0.0
+               chunk.bs                           Control.Parallel.Strategies    Control/Parallel/Strategies.hs:606:36-57                             47852         640    0.0    0.0     0.0    0.0
+               chunk.as                           Control.Parallel.Strategies    Control/Parallel/Strategies.hs:606:36-57                             47857         638    0.0    0.0     0.0    0.0
+              parList                             Control.Parallel.Strategies    Control/Parallel/Strategies.hs:552:1-24                              47707           0    0.0    0.0     0.0    0.0
+               rparWith                           Control.Parallel.Strategies    Control/Parallel/Strategies.hs:494:1-32                              47848           1    0.0    0.0     0.0    0.0
+                parEval                           Control.Parallel.Strategies    Control/Parallel/Strategies.hs:(513,1)-(518,28)                      47849         640    0.0    0.0     0.0    0.0
+                evalList                          Control.Parallel.Strategies    Control/Parallel/Strategies.hs:542:1-26                              47856           0    0.0    0.0     0.0    0.0
+                 strat                            N22                            <no location info>                                                   47859       40768    0.0    0.0     0.0    0.0
+                  rdeepseq                        Control.Parallel.Strategies    Control/Parallel/Strategies.hs:450:1-38                              47860       40827    0.0    0.0     0.0    0.0
+                   rseq                           Control.Parallel.Strategies    Control/Parallel/Strategies.hs:429:1-26                              47863       40700    0.0    0.0     0.0    0.0
+             runEval                              Control.Parallel.Strategies    Control/Parallel/Strategies.hs:219:1-42                              47700           0    0.0    0.0     0.0    0.0
+              unEval_                             Control.Parallel.Strategies    Control/Parallel/Strategies.hs:210:24-30                             47701         641    0.0    0.0     0.0    0.0
+              parListChunk                        Control.Parallel.Strategies    Control/Parallel/Strategies.hs:(600,1)-(602,67)                      47705           0    0.0    0.0     0.0    0.0
+               parList                            Control.Parallel.Strategies    Control/Parallel/Strategies.hs:552:1-24                              47847           0    0.0    0.0     0.0    0.0
+                rparWith                          Control.Parallel.Strategies    Control/Parallel/Strategies.hs:494:1-32                              47850           0    0.0    0.0     0.0    0.0
+                 evalList                         Control.Parallel.Strategies    Control/Parallel/Strategies.hs:542:1-26                              47858           0    0.0    0.0     0.0    0.0
+                  strat                           N22                            <no location info>                                                   47861           0    0.0    0.0     0.0    0.0
+                   rdeepseq                       Control.Parallel.Strategies    Control/Parallel/Strategies.hs:450:1-38                              47862           0    0.0    0.0     0.0    0.0
+                 parEval                          Control.Parallel.Strategies    Control/Parallel/Strategies.hs:(513,1)-(518,28)                      47851           0    0.0    0.0     0.0    0.0
+                  parEval.r                       Control.Parallel.Strategies    Control/Parallel/Strategies.hs:518:5-28                              47854         640    0.0    0.0     0.0    0.0
+           solution2.seqDicts                     N22                            src/N22.hs:85:5-61                                                   47722           1    0.0    0.0     6.2   29.0
+            difSeqDict                            N22                            src/N22.hs:46:1-10                                                   47751        2448    0.0    0.0     5.8   28.9
+             difSeqDict                           N22                            src/N22.hs:(46,1)-(51,49)                                            47752        2448    0.3    2.2     5.8   28.9
+              lvl24                               N22                            <no location info>                                                   47756     4255410    0.3    1.1     2.9   11.4
+               difSeqDict.difValPairs             N22                            src/N22.hs:49:5-76                                                   47757     4354420    0.8    5.5     2.6   10.3
+                go1                               N22                            <no location info>                                                   47791    18245206    1.5    4.9     1.5    4.9
+                lvl20                             N22                            <no location info>                                                   47793    17384189    0.2    0.0     0.3    0.0
+                 go1                              N22                            <no location info>                                                   47794           0    0.0    0.0     0.0    0.0
+              difSeqDict.quadruplets              N22                            src/N22.hs:48:5-54                                                   47753        2448    0.0    0.0     2.3   15.3
+               tailsGo                            N22                            <no location info>                                                   47754     4222906    0.5    4.2     0.5    4.2
+               digitAndDifSeqs                    N22                            src/N22.hs:(38,1)-(43,28)                                            47758        2448    0.1    1.3     1.8   11.2
+                digitAndDifSeqs.difs              N22                            src/N22.hs:41:5-52                                                   47762        2448    0.0    0.0     0.2    1.4
+                 $sgo                             N22                            <no location info>                                                   47763        2448    0.0    0.0     0.2    1.4
+                  go                              N22                            <no location info>                                                   47789     3719860    0.2    1.4     0.2    1.4
+                digitAndDifSeqs.digitSeq          N22                            src/N22.hs:40:5-43                                                   47759        2448    0.2    1.4     1.4    8.5
+                 lvl8                             N22                            <no location info>                                                   47765     4577763    0.1    0.2     0.1    0.2
+                 genSequence                      N22                            src/N22.hs:35:1-11                                                   47760           0    0.0    0.0     1.2    6.8
+                  genSequence                     N22                            src/N22.hs:35:1-32                                                   47761           0    0.1    1.5     1.2    6.8
+                   nextNumber                     N22                            src/N22.hs:32:1-10                                                   47766           0    0.1    0.0     1.1    5.3
+                    nextNumber                    N22                            src/N22.hs:32:1-53                                                   47767           0    0.1    0.8     1.0    5.3
+                     secretDiv                    N22                            src/N22.hs:29:1-9                                                    47775           0    0.0    0.0     0.3    1.6
+                      secretDiv                   N22                            src/N22.hs:29:1-39                                                   47776           0    0.0    0.0     0.3    1.6
+                       thenMix'nPrune             N22                            src/N22.hs:20:1-38                                                   47777           0    0.1    1.0     0.3    1.6
+                        mix                       N22                            src/N22.hs:16:1-3                                                    47780           0    0.0    0.0     0.1    0.3
+                         mix                      N22                            src/N22.hs:16:1-9                                                    47781           0    0.1    0.3     0.1    0.3
+                        prune                     N22                            src/N22.hs:17:1-5                                                    47778           0    0.0    0.0     0.1    0.3
+                         prune                    N22                            src/N22.hs:17:1-24                                                   47779           0    0.0    0.3     0.0    0.3
+                     secretMult                   N22                            src/N22.hs:23:1-10                                                   47782           0    0.0    0.0     0.3    1.5
+                      secretMult                  N22                            src/N22.hs:23:1-36                                                   47783           0    0.0    0.0     0.3    1.5
+                       thenMix'nPrune             N22                            src/N22.hs:20:1-38                                                   47784           0    0.1    0.9     0.2    1.5
+                        mix                       N22                            src/N22.hs:16:1-3                                                    47787           0    0.0    0.0     0.1    0.3
+                         mix                      N22                            src/N22.hs:16:1-9                                                    47788           0    0.1    0.3     0.1    0.3
+                        prune                     N22                            src/N22.hs:17:1-5                                                    47785           0    0.0    0.0     0.1    0.3
+                         prune                    N22                            src/N22.hs:17:1-24                                                   47786           0    0.0    0.3     0.0    0.3
+                     secretMult2                  N22                            src/N22.hs:26:1-11                                                   47768           0    0.0    0.0     0.3    1.5
+                      secretMult2                 N22                            src/N22.hs:26:1-39                                                   47769           0    0.0    0.0     0.3    1.5
+                       thenMix'nPrune             N22                            src/N22.hs:20:1-38                                                   47770           0    0.2    1.0     0.3    1.5
+                        mix                       N22                            src/N22.hs:16:1-3                                                    47773           0    0.0    0.0     0.1    0.3
+                         mix                      N22                            src/N22.hs:16:1-9                                                    47774           0    0.1    0.3     0.1    0.3
+                        prune                     N22                            src/N22.hs:17:1-5                                                    47771           0    0.0    0.0     0.1    0.3
+                         prune                    N22                            src/N22.hs:17:1-24                                                   47772           0    0.0    0.3     0.0    0.3
+              difSeqDict.difValPairs              N22                            src/N22.hs:49:5-76                                                   47792           0    0.3    0.0     0.3    0.0
+            using                                 Control.Parallel.Strategies    Control/Parallel/Strategies.hs:338:1-35                              47723           1    0.0    0.0     0.4    0.0
+             runEval                              Control.Parallel.Strategies    Control/Parallel/Strategies.hs:219:1-42                              47724           0    0.0    0.0     0.4    0.0
+              unEval_                             Control.Parallel.Strategies    Control/Parallel/Strategies.hs:210:24-30                             47725        2449    0.0    0.0     0.0    0.0
+              parList                             Control.Parallel.Strategies    Control/Parallel/Strategies.hs:552:1-24                              47734           0    0.0    0.0     0.4    0.0
+               rparWith                           Control.Parallel.Strategies    Control/Parallel/Strategies.hs:494:1-32                              47740           0    0.0    0.0     0.4    0.0
+                lvl2                              N22                            <no location info>                                                   47747           0    0.0    0.0     0.4    0.0
+                 rdeepseq                         Control.Parallel.Strategies    Control/Parallel/Strategies.hs:450:1-38                              47748           0    0.0    0.0     0.4    0.0
+                  $wgo1                           N22                            <no location info>                                                   47755     4139257    0.2    0.0     0.4    0.0
+                   $wgo                           N22                            <no location info>                                                   47764    22278572    0.2    0.0     0.2    0.0
+                parEval                           Control.Parallel.Strategies    Control/Parallel/Strategies.hs:(513,1)-(518,28)                      47741           0    0.0    0.0     0.0    0.0
+                 parEval.r                        Control.Parallel.Strategies    Control/Parallel/Strategies.hs:518:5-28                              47743        2448    0.0    0.0     0.0    0.0
+             strat4                               N22                            <no location info>                                                   47731           0    0.0    0.0     0.0    0.0
+            parList                               Control.Parallel.Strategies    Control/Parallel/Strategies.hs:552:1-24                              47732           0    0.0    0.0     0.0    0.0
+             rparWith                             Control.Parallel.Strategies    Control/Parallel/Strategies.hs:494:1-32                              47737           0    0.0    0.0     0.0    0.0
+              lvl2                                N22                            <no location info>                                                   47744        2448    0.0    0.0     0.0    0.0
+               rdeepseq                           Control.Parallel.Strategies    Control/Parallel/Strategies.hs:450:1-38                              47745        2448    0.0    0.0     0.0    0.0
+                rseq                              Control.Parallel.Strategies    Control/Parallel/Strategies.hs:429:1-26                              47749        2448    0.0    0.0     0.0    0.0
+              parEval                             Control.Parallel.Strategies    Control/Parallel/Strategies.hs:(513,1)-(518,28)                      47738        2448    0.0    0.0     0.0    0.0
+             strat4                               N22                            <no location info>                                                   47736           0    0.0    0.0     0.0    0.0
+           solution2.seqs                         N22                            src/N22.hs:87:5-83                                                   47710           1    0.0    0.0     1.5   12.3
+            go5                                   N22                            <no location info>                                                   47721        2449    0.0    0.0     1.4   12.2
+             lvl27                                N22                            <no location info>                                                   47797        2448    0.0    0.0     0.9    2.9
+              $sunion                             N22                            <no location info>                                                   47798    11740770    0.1    0.0     0.9    2.9
+               $s$wsplitS                         N22                            <no location info>                                                   47814    19286353    0.3    2.8     0.3    2.8
+               $sinsertR_$sgo4                    N22                            <no location info>                                                   47817    11870180    0.5    0.0     0.5    0.0
+               $sinsert_$s$sgo4                   N22                            <no location info>                                                   47815        4014    0.0    0.0     0.0    0.0
+                $sinsert_$sgo4                    N22                            <no location info>                                                   47816        5523    0.0    0.0     0.0    0.0
+             allDifSeqs                           N22                            src/N22.hs:63:1-10                                                   47801           0    0.0    0.0     0.6    9.4
+              allDifSeqs                          N22                            src/N22.hs:63:1-33                                                   47802           0    0.1    1.5     0.6    9.4
+               $sfromList                         N22                            <no location info>                                                   47803        2448    0.0    0.0     0.5    7.8
+                $sfromList_$sgo1                  N22                            <no location info>                                                   47810        1229    0.0    0.0     0.3    3.9
+                 go4                              N22                            <no location info>                                                   47812     2453084    0.0    0.0     0.3    3.9
+                  $sinsert_$sgo4                  N22                            <no location info>                                                   47813    26400072    0.2    3.9     0.2    3.9
+                 $sinsert_$sgo4                   N22                            <no location info>                                                   47811        2458    0.0    0.0     0.0    0.0
+                $sfromList_$s$wgo4                N22                            <no location info>                                                   47804        1219    0.0    0.0     0.2    3.9
+                 $sgo2                            N22                            <no location info>                                                   47818         859    0.0    0.0     0.2    2.8
+                  go3                             N22                            <no location info>                                                   47820     1714564    0.0    0.0     0.2    2.8
+                   $sinsert_$sgo4                 N22                            <no location info>                                                   47821    18450673    0.2    2.8     0.2    2.8
+                  $sinsert_$sgo4                  N22                            <no location info>                                                   47819        1718    0.0    0.0     0.0    0.0
+                 $s$wcreate                       N22                            <no location info>                                                   47805         360    0.0    0.0     0.0    0.0
+                 $sgo1                            N22                            <no location info>                                                   47806         274    0.0    0.0     0.1    0.9
+                  go2                             N22                            <no location info>                                                   47808      546356    0.0    0.0     0.1    0.9
+                   $sinsert_$sgo4                 N22                            <no location info>                                                   47809     5884701    0.1    0.9     0.1    0.9
+                  $sinsert_$sgo4                  N22                            <no location info>                                                   47807         822    0.0    0.0     0.0    0.0
+                 $wgo4                            N22                            <no location info>                                                   47822          86    0.0    0.0     0.0    0.3
+                  $sgo2                           N22                            <no location info>                                                   47823          71    0.0    0.0     0.0    0.2
+                   go3                            N22                            <no location info>                                                   47825      141574    0.0    0.0     0.0    0.2
+                    $sinsert_$sgo4                N22                            <no location info>                                                   47826     1523547    0.0    0.2     0.0    0.2
+                   $sinsert_$sgo4                 N22                            <no location info>                                                   47824         213    0.0    0.0     0.0    0.0
+                  $s$wcreate                      N22                            <no location info>                                                   47827          31    0.0    0.0     0.0    0.0
+                  $sgo1                           N22                            <no location info>                                                   47828          15    0.0    0.0     0.0    0.0
+                   go2                            N22                            <no location info>                                                   47830       29878    0.0    0.0     0.0    0.0
+                    $sinsert_$sgo4                N22                            <no location info>                                                   47831      322234    0.0    0.0     0.0    0.0
+                   $sinsert_$sgo4                 N22                            <no location info>                                                   47829          59    0.0    0.0     0.0    0.0
+            using                                 Control.Parallel.Strategies    Control/Parallel/Strategies.hs:338:1-35                              47711           1    0.0    0.0     0.0    0.0
+             runEval                              Control.Parallel.Strategies    Control/Parallel/Strategies.hs:219:1-42                              47712           0    0.0    0.0     0.0    0.0
+              unEval_                             Control.Parallel.Strategies    Control/Parallel/Strategies.hs:210:24-30                             47713       40755    0.0    0.0     0.0    0.0
+              parList                             Control.Parallel.Strategies    Control/Parallel/Strategies.hs:552:1-24                              47832           0    0.0    0.0     0.0    0.0
+               rparWith                           Control.Parallel.Strategies    Control/Parallel/Strategies.hs:494:1-32                              47837           0    0.0    0.0     0.0    0.0
+                lvl1                              N22                            <no location info>                                                   47842           0    0.0    0.0     0.0    0.0
+                 rdeepseq                         Control.Parallel.Strategies    Control/Parallel/Strategies.hs:450:1-38                              47843           0    0.0    0.0     0.0    0.0
+                  $wgo                            N22                            <no location info>                                                   47846      198314    0.0    0.0     0.0    0.0
+                parEval                           Control.Parallel.Strategies    Control/Parallel/Strategies.hs:(513,1)-(518,28)                      47838           0    0.0    0.0     0.0    0.0
+                 parEval.r                        Control.Parallel.Strategies    Control/Parallel/Strategies.hs:518:5-28                              47839       40728    0.0    0.0     0.0    0.0
+             strat3                               N22                            <no location info>                                                   47719           0    0.0    0.0     0.0    0.0
+            parList                               Control.Parallel.Strategies    Control/Parallel/Strategies.hs:552:1-24                              47720           0    0.0    0.0     0.0    0.0
+             rparWith                             Control.Parallel.Strategies    Control/Parallel/Strategies.hs:494:1-32                              47835           0    0.0    0.0     0.0    0.0
+              parEval                             Control.Parallel.Strategies    Control/Parallel/Strategies.hs:(513,1)-(518,28)                      47836       40951    0.0    0.0     0.0    0.0
+              lvl1                                N22                            <no location info>                                                   47840       40519    0.0    0.0     0.0    0.0
+               rdeepseq                           Control.Parallel.Strategies    Control/Parallel/Strategies.hs:450:1-38                              47841       40681    0.0    0.0     0.0    0.0
+                rseq                              Control.Parallel.Strategies    Control/Parallel/Strategies.hs:429:1-26                              47844       40802    0.0    0.0     0.0    0.0
+             strat3                               N22                            <no location info>                                                   47834           0    0.0    0.0     0.0    0.0
+           solution2.tries                        N22                            src/N22.hs:86:5-61                                                   47866           1    0.0    0.0     6.8   19.7
+            using                                 Control.Parallel.Strategies    Control/Parallel/Strategies.hs:338:1-35                              47867           1    0.0    0.0     0.0    0.0
+             runEval                              Control.Parallel.Strategies    Control/Parallel/Strategies.hs:219:1-42                              47868           0    0.0    0.0     0.0    0.0
+              unEval_                             Control.Parallel.Strategies    Control/Parallel/Strategies.hs:210:24-30                             47869        2449    0.0    0.0     0.0    0.0
+              parList                             Control.Parallel.Strategies    Control/Parallel/Strategies.hs:552:1-24                              47877           0    0.0    0.0     0.0    0.0
+               rparWith                           Control.Parallel.Strategies    Control/Parallel/Strategies.hs:494:1-32                              47882           0    0.0    0.0     0.0    0.0
+                parEval                           Control.Parallel.Strategies    Control/Parallel/Strategies.hs:(513,1)-(518,28)                      47883           0    0.0    0.0     0.0    0.0
+                 parEval.r                        Control.Parallel.Strategies    Control/Parallel/Strategies.hs:518:5-28                              47884        2448    0.0    0.0     0.0    0.0
+                rseq                              Control.Parallel.Strategies    Control/Parallel/Strategies.hs:429:1-26                              47886           0    0.0    0.0     0.0    0.0
+             strat2                               N22                            <no location info>                                                   47875           0    0.0    0.0     0.0    0.0
+            fromAssocList                         Trie                           src/Trie.hs:48:1-13                                                  47894           0    0.1    0.5     6.8   19.7
+             fromAssocList.\                      Trie                           src/Trie.hs:48:47-72                                                 47897     4718033    0.0    0.0     6.7   19.1
+              insertWord                          Trie                           src/Trie.hs:45:1-62                                                  47898     4718605    0.0    0.0     6.7   19.1
+               insertWithConst                    Trie                           src/Trie.hs:29:1-15                                                  47899     4742177    0.1    0.3     6.7   19.1
+                insertWithConst                   Trie                           src/Trie.hs:(29,1)-(39,71)                                           47900     4800876    0.2    1.4     6.6   18.8
+                 insertWithConst.go               Trie                           src/Trie.hs:(33,3)-(39,71)                                           47919    24070238    4.3   11.9     6.5   17.5
+                  insertWithConst.go.modifiedTrie Trie                           src/Trie.hs:38:7-33                                                  47921    11015443    0.2    0.0     0.2    0.0
+                  insertWithConst.go.modifiedMap  Trie                           src/Trie.hs:37:7-53                                                  47920    10920991    2.0    5.6     2.0    5.6
+             fromAssocList                        Trie                           src/Trie.hs:48:1-83                                                  47895           0    0.0    0.0     0.0    0.0
+              lvl                                 N22                            <no location info>                                                   47896           0    0.0    0.0     0.0    0.0
+             lvl                                  N22                            <no location info>                                                   47901           0    0.0    0.0     0.0    0.0
+            lvl                                   N22                            <no location info>                                                   47893           0    0.0    0.0     0.0    0.0
+            parList                               Control.Parallel.Strategies    Control/Parallel/Strategies.hs:552:1-24                              47876           0    0.0    0.0     0.0    0.0
+             rparWith                             Control.Parallel.Strategies    Control/Parallel/Strategies.hs:494:1-32                              47880           0    0.0    0.0     0.0    0.0
+              parEval                             Control.Parallel.Strategies    Control/Parallel/Strategies.hs:(513,1)-(518,28)                      47881        2448    0.0    0.0     0.0    0.0
+              rseq                                Control.Parallel.Strategies    Control/Parallel/Strategies.hs:429:1-26                              47885        2448    0.0    0.0     0.0    0.0
+             strat2                               N22                            <no location info>                                                   47879           0    0.0    0.0     0.0    0.0
+          parseFile                               N22                            src/N22.hs:103:1-9                                                   47644           0    0.0    0.0     0.0    0.1
+           parseFile                              N22                            src/N22.hs:103:1-28                                                  47645           0    0.0    0.0     0.0    0.1
+            f                                     N22                            <no location info>                                                   47691        2448    0.0    0.0     0.0    0.0
+             lvl5                                 N22                            <no location info>                                                   47694           0    0.0    0.0     0.0    0.0
+            lvl5                                  N22                            <no location info>                                                   47695           0    0.0    0.0     0.0    0.0
+       timeItNamed                                System.TimeIt                  System/TimeIt.hs:(24,1)-(27,12)                                      47638           1    0.0    0.0     0.0    0.0
+        timeItT                                   System.TimeIt                  System/TimeIt.hs:(32,1)-(38,17)                                      47639           1    0.0    0.0     0.0    0.0
+         timeItT.t                                System.TimeIt                  System/TimeIt.hs:37:9-40                                             47932           1    0.0    0.0     0.0    0.0
+       lvl49                                      Main                           <no location info>                                                   47466           0    0.0    0.0     0.0    0.0
+       lvl7                                       Main                           <no location info>                                                   47635           0    0.0    0.0     0.0    0.0
+       runFetchProblemDataToFiles                 InputDownloader                src/InputDownloader.hs:74:1-26                                       47467           0    0.0    0.0     0.0    0.0
+        runFetchProblemDataToFiles                InputDownloader                src/InputDownloader.hs:74:1-206                                      47468           1    0.0    0.0     0.0    0.0
+         runLoggingT                              Control.Monad.Logger           Control/Monad/Logger.hs:581:35-45                                    47470           2    0.0    0.0     0.0    0.0
+         runStdoutLoggingT                        Control.Monad.Logger           Control/Monad/Logger.hs:797:1-56                                     47469           2    0.0    0.0     0.0    0.0
+         fetchDescriptionToFile                   InputDownloader                src/InputDownloader.hs:(54,1)-(65,52)                                47572           1    0.0    0.0     0.0    0.0
+          >>=                                     Control.Monad.Logger           Control/Monad/Logger.hs:(617,5)-(620,12)                             47573           1    0.0    0.0     0.0    0.0
+           >>=.\                                  Control.Monad.Logger           Control/Monad/Logger.hs:(617,42)-(620,12)                            47574           1    0.0    0.0     0.0    0.0
+            >>=.\.(...)                           Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    47582           1    0.0    0.0     0.0    0.0
+             logDebugN                            Control.Monad.Logger           Control/Monad/Logger.hs:924:1-39                                     47591           0    0.0    0.0     0.0    0.0
+              logWithoutLoc                       Control.Monad.Logger           Control/Monad/Logger.hs:921:1-41                                     47592           0    0.0    0.0     0.0    0.0
+               monadLoggerLog                     Control.Monad.Logger           Control/Monad/Logger.hs:675:5-75                                     47593           0    0.0    0.0     0.0    0.0
+                monadLoggerLog.\                  Control.Monad.Logger           Control/Monad/Logger.hs:675:47-75                                    47594           1    0.0    0.0     0.0    0.0
+                 defaultOutput                    Control.Monad.Logger           Control/Monad/Logger.hs:(718,1)-(721,42)                             47595           1    0.0    0.0     0.0    0.0
+                  defaultOutput.ls                Control.Monad.Logger           Control/Monad/Logger.hs:721:5-42                                     47596           1    0.0    0.0     0.0    0.0
+                   defaultLogStrBS                Control.Monad.Logger           Control/Monad/Logger.hs:(728,1)-(731,21)                             47597           1    0.0    0.0     0.0    0.0
+                    defaultLogStr                 Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             47605           1    0.0    0.0     0.0    0.0
+                     mappend                      System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:56:10-22                             47606           5    0.0    0.0     0.0    0.0
+                      <>                          System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:55:5-62                              47607           5    0.0    0.0     0.0    0.0
+                     defaultLogLevelStr           Control.Monad.Logger           Control/Monad/Logger.hs:(734,1)-(736,60)                             47608           1    0.0    0.0     0.0    0.0
+                      toLogStr                    System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:80:5-54                              47611           1    0.0    0.0     0.0    0.0
+                      show                        Control.Monad.Logger           Control/Monad/Logger.hs:181:19-30                                    47609           0    0.0    0.0     0.0    0.0
+                       showsPrec                  Control.Monad.Logger           Control/Monad/Logger.hs:181:19-30                                    47610           1    0.0    0.0     0.0    0.0
+                     isDefaultLoc                 Control.Monad.Logger           Control/Monad/Logger.hs:(914,1)-(915,22)                             47612           1    0.0    0.0     0.0    0.0
+                    fromLogStr                    System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:174:1-51                             47613           1    0.0    0.0     0.0    0.0
+                     fromBuilder                  System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:42:1-46                              47614           0    0.0    0.0     0.0    0.0
+                      defaultLogStr               Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             47615           0    0.0    0.0     0.0    0.0
+                       fromString                 System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              47618           0    0.0    0.0     0.0    0.0
+                        toLogStr                  System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:5-99                             47619           0    0.0    0.0     0.0    0.0
+                         defaultLogLevelStr       Control.Monad.Logger           Control/Monad/Logger.hs:(734,1)-(736,60)                             47622           0    0.0    0.0     0.0    0.0
+                          toLogStr                System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:80:5-54                              47623           0    0.0    0.0     0.0    0.0
+                           toBuilder              System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:38:1-24                              47624           0    0.0    0.0     0.0    0.0
+                            mappend               System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:56:10-22                             47626           0    0.0    0.0     0.0    0.0
+                             <>                   System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:55:5-62                              47627           0    0.0    0.0     0.0    0.0
+                              mempty              System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:57:5-42                              47628           0    0.0    0.0     0.0    0.0
+                              toLogStr            System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:96:5-65                              47629           0    0.0    0.0     0.0    0.0
+                       mappend                    System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:56:10-22                             47616           0    0.0    0.0     0.0    0.0
+                        <>                        System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:55:5-62                              47617           0    0.0    0.0     0.0    0.0
+                 toLogStr                         System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:96:5-65                              47598           1    0.0    0.0     0.0    0.0
+             lvl49                                Main                           <no location info>                                                   47590           0    0.0    0.0     0.0    0.0
+            >>=.\.f'                              Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    47581           1    0.0    0.0     0.0    0.0
+            checkFileExistsWithData               InputDownloader                <no location info>                                                   47576           1    0.0    0.0     0.0    0.0
+             checkFileExistsWithData              InputDownloader                src/InputDownloader.hs:(21,1)-(27,23)                                47577           1    0.0    0.0     0.0    0.0
+            liftIO                                Control.Monad.Logger           Control/Monad/Logger.hs:623:5-32                                     47575           1    0.0    0.0     0.0    0.0
+             checkFileExistsWithData              InputDownloader                <no location info>                                                   47578           0    0.0    0.0     0.0    0.0
+              checkFileExistsWithData             InputDownloader                src/InputDownloader.hs:(21,1)-(27,23)                                47579           0    0.0    0.0     0.0    0.0
+         fetchInputToFile                         InputDownloader                src/InputDownloader.hs:(30,1)-(49,46)                                47471           1    0.0    0.0     0.0    0.0
+          >>=                                     Control.Monad.Logger           Control/Monad/Logger.hs:(617,5)-(620,12)                             47472           2    0.0    0.0     0.0    0.0
+           >>=.\                                  Control.Monad.Logger           Control/Monad/Logger.hs:(617,42)-(620,12)                            47473           2    0.0    0.0     0.0    0.0
+            >>=.\.(...)                           Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    47484           2    0.0    0.0     0.0    0.0
+             liftIO                               Control.Monad.Logger           Control/Monad/Logger.hs:623:5-32                                     47492           0    0.0    0.0     0.0    0.0
+              x54                                 InputDownloader                <no location info>                                                   47494           1    0.0    0.0     0.0    0.0
+              lvl49                               Main                           <no location info>                                                   47493           0    0.0    0.0     0.0    0.0
+             logDebugN                            Control.Monad.Logger           Control/Monad/Logger.hs:924:1-39                                     47500           0    0.0    0.0     0.0    0.0
+              logWithoutLoc                       Control.Monad.Logger           Control/Monad/Logger.hs:921:1-41                                     47501           0    0.0    0.0     0.0    0.0
+               monadLoggerLog                     Control.Monad.Logger           Control/Monad/Logger.hs:675:5-75                                     47502           0    0.0    0.0     0.0    0.0
+                monadLoggerLog.\                  Control.Monad.Logger           Control/Monad/Logger.hs:675:47-75                                    47503           1    0.0    0.0     0.0    0.0
+                 defaultOutput                    Control.Monad.Logger           Control/Monad/Logger.hs:(718,1)-(721,42)                             47504           1    0.0    0.0     0.0    0.0
+                  defaultOutput.ls                Control.Monad.Logger           Control/Monad/Logger.hs:721:5-42                                     47505           1    0.0    0.0     0.0    0.0
+                   defaultLogStrBS                Control.Monad.Logger           Control/Monad/Logger.hs:(728,1)-(731,21)                             47506           1    0.0    0.0     0.0    0.0
+                    defaultLogStr                 Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             47515           1    0.0    0.0     0.0    0.0
+                     mappend                      System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:56:10-22                             47516           5    0.0    0.0     0.0    0.0
+                      <>                          System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:55:5-62                              47517           5    0.0    0.0     0.0    0.0
+                     defaultLogLevelStr           Control.Monad.Logger           Control/Monad/Logger.hs:(734,1)-(736,60)                             47527           1    0.0    0.0     0.0    0.0
+                      toLogStr                    System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:80:5-54                              47531           1    0.0    0.0     0.0    0.0
+                      show                        Control.Monad.Logger           Control/Monad/Logger.hs:181:19-30                                    47529           0    0.0    0.0     0.0    0.0
+                       showsPrec                  Control.Monad.Logger           Control/Monad/Logger.hs:181:19-30                                    47530           1    0.0    0.0     0.0    0.0
+                     isDefaultLoc                 Control.Monad.Logger           Control/Monad/Logger.hs:(914,1)-(915,22)                             47544           1    0.0    0.0     0.0    0.0
+                    fromLogStr                    System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:174:1-51                             47554           1    0.0    0.0     0.0    0.0
+                     fromBuilder                  System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:42:1-46                              47556           0    0.0    0.0     0.0    0.0
+                      defaultLogStr               Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             47557           0    0.0    0.0     0.0    0.0
+                       fromString                 System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              47560           0    0.0    0.0     0.0    0.0
+                        toLogStr                  System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:5-99                             47561           0    0.0    0.0     0.0    0.0
+                         defaultLogLevelStr       Control.Monad.Logger           Control/Monad/Logger.hs:(734,1)-(736,60)                             47564           0    0.0    0.0     0.0    0.0
+                          toLogStr                System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:80:5-54                              47565           0    0.0    0.0     0.0    0.0
+                           toBuilder              System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:38:1-24                              47566           0    0.0    0.0     0.0    0.0
+                            mappend               System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:56:10-22                             47568           0    0.0    0.0     0.0    0.0
+                             <>                   System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:55:5-62                              47569           0    0.0    0.0     0.0    0.0
+                              mempty              System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:57:5-42                              47570           0    0.0    0.0     0.0    0.0
+                              toLogStr            System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:96:5-65                              47571           0    0.0    0.0     0.0    0.0
+                       mappend                    System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:56:10-22                             47558           0    0.0    0.0     0.0    0.0
+                        <>                        System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:55:5-62                              47559           0    0.0    0.0     0.0    0.0
+                 toLogStr                         System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:96:5-65                              47508           1    0.0    0.0     0.0    0.0
+             lvl49                                Main                           <no location info>                                                   47499           0    0.0    0.0     0.0    0.0
+            >>=.\.f'                              Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    47483           2    0.0    0.0     0.0    0.0
+            checkFileExistsWithData               InputDownloader                <no location info>                                                   47477           1    0.0    0.0     0.0    0.0
+             checkFileExistsWithData              InputDownloader                src/InputDownloader.hs:(21,1)-(27,23)                                47478           1    0.0    0.0     0.0    0.0
+            liftIO                                Control.Monad.Logger           Control/Monad/Logger.hs:623:5-32                                     47474           1    0.0    0.0     0.0    0.0
+             checkFileExistsWithData              InputDownloader                <no location info>                                                   47479           0    0.0    0.0     0.0    0.0
+              checkFileExistsWithData             InputDownloader                src/InputDownloader.hs:(21,1)-(27,23)                                47480           0    0.0    0.0     0.0    0.0
+            lvl49                                 Main                           <no location info>                                                   47491           0    0.0    0.0     0.0    0.0
+ CAF                                              GHC.Conc.Signal                <entire-module>                                                      47375           0    0.0    0.0     0.0    0.0
+ CAF                                              GHC.Event.Poll                 <entire-module>                                                      47360           0    0.0    0.0     0.0    0.0
+ CAF                                              GHC.Event.Thread               <entire-module>                                                      47359           0    0.0    0.0     0.0    0.0
+ CAF                                              GHC.Float                      <entire-module>                                                      47352           0    0.0    0.0     0.0    0.0
+ CAF                                              GHC.IO.Encoding                <entire-module>                                                      47339           0    0.0    0.0     0.0    0.0
+ CAF                                              GHC.IO.Encoding.Iconv          <entire-module>                                                      47337           0    0.0    0.0     0.0    0.0
+ CAF                                              GHC.IO.Exception               <entire-module>                                                      47331           0    0.0    0.0     0.0    0.0
+ CAF                                              GHC.IO.FD                      <entire-module>                                                      47330           0    0.0    0.0     0.0    0.0
+ CAF                                              GHC.IO.Handle.FD               <entire-module>                                                      47328           0    0.0    0.0     0.0    0.0
+ CAF                                              GHC.IO.Handle.Internals        <entire-module>                                                      47327           0    0.0    0.0     0.0    0.0
+ CAF                                              GHC.Weak.Finalize              <entire-module>                                                      47290           0    0.0    0.0     0.0    0.0
+ CAF                                              Text.Printf                    <entire-module>                                                      47278           0    0.0    0.0     0.0    0.0
+ CAF                                              Data.Text.Array                <entire-module>                                                      47194           0    0.0    0.0     0.0    0.0
+ CAF                                              Data.Text.Internal             <entire-module>                                                      47191           0    0.0    0.0     0.0    0.0
+ CAF:$fApplicativeEval3                           Control.Parallel.Strategies    <no location info>                                                   26391           0    0.0    0.0     0.0    0.0
+  liftA2                                          Control.Parallel.Strategies    Control/Parallel/Strategies.hs:211:22-32                             47733           1    0.0    0.0     0.0    0.0
+ CAF:$fApplicativeEval5                           Control.Parallel.Strategies    <no location info>                                                   26389           0    0.0    0.0     0.0    0.0
+  pure                                            Control.Parallel.Strategies    Control/Parallel/Strategies.hs:211:22-32                             47796           1    0.0    0.0     0.0    0.0
+ CAF:$fFunctorEval2                               Control.Parallel.Strategies    <no location info>                                                   26387           0    0.0    0.0     0.0    0.0
+  fmap                                            Control.Parallel.Strategies    Control/Parallel/Strategies.hs:211:13-19                             47704           1    0.0    0.0     0.0    0.0
+ CAF:$fMonadEval1                                 Control.Parallel.Strategies    <no location info>                                                   26396           0    0.0    0.0     0.0    0.0
+  return                                          Control.Parallel.Strategies    Control/Parallel/Strategies.hs:211:35-39                             47742           1    0.0    0.0     0.0    0.0
+ CAF:$fMonadEval2                                 Control.Parallel.Strategies    <no location info>                                                   26395           0    0.0    0.0     0.0    0.0
+  >>                                              Control.Parallel.Strategies    Control/Parallel/Strategies.hs:211:35-39                             47746           1    0.0    0.0     0.0    0.0
+ CAF:$fMonadEval3                                 Control.Parallel.Strategies    <no location info>                                                   26394           0    0.0    0.0     0.0    0.0
+  >>=                                             Control.Parallel.Strategies    Control/Parallel/Strategies.hs:211:35-39                             47739           1    0.0    0.0     0.0    0.0
+ CAF:$fMonadIOLoggingT1                           Control.Monad.Logger           <no location info>                                                   45357           0    0.0    0.0     0.0    0.0
+  liftIO                                          Control.Monad.Logger           Control/Monad/Logger.hs:623:5-32                                     47475           0    0.0    0.0     0.0    0.0
+   lift                                           Control.Monad.Logger           Control/Monad/Logger.hs:658:5-27                                     47476           1    0.0    0.0     0.0    0.0
+ CAF:$fMonoidLogStr1                              System.Log.FastLogger.LogStr   <no location info>                                                   45295           0    0.0    0.0     0.0    0.0
+  mempty                                          System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:57:5-42                              47534           0    0.0    0.0     0.0    0.0
+ CAF:$fMonoidLogStr2                              System.Log.FastLogger.LogStr   <no location info>                                                   45294           0    0.0    0.0     0.0    0.0
+  toBuilder                                       System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:38:1-24                              47532           1    0.0    0.0     0.0    0.0
+ CAF:$fMonoidLogStr_$cmempty                      System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:57:5-10                              45296           0    0.0    0.0     0.0    0.0
+  mempty                                          System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:57:5-42                              47533           1    0.0    0.0     0.0    0.0
+ CAF:$fShowLogLevel_$cshow                        Control.Monad.Logger           Control/Monad/Logger.hs:181:19-30                                    45406           0    0.0    0.0     0.0    0.0
+  show                                            Control.Monad.Logger           Control/Monad/Logger.hs:181:19-30                                    47528           1    0.0    0.0     0.0    0.0
+ CAF:allDifSeqs_r7Ov                              N22                            src/N22.hs:63:1-10                                                   46097           0    0.0    0.0     0.0    0.0
+  allDifSeqs                                      N22                            src/N22.hs:63:1-10                                                   47799           1    0.0    0.0     0.0    0.0
+   allDifSeqs                                     N22                            src/N22.hs:63:1-33                                                   47800           1    0.0    0.0     0.0    0.0
+ CAF:d_r9qm                                       N22                            <no location info>                                                   46047           0    0.0    0.0     0.0    0.0
+  d                                               N22                            <no location info>                                                   47790           1    0.0    0.0     0.0    0.0
+ CAF:defaultLoc                                   Control.Monad.Logger           Control/Monad/Logger.hs:911:1-10                                     45362           0    0.0    0.0     0.0    0.0
+  defaultLoc                                      Control.Monad.Logger           Control/Monad/Logger.hs:911:1-64                                     47507           1    0.0    0.0     0.0    0.0
+ CAF:evalList                                     Control.Parallel.Strategies    Control/Parallel/Strategies.hs:542:1-8                               26407           0    0.0    0.0     0.0    0.0
+  evalList                                        Control.Parallel.Strategies    Control/Parallel/Strategies.hs:542:1-26                              47855           1    0.0    0.0     0.0    0.0
+ CAF:evalList2                                    Control.Parallel.Strategies    <no location info>                                                   26406           0    0.0    0.0     0.0    0.0
+  evalList                                        Control.Parallel.Strategies    Control/Parallel/Strategies.hs:542:1-26                              47928           0    0.0    0.0     0.0    0.0
+ CAF:fromAssocList1                               Trie                           <no location info>                                                   45554           0    0.0    0.0     0.0    0.0
+  fromAssocList1                                  Trie                           <no location info>                                                   47916           1    0.0    0.0     0.0    0.0
+   fromAssocList                                  Trie                           src/Trie.hs:48:1-83                                                  47917           0    0.0    0.0     0.0    0.0
+    emptyTrie                                     Trie                           src/Trie.hs:13:1-32                                                  47918           1    0.0    0.0     0.0    0.0
+ CAF:fromBuilder                                  System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:42:1-11                              45300           0    0.0    0.0     0.0    0.0
+  fromBuilder                                     System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:42:1-46                              47555           1    0.0    0.0     0.0    0.0
+ CAF:genSequence_r7Oq                             N22                            src/N22.hs:35:1-11                                                   46096           0    0.0    0.0     0.0    0.0
+  genSequence                                     N22                            src/N22.hs:35:1-11                                                   47649           1    0.0    0.0     0.0    0.0
+   genSequence                                    N22                            src/N22.hs:35:1-32                                                   47650           1    0.0    0.0     0.0    0.0
+ CAF:getSolutions1                                N22                            <no location info>                                                   46098           0    0.0    0.0     0.0    0.0
+  getSolutions1                                   N22                            <no location info>                                                   47633           1    0.0    0.0     0.0    0.0
+   getSolutions22                                 N22                            src/N22.hs:106:1-82                                                  47634           1    0.0    0.0     0.0    0.0
+ CAF:insertWithConst1                             Trie                           <no location info>                                                   45553           0    0.0    0.0     0.0    0.0
+  insertWithConst1                                Trie                           <no location info>                                                   47922           1    0.0    0.0     0.0    0.0
+   insertWithConst                                Trie                           src/Trie.hs:(29,1)-(39,71)                                           47923           0    0.0    0.0     0.0    0.0
+    insertWithConst.go                            Trie                           src/Trie.hs:(33,3)-(39,71)                                           47924           0    0.0    0.0     0.0    0.0
+     emptyTrie                                    Trie                           src/Trie.hs:13:1-32                                                  47925           1    0.0    0.0     0.0    0.0
+ CAF:lvl16_rjiZ                                   InputDownloader                <no location info>                                                   46990           0    0.0    0.0     0.0    0.0
+  lvl16                                           InputDownloader                <no location info>                                                   47509           1    0.0    0.0     0.0    0.0
+   runFetchProblemDataToFiles                     InputDownloader                src/InputDownloader.hs:74:1-206                                      47510           0    0.0    0.0     0.0    0.0
+    fetchInputToFile                              InputDownloader                src/InputDownloader.hs:(30,1)-(49,46)                                47511           0    0.0    0.0     0.0    0.0
+     >>=                                          Control.Monad.Logger           Control/Monad/Logger.hs:(617,5)-(620,12)                             47512           0    0.0    0.0     0.0    0.0
+      >>=.\                                       Control.Monad.Logger           Control/Monad/Logger.hs:(617,42)-(620,12)                            47513           0    0.0    0.0     0.0    0.0
+       >>=.\.(...)                                Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    47514           0    0.0    0.0     0.0    0.0
+ CAF:lvl1_rcDC                                    Main                           <no location info>                                                   47054           0    0.0    0.0     0.0    0.0
+  lvl1                                            Main                           <no location info>                                                   47454           1    0.0    0.0     0.0    0.0
+ CAF:lvl1_rjiH                                    InputDownloader                <no location info>                                                   46982           0    0.0    0.0     0.0    0.0
+  lvl1                                            InputDownloader                <no location info>                                                   47495           1    0.0    0.0     0.0    0.0
+ CAF:lvl22_rjj7                                   InputDownloader                <no location info>                                                   46994           0    0.0    0.0     0.0    0.0
+  lvl22                                           InputDownloader                <no location info>                                                   47599           1    0.0    0.0     0.0    0.0
+   runFetchProblemDataToFiles                     InputDownloader                src/InputDownloader.hs:74:1-206                                      47600           0    0.0    0.0     0.0    0.0
+    fetchDescriptionToFile                        InputDownloader                src/InputDownloader.hs:(54,1)-(65,52)                                47601           0    0.0    0.0     0.0    0.0
+     >>=                                          Control.Monad.Logger           Control/Monad/Logger.hs:(617,5)-(620,12)                             47602           0    0.0    0.0     0.0    0.0
+      >>=.\                                       Control.Monad.Logger           Control/Monad/Logger.hs:(617,42)-(620,12)                            47603           0    0.0    0.0     0.0    0.0
+       >>=.\.(...)                                Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    47604           0    0.0    0.0     0.0    0.0
+ CAF:lvl3_rcDE                                    Main                           <no location info>                                                   47055           0    0.0    0.0     0.0    0.0
+  lvl3                                            Main                           <no location info>                                                   47455           1    0.0    0.0     0.0    0.0
+ CAF:lvl40_rcEf                                   Main                           <no location info>                                                   47085           0    0.0    0.0     0.0    0.0
+  lvl40                                           Main                           <no location info>                                                   47931           1    0.0    0.0     0.0    0.0
+ CAF:lvl48_rcEn                                   Main                           <no location info>                                                   47088           0    0.0    0.0     0.0    0.0
+  lvl48                                           Main                           <no location info>                                                   47580           1    0.0    0.0     0.0    0.0
+ CAF:lvl49_rcEo                                   Main                           <no location info>                                                   47089           0    0.0    0.0     0.0    0.0
+  lvl49                                           Main                           <no location info>                                                   47463           1    0.0    0.0     0.0    0.0
+   mainLoop                                       Main                           app/Main.hs:(15,1)-(31,12)                                           47464           0    0.0    0.0     0.0    0.0
+    runFetchProblemDataToFiles                    InputDownloader                src/InputDownloader.hs:74:1-26                                       47465           1    0.0    0.0     0.0    0.0
+     runFetchProblemDataToFiles                   InputDownloader                src/InputDownloader.hs:74:1-206                                      47485           0    0.0    0.0     0.0    0.0
+      fetchDescriptionToFile                      InputDownloader                src/InputDownloader.hs:(54,1)-(65,52)                                47583           0    0.0    0.0     0.0    0.0
+       >>=                                        Control.Monad.Logger           Control/Monad/Logger.hs:(617,5)-(620,12)                             47584           0    0.0    0.0     0.0    0.0
+        >>=.\                                     Control.Monad.Logger           Control/Monad/Logger.hs:(617,42)-(620,12)                            47585           0    0.0    0.0     0.0    0.0
+         >>=.\.(...)                              Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    47586           0    0.0    0.0     0.0    0.0
+          logDebugN                               Control.Monad.Logger           Control/Monad/Logger.hs:924:1-39                                     47587           1    0.0    0.0     0.0    0.0
+           logWithoutLoc                          Control.Monad.Logger           Control/Monad/Logger.hs:921:1-41                                     47588           1    0.0    0.0     0.0    0.0
+            monadLoggerLog                        Control.Monad.Logger           Control/Monad/Logger.hs:675:5-75                                     47589           1    0.0    0.0     0.0    0.0
+      fetchInputToFile                            InputDownloader                src/InputDownloader.hs:(30,1)-(49,46)                                47486           0    0.0    0.0     0.0    0.0
+       >>=                                        Control.Monad.Logger           Control/Monad/Logger.hs:(617,5)-(620,12)                             47487           0    0.0    0.0     0.0    0.0
+        >>=.\                                     Control.Monad.Logger           Control/Monad/Logger.hs:(617,42)-(620,12)                            47488           0    0.0    0.0     0.0    0.0
+         >>=.\.(...)                              Control.Monad.Logger           Control/Monad/Logger.hs:619:13-29                                    47489           0    0.0    0.0     0.0    0.0
+          liftIO                                  Control.Monad.Logger           Control/Monad/Logger.hs:623:5-32                                     47490           1    0.0    0.0     0.0    0.0
+          logDebugN                               Control.Monad.Logger           Control/Monad/Logger.hs:924:1-39                                     47496           1    0.0    0.0     0.0    0.0
+           logWithoutLoc                          Control.Monad.Logger           Control/Monad/Logger.hs:921:1-41                                     47497           1    0.0    0.0     0.0    0.0
+            monadLoggerLog                        Control.Monad.Logger           Control/Monad/Logger.hs:675:5-75                                     47498           1    0.0    0.0     0.0    0.0
+ CAF:lvl50_rcEp                                   Main                           <no location info>                                                   47090           0    0.0    0.0     0.0    0.0
+  lvl50                                           Main                           <no location info>                                                   47930           1    0.0    0.0     0.0    0.0
+ CAF:lvl50_rgf4                                   Control.Monad.Logger           <no location info>                                                   45408           0    0.0    0.0     0.0    0.0
+  defaultLogStr                                   Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             47518           0    0.0    0.0     0.0    0.0
+   fromString                                     System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              47519           1    0.0    0.0     0.0    0.0
+    toLogStr                                      System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:5-99                             47520           1    0.0    0.0     0.0    0.0
+     toLogStr.\                                   System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:50-68                            47526           1    0.0    0.0     0.0    0.0
+ CAF:lvl53_rcEs                                   Main                           <no location info>                                                   47091           0    0.0    0.0     0.0    0.0
+  lvl53                                           Main                           <no location info>                                                   47482           1    0.0    0.0     0.0    0.0
+ CAF:lvl56_rgff                                   Control.Monad.Logger           <no location info>                                                   45412           0    0.0    0.0     0.0    0.0
+  defaultLogStr                                   Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             47535           0    0.0    0.0     0.0    0.0
+   fromString                                     System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              47536           1    0.0    0.0     0.0    0.0
+    toLogStr                                      System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:5-99                             47537           1    0.0    0.0     0.0    0.0
+     toLogStr.\                                   System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:50-68                            47543           1    0.0    0.0     0.0    0.0
+ CAF:lvl5_r9qG                                    N22                            <no location info>                                                   46061           0    0.0    0.0     0.0    0.0
+  lvl5                                            N22                            <no location info>                                                   47692           1    0.0    0.0     0.0    0.0
+   parseFile                                      N22                            src/N22.hs:103:1-28                                                  47693           0    0.0    0.0     0.0    0.0
+ CAF:lvl5_rcDG                                    Main                           <no location info>                                                   47056           0    0.0    0.0     0.0    0.0
+  lvl5                                            Main                           <no location info>                                                   47456           1    0.0    0.0     0.0    0.0
+ CAF:lvl67_rgfw                                   Control.Monad.Logger           <no location info>                                                   45418           0    0.0    0.0     0.0    0.0
+  defaultLogStr                                   Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             47545           0    0.0    0.0     0.0    0.0
+   fromString                                     System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              47546           1    0.0    0.0     0.0    0.0
+    toLogStr                                      System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:5-99                             47547           1    0.0    0.0     0.0    0.0
+     toLogStr.\                                   System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:103:50-68                            47553           1    0.0    0.0     0.0    0.0
+ CAF:lvl6_rcDH                                    Main                           <no location info>                                                   47057           0    0.0    0.0     0.0    0.0
+  lvl6                                            Main                           <no location info>                                                   47458           1    0.0    0.0     0.0    0.0
+   mainLoop                                       Main                           app/Main.hs:(15,1)-(31,12)                                           47459           0    0.0    0.0     0.0    0.0
+    mainLoop.problemId                            Main                           app/Main.hs:21:9-36                                                  47460           0    0.0    0.0     0.0    0.0
+ CAF:lvl7_rcDI                                    Main                           <no location info>                                                   47058           0    0.0    0.0     0.0    0.0
+  lvl7                                            Main                           <no location info>                                                   47630           1    0.0    0.0     0.0    0.0
+   mainLoop                                       Main                           app/Main.hs:(15,1)-(31,12)                                           47631           0    0.0    0.0     0.0    0.0
+    maybeSolver                                   Main                           app/Main.hs:(34,1)-(63,14)                                           47632           0    0.0    0.0     0.0    0.0
+ CAF:lvl_r9qo                                     N22                            <no location info>                                                   46049           0    0.0    0.0     0.0    0.0
+  lvl                                             N22                            <no location info>                                                   47887           1    0.0    0.0     0.0    0.0
+   getSolutions22                                 N22                            src/N22.hs:106:1-82                                                  47888           0    0.0    0.0     0.0    0.0
+    solution2                                     N22                            src/N22.hs:(83,1)-(89,23)                                            47889           0    0.0    0.0     0.0    0.0
+     solution2.tries                              N22                            src/N22.hs:86:5-61                                                   47890           0    0.0    0.0     0.0    0.0
+      fromAssocList                               Trie                           src/Trie.hs:48:1-13                                                  47891           1    0.0    0.0     0.0    0.0
+       fromAssocList                              Trie                           src/Trie.hs:48:1-83                                                  47892           1    0.0    0.0     0.0    0.0
+ CAF:main1                                        Main                           <no location info>                                                   47094           0    0.0    0.0     0.0    0.0
+  main1                                           Main                           <no location info>                                                   47446           1    0.0    0.0     0.0    0.0
+   main                                           Main                           app/Main.hs:(68,1)-(70,21)                                           47447           1    0.0    0.0     0.0    0.0
+ CAF:main2                                        Main                           <no location info>                                                   47093           0    0.0    0.0     0.0    0.0
+  main2                                           Main                           <no location info>                                                   47933           1    0.0    0.0     0.0    0.0
+ CAF:main4                                        Main                           <no location info>                                                   47092           0    0.0    0.0     0.0    0.0
+  main4                                           Main                           <no location info>                                                   47450           1    0.0    0.0     0.0    0.0
+   mainLoop                                       Main                           app/Main.hs:(15,1)-(31,12)                                           47451           1    0.0    0.0     0.0    0.0
+ CAF:mix_r7Oj                                     N22                            src/N22.hs:16:1-3                                                    46091           0    0.0    0.0     0.0    0.0
+  mix                                             N22                            src/N22.hs:16:1-3                                                    47667           1    0.0    0.0     0.0    0.0
+   mix                                            N22                            src/N22.hs:16:1-9                                                    47668           1    0.0    0.0     0.0    0.0
+ CAF:nextNumber_r7Op                              N22                            src/N22.hs:32:1-10                                                   46095           0    0.0    0.0     0.0    0.0
+  nextNumber                                      N22                            src/N22.hs:32:1-10                                                   47653           1    0.0    0.0     0.0    0.0
+   nextNumber                                     N22                            src/N22.hs:32:1-53                                                   47654           1    0.0    0.0     0.0    0.0
+ CAF:parList                                      Control.Parallel.Strategies    Control/Parallel/Strategies.hs:552:1-7                               26410           0    0.0    0.0     0.0    0.0
+  parList                                         Control.Parallel.Strategies    Control/Parallel/Strategies.hs:552:1-24                              47706           1    0.0    0.0     0.0    0.0
+ CAF:parList1                                     Control.Parallel.Strategies    <no location info>                                                   26409           0    0.0    0.0     0.0    0.0
+  parList                                         Control.Parallel.Strategies    Control/Parallel/Strategies.hs:552:1-24                              47795           0    0.0    0.0     0.0    0.0
+ CAF:parseFile_r7OB                               N22                            src/N22.hs:103:1-9                                                   46064           0    0.0    0.0     0.0    0.0
+  parseFile                                       N22                            src/N22.hs:103:1-9                                                   47642           1    0.0    0.0     0.0    0.0
+   parseFile                                      N22                            src/N22.hs:103:1-28                                                  47643           1    0.0    0.0     0.0    0.0
+ CAF:prune_r7Ok                                   N22                            src/N22.hs:17:1-5                                                    46080           0    0.0    0.0     0.0    0.0
+  prune                                           N22                            src/N22.hs:17:1-5                                                    47663           1    0.0    0.0     0.0    0.0
+   prune                                          N22                            src/N22.hs:17:1-24                                                   47664           1    0.0    0.0     0.0    0.0
+ CAF:runEval                                      Control.Parallel.Strategies    Control/Parallel/Strategies.hs:219:1-7                               26397           0    0.0    0.0     0.0    0.0
+  runEval                                         Control.Parallel.Strategies    Control/Parallel/Strategies.hs:219:1-42                              47699           1    0.0    0.0     0.0    0.0
+ CAF:secretDiv_r7Oo                               N22                            src/N22.hs:29:1-9                                                    46092           0    0.0    0.0     0.0    0.0
+  secretDiv                                       N22                            src/N22.hs:29:1-9                                                    47671           1    0.0    0.0     0.0    0.0
+   secretDiv                                      N22                            src/N22.hs:29:1-39                                                   47672           1    0.0    0.0     0.0    0.0
+    thenMix'nPrune                                N22                            src/N22.hs:20:1-38                                                   47673           1    0.0    0.0     0.0    0.0
+ CAF:secretMult2_r7On                             N22                            src/N22.hs:26:1-11                                                   46094           0    0.0    0.0     0.0    0.0
+  secretMult2                                     N22                            src/N22.hs:26:1-11                                                   47657           1    0.0    0.0     0.0    0.0
+   secretMult2                                    N22                            src/N22.hs:26:1-39                                                   47658           1    0.0    0.0     0.0    0.0
+    thenMix'nPrune                                N22                            src/N22.hs:20:1-38                                                   47659           1    0.0    0.0     0.0    0.0
+ CAF:secretMult_r7Om                              N22                            src/N22.hs:23:1-10                                                   46093           0    0.0    0.0     0.0    0.0
+  secretMult                                      N22                            src/N22.hs:23:1-10                                                   47681           1    0.0    0.0     0.0    0.0
+   secretMult                                     N22                            src/N22.hs:23:1-36                                                   47682           1    0.0    0.0     0.0    0.0
+    thenMix'nPrune                                N22                            src/N22.hs:20:1-38                                                   47683           1    0.0    0.0     0.0    0.0
+ CAF:strat1_r9qk                                  N22                            <no location info>                                                   46045           0    0.0    0.0     0.0    0.0
+  strat1                                          N22                            <no location info>                                                   47703           1    0.0    0.0     0.0    0.0
+ CAF:strat2_r9qn                                  N22                            <no location info>                                                   46048           0    0.0    0.0     0.0    0.0
+  strat2                                          N22                            <no location info>                                                   47870           1    0.0    0.0     0.0    0.0
+   getSolutions22                                 N22                            src/N22.hs:106:1-82                                                  47871           0    0.0    0.0     0.0    0.0
+    solution2                                     N22                            src/N22.hs:(83,1)-(89,23)                                            47872           0    0.0    0.0     0.0    0.0
+     solution2.tries                              N22                            src/N22.hs:86:5-61                                                   47873           0    0.0    0.0     0.0    0.0
+      parList                                     Control.Parallel.Strategies    Control/Parallel/Strategies.hs:552:1-24                              47874           0    0.0    0.0     0.0    0.0
+       rparWith                                   Control.Parallel.Strategies    Control/Parallel/Strategies.hs:494:1-32                              47878           1    0.0    0.0     0.0    0.0
+ CAF:strat3_r9qr                                  N22                            <no location info>                                                   46050           0    0.0    0.0     0.0    0.0
+  strat3                                          N22                            <no location info>                                                   47714           1    0.0    0.0     0.0    0.0
+   getSolutions22                                 N22                            src/N22.hs:106:1-82                                                  47715           0    0.0    0.0     0.0    0.0
+    solution2                                     N22                            src/N22.hs:(83,1)-(89,23)                                            47716           0    0.0    0.0     0.0    0.0
+     solution2.seqs                               N22                            src/N22.hs:87:5-83                                                   47717           0    0.0    0.0     0.0    0.0
+      parList                                     Control.Parallel.Strategies    Control/Parallel/Strategies.hs:552:1-24                              47718           0    0.0    0.0     0.0    0.0
+       rparWith                                   Control.Parallel.Strategies    Control/Parallel/Strategies.hs:494:1-32                              47833           1    0.0    0.0     0.0    0.0
+ CAF:strat4_r9qu                                  N22                            <no location info>                                                   46051           0    0.0    0.0     0.0    0.0
+  strat4                                          N22                            <no location info>                                                   47726           1    0.0    0.0     0.0    0.0
+   getSolutions22                                 N22                            src/N22.hs:106:1-82                                                  47727           0    0.0    0.0     0.0    0.0
+    solution2                                     N22                            src/N22.hs:(83,1)-(89,23)                                            47728           0    0.0    0.0     0.0    0.0
+     solution2.seqDicts                           N22                            src/N22.hs:85:5-61                                                   47729           0    0.0    0.0     0.0    0.0
+      parList                                     Control.Parallel.Strategies    Control/Parallel/Strategies.hs:552:1-24                              47730           0    0.0    0.0     0.0    0.0
+       rparWith                                   Control.Parallel.Strategies    Control/Parallel/Strategies.hs:494:1-32                              47735           1    0.0    0.0     0.0    0.0
+ CAF:t2_rgfc                                      Control.Monad.Logger           <no location info>                                                   45411           0    0.0    0.0     0.0    0.0
+  defaultLogStr                                   Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             47538           0    0.0    0.0     0.0    0.0
+   fromString                                     System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              47539           0    0.0    0.0     0.0    0.0
+    unstreamChunks/outer                          Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(71,15)-(77,43) 47540           2    0.0    0.0     0.0    0.0
+     unstreamChunks/resize                        Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(81,72)-(85,38) 47541           1    0.0    0.0     0.0    0.0
+      unstreamChunks/inner                        Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(88,17)-(92,59) 47542           2    0.0    0.0     0.0    0.0
+ CAF:t5_rgft                                      Control.Monad.Logger           <no location info>                                                   45417           0    0.0    0.0     0.0    0.0
+  defaultLogStr                                   Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             47548           0    0.0    0.0     0.0    0.0
+   fromString                                     System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              47549           0    0.0    0.0     0.0    0.0
+    unstreamChunks/outer                          Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(71,15)-(77,43) 47550           2    0.0    0.0     0.0    0.0
+     unstreamChunks/resize                        Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(81,72)-(85,38) 47551           1    0.0    0.0     0.0    0.0
+      unstreamChunks/inner                        Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(88,17)-(92,59) 47552           1    0.0    0.0     0.0    0.0
+ CAF:t_rgf1                                       Control.Monad.Logger           <no location info>                                                   45407           0    0.0    0.0     0.0    0.0
+  defaultLogStr                                   Control.Monad.Logger           Control/Monad/Logger.hs:(743,1)-(764,37)                             47521           0    0.0    0.0     0.0    0.0
+   fromString                                     System.Log.FastLogger.LogStr   System/Log/FastLogger/LogStr.hs:67:5-35                              47522           0    0.0    0.0     0.0    0.0
+    unstreamChunks/outer                          Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(71,15)-(77,43) 47523           2    0.0    0.0     0.0    0.0
+     unstreamChunks/resize                        Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(81,72)-(85,38) 47524           1    0.0    0.0     0.0    0.0
+      unstreamChunks/inner                        Data.Text.Internal.Lazy.Fusion libraries/text/src/Data/Text/Internal/Lazy/Fusion.hs:(88,17)-(92,59) 47525           1    0.0    0.0     0.0    0.0
+ CAF:v_r9ql                                       N22                            <no location info>                                                   46046           0    0.0    0.0     0.0    0.0
+  v                                               N22                            <no location info>                                                   47904           1    0.0    0.0     0.0    0.0
+   getSolutions22                                 N22                            src/N22.hs:106:1-82                                                  47905           0    0.0    0.0     0.0    0.0
+    solution2                                     N22                            src/N22.hs:(83,1)-(89,23)                                            47906           0    0.0    0.0     0.0    0.0
+     maxScore                                     N22                            src/N22.hs:(71,1)-(75,53)                                            47907           0    0.0    0.0     0.0    0.0
+      maxScore.scores                             N22                            src/N22.hs:73:5-33                                                   47908           0    0.0    0.0     0.0    0.0
+       score                                      N22                            src/N22.hs:(66,1)-(68,47)                                            47909           0    0.0    0.0     0.0    0.0
+        score.scoreSingle                         N22                            src/N22.hs:68:3-47                                                   47910           0    0.0    0.0     0.0    0.0
+         findByKey                                Trie                           src/Trie.hs:79:1-39                                                  47911           1    0.0    0.0     0.0    0.0

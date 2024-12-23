@@ -2,6 +2,7 @@ module Main (
   main,
 ) where
 
+import Control.Concurrent (getNumCapabilities)
 import Control.Monad (unless, (>=>))
 import InputDownloader (runFetchProblemDataToFiles)
 import Lib
@@ -12,6 +13,8 @@ import Useful (splitOn)
 
 mainLoop :: IO ()
 mainLoop = do
+  threads <- getNumCapabilities
+  putStrLn $ "Threads = " <> show threads
   putStrLn "Which problem do you want to solve?"
   prompt <- getLine
   unless (prompt `elem` ["e", "end"]) $ do

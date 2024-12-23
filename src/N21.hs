@@ -52,7 +52,7 @@ posToDir (ys, xs) (yt, xt)
   | yt == ys + 1 && xt == xs = u
   | otherwise = error "wrong position"
 
-type PathMap = M.Map (Char, Char) [(Path Char)]
+type PathMap = M.Map (Char, Char) [Path Char]
 numKeyPathMap = genPathMap numGrid
 dirKeyPathMap = genPathMap dirGrid
 

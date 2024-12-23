@@ -25,11 +25,24 @@ insertWith f acc ks = go acc ks
       modifiedTrie = go (accum `f` key) rest trie
     Nothing -> node{trieMap = M.insert key (go (accum `f` key) rest emptyTrie) trieMap}
 
+insertWithConst :: forall k v. (Ord k) => v -> [k] -> Trie k v -> Trie k v
+insertWithConst _ [] = id
+insertWithConst val ks = go ks
+ where
+  go :: [k] -> Trie k v -> Trie k v
+  go [] node = node{val = Just val}
+  go (key : rest) node@Node{trieMap} = case M.lookup key trieMap of
+    Just trie -> node{trieMap = modifiedMap}
+     where
+      modifiedMap = M.insert key modifiedTrie trieMap
+      modifiedTrie = go rest trie
+    Nothing -> node{trieMap = M.insert key (go rest emptyTrie) trieMap}
+
 insert :: (Ord k) => [k] -> Trie k [k] -> Trie k [k]
 insert = insertWith (\accum key -> accum ++ [key]) []
 
 insertWord :: (Ord k) => [k] -> v -> Trie k v -> Trie k v
-insertWord word translation = insertWith const translation word
+insertWord word translation = insertWithConst translation word
 
 fromAssocList :: (Ord k) => [([k], v)] -> Trie k v
 fromAssocList = foldr (\(word, trans) trie -> insertWord word trans trie) emptyTrie
@@ -59,13 +72,11 @@ findSubtrie :: (Ord k) => Trie k v -> [k] -> Maybe (Trie k v)
 findSubtrie trie [] = Just trie
 findSubtrie Node{trieMap} (key : rest) =
   case M.lookup key trieMap of
-    Just trie@Node{val} -> findSubtrie trie rest
+    Just trie -> findSubtrie trie rest
     Nothing -> Nothing
 
 findByKey :: (Ord k) => Trie k v -> [k] -> Maybe v
 findByKey = ((val =<<) .) . findSubtrie
 
 suffixAssocs :: (Ord k) => Trie k v -> [k] -> [([k], v)]
-suffixAssocs trie ks = case findSubtrie trie ks of
-  Just subtrie -> toAssocList subtrie
-  Nothing -> []
+suffixAssocs trie ks = maybe [] toAssocList $ findSubtrie trie ks
