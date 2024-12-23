@@ -62,6 +62,9 @@ findSubtrie Node{trieMap} (key : rest) =
     Just trie@Node{val} -> findSubtrie trie rest
     Nothing -> Nothing
 
+findByKey :: (Ord k) => Trie k v -> [k] -> Maybe v
+findByKey = ((val =<<) .) . findSubtrie
+
 suffixAssocs :: (Ord k) => Trie k v -> [k] -> [([k], v)]
 suffixAssocs trie ks = case findSubtrie trie ks of
   Just subtrie -> toAssocList subtrie

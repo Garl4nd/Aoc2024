@@ -32,11 +32,11 @@ numGrid = A.listArray ((1, 1), (4, 3)) $ [hole, '0', enter] ++ ['1' .. '9']
 dirGrid :: CharGrid
 dirGrid = A.listArray ((1, 1), (2, 3)) [l, d, r, hole, u, enter]
 
-dirPaths :: CharGrid -> KeyMap
-dirPaths grid =
+genPathMap :: CharGrid -> PathMap
+genPathMap grid =
   let
     graph = makeGraph grid
-    posAssocs = [((src, tg), bestPaths graph src tg) | src <- A.indices grid, tg <- A.indices grid, grid ! src /= hole, grid ! tg /= hole]
+    posAssocs = [((src, tg), bestPaths graph src tg) | src <- A.indices grid, grid ! src /= hole, tg <- A.indices grid, grid ! tg /= hole]
     valAssocs = [((grid ! src, grid ! tg), [path ++ [enter] | path <- gridposPathToDirs <$> paths]) | ((src, tg), paths) <- posAssocs]
    in
     M.fromList valAssocs
@@ -52,33 +52,58 @@ posToDir (ys, xs) (yt, xt)
   | yt == ys + 1 && xt == xs = u
   | otherwise = error "wrong position"
 
-type KeyMap = M.Map (Char, Char) [(Path Char)]
-numKeyMap = dirPaths numGrid
-dirKeyMap = dirPaths dirGrid
+type PathMap = M.Map (Char, Char) [(Path Char)]
+numKeyPathMap = genPathMap numGrid
+dirKeyPathMap = genPathMap dirGrid
 
-elementaryPaths :: KeyMap -> Char -> Char -> [Path Char]
-elementaryPaths keymap src tg = keymap M.! (src, tg) -- [path ++ [a] | path <- keymap M.! (src, tg)]
+elementaryPaths :: PathMap -> (Char, Char) -> [Path Char]
+elementaryPaths keymap startEnd = keymap M.! startEnd -- [path ++ [a] | path <- keymap M.! (src, tg)]
 
 type Memo f = f -> f
 
-remotePressCount :: [KeyMap] -> [Char] -> Int
-remotePressCount keymaps kseq = sum $ map (goM (length keymaps)) $ startEndPairs kseq
+remotePressCount :: [PathMap] -> [Char] -> Int
+remotePressCount pathMaps kseq = sum $ map (goM (length pathMaps)) $ startEndPairs kseq
  where
   startEndPairs path = zip (enter : path) path
   goM = memoFix2 go
   go :: Memo (Int -> (Char, Char) -> Int)
   go _ 0 _ = 1
-  go go n (start, end) =
+  go go n startEnd =
     let
-      keymap = keymaps !! (n - 1)
-      candidatePaths = elementaryPaths keymap start end
+      keymap = pathMaps !! (n - 1)
+      candidatePaths = elementaryPaths keymap startEnd
       subLengths = [go (n - 1) <$> startEndPairs path | path <- candidatePaths]
      in
       minimum $ sum <$> subLengths
 
+type PathGen = (Char, Char) -> [Path Char]
+p1 = elementaryPaths numKeyPathMap
+p2 = elementaryPaths dirKeyPathMap
+
+compositePress :: [PathGen] -> [PathGen]
+compositePress pathMaps = scanr comb (pure . pure . snd) pathMaps
+ where
+  comb :: PathGen -> PathGen -> PathGen
+  comb f g sePair = concat [concatMap f $ startEndPairs path | path <- g sePair]
+startEndPairs path = zip (enter : path) path
+
+remotePressCount' :: [PathMap] -> [Char] -> Int
+remotePressCount' pathMaps kseq = sum $ map (goM (length pathMaps)) $ startEndPairs kseq
+ where
+  startEndPairs path = zip (enter : path) path
+  pathGens = elementaryPaths <$> pathMaps
+  goM = memoFix2 go
+  go :: Memo (Int -> (Char, Char) -> Int)
+  go _ 0 _ = 1
+  go acc n sePair = minimum $ sum <$> subLengths
+   where
+    f = pathGens !! (n - 1)
+    candidatePaths = f sePair
+    subLengths = [acc (n - 1) <$> startEndPairs path | path <- candidatePaths]
+
 complexity :: Int -> [Char] -> Int
 complexity n kseq =
-  let seqLen = remotePressCount (replicate n dirKeyMap ++ [numKeyMap]) kseq -- pressRemoteSequence' (replicate 3 dirKeyMap ++ [numKeyMap]) kseq
+  let seqLen = remotePressCount (replicate n dirKeyPathMap ++ [numKeyPathMap]) kseq
       numPart = read . take 3 $ kseq
    in seqLen * numPart
 
