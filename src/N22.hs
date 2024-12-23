@@ -2,6 +2,7 @@ module N22 (getSolutions22) where
 
 import Control.Arrow
 import Control.Monad ((>=>))
+import Control.Parallel.Strategies
 import Data.Bits (Bits (xor))
 import Data.Function ((&))
 import Data.List (nub, tails)
@@ -9,21 +10,23 @@ import Data.Maybe (fromMaybe)
 import qualified Data.Set as S
 import Trie
 
-thenMixPrune :: (Int -> Int) -> (Int -> Int)
-thenMixPrune f = mix <*> f >>> prune
-secretMult :: Int -> Int
-secretMult = (* 64) & thenMixPrune
-
-secretMult2 :: Int -> Int
-secretMult2 = (* 2048) & thenMixPrune
-
-secretDiv :: Int -> Int
-secretDiv = (`div` 32) & thenMixPrune
-genSeq :: Int -> Int
-genSeq = secretMult >>> secretDiv >>> secretMult2
-
 mix = xor
 prune = (`mod` 16777216)
+
+thenMix'nPrune :: (Int -> Int) -> (Int -> Int)
+thenMix'nPrune f = mix <*> f >>> prune
+
+secretMult :: Int -> Int
+secretMult = (* 64) & thenMix'nPrune
+
+secretMult2 :: Int -> Int
+secretMult2 = (* 2048) & thenMix'nPrune
+
+secretDiv :: Int -> Int
+secretDiv = (`div` 32) & thenMix'nPrune
+
+genSeq :: Int -> Int
+genSeq = secretMult >>> secretDiv >>> secretMult2
 
 simulateNumbers :: Int -> [Int]
 simulateNumbers = iterate genSeq
@@ -31,30 +34,31 @@ simulateNumbers = iterate genSeq
 seqAndDifs :: Int -> [(Int, Int)]
 seqAndDifs n =
   let
-    seq = (`mod` 10) <$> simulateNumbers n
-    difs = zipWith subtract seq (tail seq)
+    sqn = (`mod` 10) <$> simulateNumbers n
+    difs = zipWith subtract sqn (tail sqn)
    in
-    zip (tail seq) difs
+    zip (tail sqn) difs
 
--- difSeqDict :: Int -> [([Int], Int)]
+difSeqDict :: Int -> [([Int], Int)]
 difSeqDict n =
   let
-    fours = take 4 <$> tails (seqAndDifs n)
-    difValPairs group = (snd <$> group, last $ fst <$> group)
+    quadruplets = take 4 <$> tails (seqAndDifs n)
+    difValPairs quadruplet = (snd <$> quadruplet, last $ fst <$> quadruplet)
    in
-    take (2000 - 3) $ difValPairs <$> fours
+    take (2000 - 3) $ difValPairs <$> quadruplets
 
 type SeqTrie = Trie Int Int
 
 makeSeqTrie :: Int -> SeqTrie
 makeSeqTrie = fromAssocList . difSeqDict
 
-makeSeqTries :: [Int] -> [SeqTrie]
-makeSeqTries = map makeSeqTrie
-
 possibleSeqs :: SeqList
 possibleSeqs = [[a, b, c, d] | let r = [-9 .. 9], a <- r, b <- r, c <- r, d <- r]
+
 type SeqList = [[Int]]
+type SeqSet = S.Set [Int]
+allDifSeqs :: [([Int], Int)] -> SeqSet
+allDifSeqs = S.fromList . map fst
 getAllDifSeqs :: [SeqTrie] -> SeqList
 getAllDifSeqs tries =
   let
@@ -68,7 +72,11 @@ score tries seq = sum $ scoreSingle <$> tries
   scoreSingle = fromMaybe 0 . (`findByKey` seq)
 
 maxScore :: SeqList -> [SeqTrie] -> Int
-maxScore seqs tries = maximum $ (score tries) <$> seqs
+maxScore seqs tries =
+  let
+    scores = score tries <$> seqs
+   in
+    maximum scores -- `using` parListChunk 100 rdeepseq) -- parScores
 
 solution1 :: [Int] -> Int
 solution1 nums = sum sNums
@@ -76,7 +84,16 @@ solution1 nums = sum sNums
   sNums = map (\n -> simulateNumbers n !! 2000) nums
 
 solution2 :: [Int] -> Int
-solution2 = maxScore possibleSeqs . makeSeqTries
+solution2 nums =
+  let
+    seqDicts = difSeqDict <$> nums
+    tries = fromAssocList <$> seqDicts
+    seqs = S.toList $ S.unions $ allDifSeqs <$> seqDicts
+   in
+    -- parMap = (map makeSeqTrie) `using` parList rdeepseq
+
+    maxScore seqs tries --
+    -- maxScore possibleSeqs . map makeSeqTrie $ nums
 
 parseFile :: String -> [Int]
 parseFile = map read . lines

@@ -64,7 +64,11 @@ ghc-options:
 - -Wmissing-home-modules
 - -Wpartial-fields
 - -Wredundant-constraints
-
+- -threaded
+- -O2
+- -rtsopts
+- -with-rtsopts=-N
+ 
 library:
   source-dirs: src
 

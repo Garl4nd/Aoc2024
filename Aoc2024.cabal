@@ -65,7 +65,7 @@ library
       LambdaCase
       ViewPatterns
       MultiWayIf
-  ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -O2 -rtsopts -with-rtsopts=-N
   build-depends:
       Chart-diagrams
     , MemoTrie
@@ -107,7 +107,7 @@ executable aoc24-exe
       LambdaCase
       ViewPatterns
       MultiWayIf
-  ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -O2 -rtsopts -with-rtsopts=-N
+  ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -O2 -rtsopts -with-rtsopts=-N -threaded -O2 -rtsopts -with-rtsopts=-N
   build-depends:
       Aoc2024
     , Chart-diagrams
@@ -150,7 +150,7 @@ executable download-exe
       LambdaCase
       ViewPatterns
       MultiWayIf
-  ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -main-is Download.download
+  ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -O2 -rtsopts -with-rtsopts=-N -main-is Download.download
   build-depends:
       Aoc2024
     , Chart-diagrams
@@ -193,7 +193,7 @@ test-suite Aoc2024-test
       LambdaCase
       ViewPatterns
       MultiWayIf
-  ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -O2 -fprof-late -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -O2 -rtsopts -with-rtsopts=-N -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Aoc2024
     , Chart-diagrams

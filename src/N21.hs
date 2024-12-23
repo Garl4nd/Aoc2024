@@ -76,31 +76,6 @@ remotePressCount pathMaps kseq = sum $ map (goM (length pathMaps)) $ startEndPai
      in
       minimum $ sum <$> subLengths
 
-type PathGen = (Char, Char) -> [Path Char]
-p1 = elementaryPaths numKeyPathMap
-p2 = elementaryPaths dirKeyPathMap
-
-compositePress :: [PathGen] -> [PathGen]
-compositePress pathMaps = scanr comb (pure . pure . snd) pathMaps
- where
-  comb :: PathGen -> PathGen -> PathGen
-  comb f g sePair = concat [concatMap f $ startEndPairs path | path <- g sePair]
-startEndPairs path = zip (enter : path) path
-
-remotePressCount' :: [PathMap] -> [Char] -> Int
-remotePressCount' pathMaps kseq = sum $ map (goM (length pathMaps)) $ startEndPairs kseq
- where
-  startEndPairs path = zip (enter : path) path
-  pathGens = elementaryPaths <$> pathMaps
-  goM = memoFix2 go
-  go :: Memo (Int -> (Char, Char) -> Int)
-  go _ 0 _ = 1
-  go acc n sePair = minimum $ sum <$> subLengths
-   where
-    f = pathGens !! (n - 1)
-    candidatePaths = f sePair
-    subLengths = [acc (n - 1) <$> startEndPairs path | path <- candidatePaths]
-
 complexity :: Int -> [Char] -> Int
 complexity n kseq =
   let seqLen = remotePressCount (replicate n dirKeyPathMap ++ [numKeyPathMap]) kseq
