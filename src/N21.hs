@@ -57,7 +57,7 @@ numKeyPathMap = genPathMap numGrid
 dirKeyPathMap = genPathMap dirGrid
 
 elementaryPaths :: PathMap -> (Char, Char) -> [Path Char]
-elementaryPaths startEnd = keymap M.! startEnd -- [path ++ [a] | path <- keymap M.! (src, tg)]rc, tg)]
+elementaryPaths pathmap startEnd = pathmap M.! startEnd -- [path ++ [a] | path <- keymap M.! (src, tg)]rc, tg)]
 
 type Memo f = f -> f
 

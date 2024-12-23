@@ -25,24 +25,24 @@ secretMult2 = (* 2048) & thenMix'nPrune
 secretDiv :: Int -> Int
 secretDiv = (`div` 32) & thenMix'nPrune
 
-genSeq :: Int -> Int
-genSeq = secretMult >>> secretDiv >>> secretMult2
+nextNumber :: Int -> Int
+nextNumber = secretMult >>> secretDiv >>> secretMult2
 
-simulateNumbers :: Int -> [Int]
-simulateNumbers = iterate genSeq
+genSequence :: Int -> [Int]
+genSequence = iterate nextNumber
 
-seqAndDifs :: Int -> [(Int, Int)]
-seqAndDifs n =
+digitAndDifSeqs :: Int -> [(Int, Int)]
+digitAndDifSeqs n =
   let
-    sqn = (`mod` 10) <$> simulateNumbers n
-    difs = zipWith subtract sqn (tail sqn)
+    digitSeq = (`mod` 10) <$> genSequence n
+    difs = zipWith subtract digitSeq (tail digitSeq)
    in
-    zip (tail sqn) difs
+    zip (tail digitSeq) difs
 
 difSeqDict :: Int -> [([Int], Int)]
 difSeqDict n =
   let
-    quadruplets = take 4 <$> tails (seqAndDifs n)
+    quadruplets = take 4 <$> tails (digitAndDifSeqs n)
     difValPairs quadruplet = (snd <$> quadruplet, last $ fst <$> quadruplet)
    in
     take (2000 - 3) $ difValPairs <$> quadruplets
@@ -59,17 +59,11 @@ type SeqList = [[Int]]
 type SeqSet = S.Set [Int]
 allDifSeqs :: [([Int], Int)] -> SeqSet
 allDifSeqs = S.fromList . map fst
-getAllDifSeqs :: [SeqTrie] -> SeqList
-getAllDifSeqs tries =
-  let
-    getSeqs = map (map fst . toAssocList)
-   in
-    S.toList $ S.fromList $ concat $ getSeqs tries
 
 score :: [SeqTrie] -> [Int] -> Int
-score tries seq = sum $ scoreSingle <$> tries
+score tries sqn = sum $ scoreSingle <$> tries
  where
-  scoreSingle = fromMaybe 0 . (`findByKey` seq)
+  scoreSingle = fromMaybe 0 . (`findByKey` sqn)
 
 maxScore :: SeqList -> [SeqTrie] -> Int
 maxScore seqs tries =
@@ -81,19 +75,16 @@ maxScore seqs tries =
 solution1 :: [Int] -> Int
 solution1 nums = sum sNums
  where
-  sNums = map (\n -> simulateNumbers n !! 2000) nums
+  sNums = map (\n -> genSequence n !! 2000) nums
 
 solution2 :: [Int] -> Int
 solution2 nums =
   let
     seqDicts = difSeqDict <$> nums
     tries = fromAssocList <$> seqDicts
-    seqs = S.toList $ S.unions $ allDifSeqs <$> seqDicts
+    seqs = possibleSeqs -- S.toList $ S.unions $ allDifSeqs <$> seqDicts
    in
-    -- parMap = (map makeSeqTrie) `using` parList rdeepseq
-
     maxScore seqs tries --
-    -- maxScore possibleSeqs . map makeSeqTrie $ nums
 
 parseFile :: String -> [Int]
 parseFile = map read . lines
