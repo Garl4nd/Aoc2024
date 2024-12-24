@@ -3,23 +3,23 @@
 module N22 (getSolutions22) where
 
 import Control.Arrow
-import Control.Monad ((>=>), forM_, unless, when)
-import qualified Data.Array.Unboxed as A
+import Control.Monad (forM_, unless, when, (>=>))
 import Control.Parallel.Strategies
+import Data.Array.ST (MArray (newArray), readArray, runSTUArray, writeArray)
+import qualified Data.Array.Unboxed as A
 import Data.Bits (Bits (xor))
 import Data.Function ((&))
 import Data.List (nub, tails)
 import qualified Data.Map as M
 import Data.Maybe (fromMaybe)
 import qualified Data.Set as S
-import Trie
-import Data.Array.ST (runSTUArray, MArray (newArray), readArray, writeArray)
+import qualified Trie as T
 
-mix = xor
+mix f = xor <*> f
 prune = (`mod` 16777216)
 
 thenMix'nPrune :: (Int -> Int) -> (Int -> Int)
-thenMix'nPrune f = mix <*> f >>> prune
+thenMix'nPrune f = mix f >>> prune
 
 secretMult :: Int -> Int
 secretMult = (* 64) & thenMix'nPrune
@@ -36,81 +36,52 @@ nextNumber = secretMult >>> secretDiv >>> secretMult2
 genSequence :: Int -> [Int]
 genSequence = iterate nextNumber
 
-digitAndDifSeqs :: Int -> [(Int, Int)]
-digitAndDifSeqs n =
+difAndDigitSeqs :: Int -> [(Int, Int)]
+difAndDigitSeqs n =
   let
     digitSeq = (`mod` 10) <$> genSequence n
     difs = zipWith subtract digitSeq (tail digitSeq)
    in
-    zip (tail digitSeq) difs
+    zip difs (tail digitSeq)
 
 difSeqDict :: Int -> [([Int], Int)]
 difSeqDict n =
   let
-    quadruplets = take 4 <$> tails (digitAndDifSeqs n)
-    difValPairs quadruplet = (snd <$> quadruplet, last $ fst <$> quadruplet)
+    quadruplets = take 4 <$> tails (difAndDigitSeqs n)
+    difValPairs quadruplet = let (difs, vals) = unzip quadruplet in (difs, last vals)
    in
     take (2000 - 3) $ difValPairs <$> quadruplets
 
-type SeqTrie = Trie Int Int
-
 makeArray :: Int -> A.UArray Int Int
-makeArray n = let 
-  dict = difSeqDict n 
-  encode [a, b, c, d] = a*1000+b*100+c*10+d 
-  in runSTUArray $ do 
-    ar <- newArray (-9999, 9999) 0 
-    forM_ dict $ \(sqn, val) -> do 
-      let index = encode sqn 
-      current <- readArray ar index 
-      when (current == 0) $ writeArray ar index val 
-    return ar 
-  --A.accumArray (const id) 0 (-9999,9999) $ reverse [(seqToNum sqn, val) | (sqn, val) <- dict]
-
-makeSeqTrie :: Int -> SeqTrie
-makeSeqTrie = fromAssocList . difSeqDict
-
-possibleSeqs :: SeqList
-possibleSeqs = [[a, b, c, d] | let r = [-9 .. 9], a <- r, b <- r, c <- r, d <- r]
-
-type SeqList = [[Int]]
-allDifSeqs :: [([Int], Int)] -> S.Set [Int]
-allDifSeqs = S.fromList . map fst
-
-score :: [SeqTrie] -> [Int] -> Int
-score tries sqn = sum $ scoreSingle <$> tries
- where
-  scoreSingle = fromMaybe 0 . (`findByKey` sqn)
-
-maxScore :: SeqList -> [SeqTrie] -> Int
-maxScore seqs tries =
+makeArray n =
   let
-    scores = score tries <$> seqs
+    dict = difSeqDict n
+    encodeSign = (9 +)
+    encodeSeq [a, b, c, d] = 19 ^ 3 * a + 19 ^ 2 * b + 19 * c + d
+    encode = encodeSeq . map encodeSign
    in
-    maximum (scores `using` parListChunk 64 rdeepseq) -- parScores
+    runSTUArray $ do
+      ar <- newArray (0, 19 ^ 4 - 1) 0
+      forM_ dict $ \(sqn, val) -> do
+        let index = encode sqn
+        current <- readArray ar index
+        when (current == 0) $ writeArray ar index val
+      return ar
 
 solution1 :: [Int] -> Int
-solution1 nums = sum sNums
+solution1 nums = sum secretNums
  where
-  sNums = map (\n -> genSequence n !! 2000) nums
+  secretNums = [sqn !! 2000 | sqn <- genSequence <$> nums]
 
 solution2 :: [Int] -> Int
 solution2 nums =
   let
-    seqDicts = (difSeqDict <$> nums) `using` parList rdeepseq
-    tries = (fromAssocList <$> seqDicts) `using` parList rseq
-    seqs = (S.toList $ S.unions $ allDifSeqs <$> seqDicts) `using` parList rdeepseq
+    arrays = (makeArray <$> nums) `using` parListChunk 200 rseq
+    seqScores = [sum [array A.! i | array <- arrays] | i <- A.indices (head arrays)] `using` parListChunk 200 rdeepseq
    in
-    maxScore seqs tries --
-
-solution2' :: [Int] -> Int
-solution2' nums =
-  let
-    arrays = (makeArray <$> nums) `using` parListChunk 64 rpar 
-    seqScores =  [sum [array A.! i | array <- arrays] | i <- A.indices (head arrays)] `using` parListChunk 64 rdeepseq  
-    in maximum seqScores --
+    maximum seqScores --
 parseFile :: String -> [Int]
 parseFile = map read . lines
 
 getSolutions22 :: String -> IO (Int, Int)
-getSolutions22 = readFile >=> (parseFile >>> (solution1 &&& solution2') >>> return)
+getSolutions22 = readFile >=> (parseFile >>> (solution1 &&& solution2) >>> return)
