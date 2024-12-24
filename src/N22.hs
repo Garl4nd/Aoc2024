@@ -4,6 +4,7 @@ module N22 (getSolutions22) where
 
 import Control.Arrow
 import Control.Monad ((>=>))
+import qualified Data.Array as A
 import Control.Parallel.Strategies
 import Data.Bits (Bits (xor))
 import Data.Function ((&))
@@ -52,6 +53,12 @@ difSeqDict n =
 
 type SeqTrie = Trie Int Int
 
+makeArray :: Int -> A.Array Int Int
+makeArray n = let 
+  dict = difSeqDict n 
+  seqToNum [a, b, c, d] = a*1000+b*100+c*10+d 
+  in A.accumArray (const id) 0 (-9999,9999) $ reverse [(seqToNum sqn, val) | (sqn, val) <- dict]
+
 makeSeqTrie :: Int -> SeqTrie
 makeSeqTrie = fromAssocList . difSeqDict
 
@@ -91,16 +98,11 @@ solution2 nums =
 solution2' :: [Int] -> Int
 solution2' nums =
   let
-    seqDicts = (difSeqDict <$> nums) `using` parList rdeepseq
-    tries = (fromAssocList <$> seqDicts) `using` parList rseq
-    -- seqMaps =
-    -- subTries3 = [findSubtrie trie <$> seq3s | trie <- tries]
-    seq3s = take 3 <$> seqs
-    seqs = (S.toList $ S.unions $ allDifSeqs <$> seqDicts) `using` parList rdeepseq
-   in
-    maxScore seqs tries --
+    arrays = (makeArray <$> nums) `using` parList rdeepseq 
+    seqScores =  [sum [array A.! i | array <- arrays] | i <- A.indices (head arrays)] `using` parList rdeepseq  
+    in maximum seqScores --
 parseFile :: String -> [Int]
 parseFile = map read . lines
 
 getSolutions22 :: String -> IO (Int, Int)
-getSolutions22 = readFile >=> (parseFile >>> (solution1 &&& solution2) >>> return)
+getSolutions22 = readFile >=> (parseFile >>> (solution1 &&& solution2') >>> return)
