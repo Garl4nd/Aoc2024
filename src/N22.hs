@@ -3,8 +3,8 @@
 module N22 (getSolutions22) where
 
 import Control.Arrow
-import Control.Monad ((>=>))
-import qualified Data.Array as A
+import Control.Monad ((>=>), forM_, unless, when)
+import qualified Data.Array.Unboxed as A
 import Control.Parallel.Strategies
 import Data.Bits (Bits (xor))
 import Data.Function ((&))
@@ -13,6 +13,7 @@ import qualified Data.Map as M
 import Data.Maybe (fromMaybe)
 import qualified Data.Set as S
 import Trie
+import Data.Array.ST (runSTUArray, MArray (newArray), readArray, writeArray)
 
 mix = xor
 prune = (`mod` 16777216)
@@ -53,11 +54,18 @@ difSeqDict n =
 
 type SeqTrie = Trie Int Int
 
-makeArray :: Int -> A.Array Int Int
+makeArray :: Int -> A.UArray Int Int
 makeArray n = let 
   dict = difSeqDict n 
-  seqToNum [a, b, c, d] = a*1000+b*100+c*10+d 
-  in A.accumArray (const id) 0 (-9999,9999) $ reverse [(seqToNum sqn, val) | (sqn, val) <- dict]
+  encode [a, b, c, d] = a*1000+b*100+c*10+d 
+  in runSTUArray $ do 
+    ar <- newArray (-9999, 9999) 0 
+    forM_ dict $ \(sqn, val) -> do 
+      let index = encode sqn 
+      current <- readArray ar index 
+      when (current == 0) $ writeArray ar index val 
+    return ar 
+  --A.accumArray (const id) 0 (-9999,9999) $ reverse [(seqToNum sqn, val) | (sqn, val) <- dict]
 
 makeSeqTrie :: Int -> SeqTrie
 makeSeqTrie = fromAssocList . difSeqDict
@@ -98,8 +106,8 @@ solution2 nums =
 solution2' :: [Int] -> Int
 solution2' nums =
   let
-    arrays = (makeArray <$> nums) `using` parList rdeepseq 
-    seqScores =  [sum [array A.! i | array <- arrays] | i <- A.indices (head arrays)] `using` parList rdeepseq  
+    arrays = (makeArray <$> nums) `using` parListChunk 64 rpar 
+    seqScores =  [sum [array A.! i | array <- arrays] | i <- A.indices (head arrays)] `using` parListChunk 64 rdeepseq  
     in maximum seqScores --
 parseFile :: String -> [Int]
 parseFile = map read . lines
