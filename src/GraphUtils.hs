@@ -5,7 +5,7 @@
 {-# LANGUAGE Rank2Types #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module GraphUtils (runDijkstraST, addDist, distanceToInt, distanceMap, bestPaths, LabeledGraph, ArrayGraph, Distance (Dist, Inf), Num, DijkstraState, DistanceMap, Path) where
+module GraphUtils (runDijkstraST, bronKerbosch, addDist, distanceToInt, distanceMap, bestPaths, LabeledGraph, ArrayGraph, Distance (Dist, Inf), Num, DijkstraState, DistanceMap, Path) where
 
 -- , unsafeThaw)
 import Control.Monad (forM, forM_)
@@ -16,6 +16,8 @@ import Data.Array.ST (STArray, newArray, readArray, runSTArray, writeArray)
 import qualified Data.Heap as H
 import qualified Data.Set as S
 import GHC.List (foldl')
+import Data.List (sortOn)
+import qualified Data.Map as M
 
 type NumType = Int
 type Edges node = [(node, NumType)]
@@ -29,14 +31,30 @@ distanceToInt :: Distance -> Int
 distanceToInt Inf = 1000000000000000
 distanceToInt (Dist n) = n
 
+class UnlabeledGraph graph node where
+  getEdgesU :: graph -> node -> [node]
+  getBoundsU :: graph -> (node, node)
+  verticesU :: graph -> S.Set node
+
+instance (A.Ix node) => UnlabeledGraph (A.Array node [node]) node where 
+  verticesU = S.fromList . A.indices  
+  getEdgesU = (!)
+
+instance (Ord node) => UnlabeledGraph (M.Map node [node]) node where 
+  verticesU = S.fromList . M.keys  
+  getEdgesU = (M.!)
+
+
 class (A.Ix node) => LabeledGraph graph node where
   getEdges :: graph -> node -> [(node, NumType)]
   getBounds :: graph -> (node, node)
-
+  vertices :: graph -> S.Set node 
+  edges :: graph -> S.Set [node]
 instance (A.Ix node) => LabeledGraph (A.Array node (Edges node)) node where
   getEdges :: A.Array node (Edges node) -> node -> [(node, NumType)]
   getEdges = (!) -- graphAr ! node
   getBounds = A.bounds
+  vertices = S.fromList .  A.indices
 
 instance Ord Distance where
   (<=) :: Distance -> Distance -> Bool
@@ -119,3 +137,26 @@ bestPaths graph start end = if distMap ! end == Inf then [] else reverse <$> go 
           [pos : path | path <- concatMap go departureNodes]
   reversedGraph = graph -- actually reverse for directed graphs
   distMap = distanceMap $ runDijkstraST graph start [end] -- getCompleteDistMap ar
+
+bronKerbosch :: forall graph node . (UnlabeledGraph graph node, Ord node) => graph -> S.Set (S.Set node)
+bronKerbosch graph = go S.empty (verticesU graph) S.empty where 
+  go :: S.Set node -> S.Set node -> S.Set node -> S.Set (S.Set node)
+  go sR sP sX 
+    | S.null sP && S.null sX = S.singleton sR 
+    | otherwise = cliques where  
+       pivot = last $ sortOn (length . getEdgesU graph) $ S.toList $ S.union sP sX 
+       reducedSet = sP S.\\ nei pivot -- S.fromList (getEdgesU graph pivot) 
+       nei = S.fromList . getEdgesU graph 
+       (cliques, _, _) =  foldr update (S.empty, sP, sX) reducedSet 
+       update v (cliques', sP', sX') = (cliques'', sP'', sX'') where
+          cliques'' = S.union cliques' $ go (S.insert v sR) (sP' `S.intersection` nei v) (sX' `S.intersection` nei v)
+          sP'' = S.delete v sP'
+          sX'' = S.insert v sX'
+
+g1,g2 :: A.Array Int [Int] 
+g1 = A.listArray (1,7) [[2,5], [3,5,1], [2,4], [3,5,6, 7],[1,2,4],[4,7], [4,6]]
+g2 = A.listArray (1,4) [[2,4], [3,1], [4,2], [1,3]]
+ex1 :: S.Set (S.Set Int)
+ex1 = bronKerbosch g1
+ex2 :: S.Set (S.Set Int)
+ex2 = bronKerbosch g2 
