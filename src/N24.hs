@@ -68,10 +68,43 @@ opFunc COMBINE = foldr1 (\b num -> shiftL num 1 .|. b )
 opFunc CONST  = const 0
 
 type Memo f = f-> f
-solveGraph :: WireGraph -> String -> Int 
-solveGraph wireGraph  = memoFix go  where 
+solveGraph :: String -> WireGraph -> Int 
+solveGraph target wireGraph  = memoFix go target  where 
   go :: Memo (String -> Int) 
   go go key = case wireGraph M.! key of 
     Node{val = Just value} -> value 
     Node{val = Nothing, op, edgesIn} -> opFunc op $ go <$>  edgesIn   
+
+strRepr :: String-> Int -> String 
+strRepr base n = base <> (if n<10 then "0" <> show n else show n ) 
+
+setInputBit ::  String -> Int -> Int -> WireGraph -> WireGraph 
+setInputBit  inputType pos value graph= M.mapWithKey (\key node -> 
+ if take 1 key == inputType then 
+                              node{val = Just (if key == strRepr inputType pos then value else 0)} else node) graph  
+
+setNumber ::  String -> Int -> WireGraph -> WireGraph 
+setNumber  inputType value graph =foldr (\(pos, bitVal) accMap -> M.adjust 
+   (\node -> node{val= Just bitVal}) (strRepr inputType pos)  accMap) graph $ zip [0..] $ numBinary value 44 
+
+
+checkNthBit :: WireGraph -> Int -> Int -> Int -> (Int, Int, Bool) 
+checkNthBit wireGraph pos xval yval = let newGraph = setInputBit "x" pos xval $ setInputBit "y" pos yval wireGraph 
+                                          result = solveGraph  "final" newGraph
+                                          sum = shiftL xval pos + shiftL yval pos 
+                                          in (result, sum, result == sum)
+
+
+numBinary n places =  map (\place -> shiftR n place .&. 1) [0..places-1] 
+checkNumbers :: WireGraph -> Int -> Int -> (Int, Int, Bool)
+checkNumbers graph x y = let newGraph = setNumber "x" x $ setNumber "y" y graph 
+                             result = solveGraph "final" newGraph 
+                             sum = x+y 
+                             in (result, sum, result == sum)
+passGates :: Int -> WireGraph -> [String] 
+passGates n wireGraph = memoFix go $ strRepr "z" n where 
+  go :: Memo (String -> [String]) 
+  go go key = case wireGraph M.! key of 
+    Node{val = Just value} -> [key] 
+    Node{val = Nothing, edgesIn} -> key: concatMap go edgesIn   
 
