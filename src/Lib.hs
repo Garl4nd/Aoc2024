@@ -21,10 +21,9 @@ module Lib (
   module N20,
   module N21,
   module N22,
-  -- , module N23
-  -- , module AltN16
-  -- , module N24
-  -- , module N25
+  module N23,
+  module N24,
+  module N25,
 ) where
 
 import N1
@@ -41,6 +40,10 @@ import N19
 import N2
 import N20
 import N21
+import N22
+import N23
+import N24
+import N25
 import N3
 import N4
 import N5
@@ -49,9 +52,6 @@ import N7
 import N8
 import N9
 
-import N22
-
--- import N23
 -- import N24
 -- import N25
 -- import N17Astar

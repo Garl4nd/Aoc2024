@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Debugging
+      GraphMaker
       GraphUtils
       InputDownloader
       Lib
@@ -44,6 +45,9 @@ library
       N20
       N21
       N22
+      N23
+      N24
+      N25
       N3
       N4
       N5

@@ -57,9 +57,9 @@ maybeSolver day = case day of
   20 -> Just getSolutions20
   21 -> Just getSolutions21
   22 -> Just getSolutions22
-  -- 23 -> Just $ getSolutions23 "inputs/23.txt"
-  -- 24 -> Just $ getSolutions24 "inputs/24.txt"
-  -- 25 -> Just $ getSolutions25 "inputs/25.txt"
+  23 -> Just getSolutions23
+  24 -> Just getSolutions24
+  25 -> Just getSolutions25
   _ -> Nothing
 
 -- inputFile = "inputs/" <> show day <> ".txt"

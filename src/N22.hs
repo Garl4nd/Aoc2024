@@ -3,17 +3,13 @@
 module N22 (getSolutions22) where
 
 import Control.Arrow
-import Control.Monad (forM_, unless, when, (>=>))
+import Control.Monad (forM_, when, (>=>))
 import Control.Parallel.Strategies
 import Data.Array.ST (MArray (newArray), readArray, runSTUArray, writeArray)
 import qualified Data.Array.Unboxed as A
 import Data.Bits (Bits (xor))
 import Data.Function ((&))
-import Data.List (nub, tails)
-import qualified Data.Map as M
-import Data.Maybe (fromMaybe)
-import qualified Data.Set as S
-import qualified Trie as T
+import Data.List (tails)
 
 mix f = xor <*> f
 prune = (`mod` 16777216)
