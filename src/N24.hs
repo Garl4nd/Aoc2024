@@ -9,10 +9,9 @@ import Data.Bits
 import Data.Either (fromRight)
 import Data.Function.Memoize (memoFix)
 import Data.Int (Int64)
-import Data.List (find, intercalate, partition, sort, sortOn)
+import Data.List (intercalate, partition, sort, sortOn)
 import qualified Data.List as S
 import qualified Data.Map as M
-import Data.Maybe (fromJust)
 import qualified Data.Set as S
 import Data.Void (Void)
 import Debug.Trace (trace)
@@ -163,12 +162,6 @@ testManyRandom graph reps (minNum, maxNum) =
     let (correct, wrong) = partition (\(_, _, same) -> same) $ zipWith (checkNumbers graph) xs ys
      in (length correct, length wrong)
 
-solution2 :: WireGraph -> [(String, String)]
-solution2 graph =
-  let candidates = last $ generateSwapCandidates graph
-      tests (_, graph') = testManyRandom graph' 1000 (0, 2 ^ 44)
-      perfectCandidates = head $ filter (\candidate -> let (_, wrong) = tests candidate in wrong == 0) candidates
-   in fst perfectCandidates
 countManyGates :: WireGraph -> Int -> (Int64, Int64) -> StringCounter
 countManyGates graph reps (minNum, maxNum) =
   let
@@ -179,16 +172,11 @@ countManyGates graph reps (minNum, maxNum) =
 countInnerGates :: WireGraph -> Int -> (Int64, Int64) -> [(String, Int)]
 countInnerGates = (((sortOn (negate . snd) . filter (\(s : _, _) -> s `notElem` ['x', 'y', 'z']) . M.toList) .) .) . countManyGates
 
-intersectList :: (Ord k) => [S.Set k] -> S.Set k
-intersectList sets = if null sets then S.empty else foldr1 S.intersection sets
+intersectList :: (Ord k) => [S.Set k] -> [S.Set k]
+intersectList = scanl1 S.intersection
 
-swapCandidates :: WireGraph -> Int -> Int -> S.Set (String, String)
-swapCandidates graph n m =
-  intersectList $
-    [ S.fromList $ goodSwaps graph passGateMap (n - 1) x y | x <- 0 : map (2 ^) [n .. m], y <- [x], let (_, _, same) = checkNumbers graph x y, not same
-    ]
- where
-  passGateMap = M.fromList [(key, passGates graph key) | key <- M.keys graph]
+swapCandidates :: WireGraph -> Int -> Int -> [S.Set (String, String)]
+swapCandidates graph n m = intersectList $ [S.fromList $ goodSwaps graph (n - 1) x y | x <- 0 : map (2 ^) [n .. m], y <- [2 ^ n .. 2 ^ n + 3], let (_, _, same) = checkNumbers graph x y, not same]
 
 swapList = ["rst", "z07", "jpj", "z12", "kgj", "z26", "chv", "vvw"]
 
@@ -206,27 +194,28 @@ generateSwapCandidates :: WireGraph -> [[([(String, String)], WireGraph)]]
 generateSwapCandidates graph =
   let
     wrongLevels = fromIntegral <$> [n | n <- [0 .. 44], let (_, _, same) = checkNumbers graph (2 ^ n) 1, not same]
-    swapGraphs graph' n m = [(from, to, swappedGraph graph' from to) | (from, to) <- S.toList $ swapCandidates graph' n m]
+    swapGraphs graph' n m = [(from, to, swappedGraph graph' from to) | (from, to) <- S.toList . last $ swapCandidates graph' n m]
     candidateList =
+      -- map (map fst)
       scanl
         ( \candidates (n, m) ->
             concat
-              [ [((from, to) : swapHistory, graph'') | (from, to, graph'') <- swapGraphs graph' n m]
+              [ [((from, to) : swapHistory, graph'') | (from, to, graph'') <- swapGraphs graph' n (m - 1)]
               | (swapHistory, graph') <- candidates
               ]
         )
         [([], graph)]
-        $ zip (traceWInfo True "wls" wrongLevels) (tail wrongLevels)
+        $ zip (traceWInfo True "wls" wrongLevels) (tail wrongLevels ++ [44])
    in
     candidateList -- foldl (\(n, m )
 
-goodSwaps :: WireGraph -> M.Map String [String] -> Int -> Int64 -> Int64 -> [(String, String)]
-goodSwaps graph passGateMap goodZ x y =
+goodSwaps :: WireGraph -> Int -> Int64 -> Int64 -> [(String, String)]
+goodSwaps graph goodZ x y =
   let
-    goodKeys = passGateMap M.! (strRepr "z" goodZ)
+    goodKeys = passGates graph (strRepr "z" goodZ)
     suspicousKeys = fst <$> M.toList (countSingle graph x y)
     notStart key = head key `notElem` ['x', 'y']
-    possibleTargets from = [key | key <- M.keys graph, from `notElem` passGateMap M.! key, notStart key, key `notElem` passGateMap M.! from]
+    possibleTargets from = [key | key <- M.keys graph, from `notElem` passGates graph key, notStart key, key `notElem` passGates graph from]
     pairs = S.toList $ S.fromList [if (from < to) then (from, to) else (to, from) | from <- suspicousKeys, notStart from, from `notElem` goodKeys, to <- possibleTargets from, to `notElem` goodKeys, from /= to]
    in
     [(from, to) | (from, to) <- pairs, let (_, _, same) = checkNumbers (swappedGraph graph from to) x y, same]
@@ -238,17 +227,24 @@ swappedGraph graph from to =
 
 --  wrongGates = countInnerGates graph 1 (0, 6)
 passGates :: WireGraph -> String -> [String]
-passGates wireGraph key = memoFix go key
+passGates wireGraph key = memoFix go $ key
  where
   go :: Memo (String -> [String])
   go go key = case wireGraph M.! key of
     Node{val = Just _} -> [key]
     Node{val = Nothing, edgesIn} -> key : concatMap go edgesIn
 
+solution2 :: WireGraph -> [(String, String)]
+solution2 graph =
+  let candidates = last $ generateSwapCandidates graph
+      tests (_, graph') = testManyRandom graph' 1000 (0, 2 ^ 44)
+      perfectCandidates = head $ filter (\candidate -> let (_, wrong) = tests candidate in wrong == 0) candidates
+   in fst perfectCandidates
+
 getSolutions24 :: String -> IO (Int, Int)
 getSolutions24 filename = do
   file <- readFile filename
   let graph = parseFile file
-  -- putStr $ intercalate "\n" . map show $ generateSwapCandidates graph
-  -- print $ solution2 graph
+  print $ solution2 graph
+  -- print $ intercalate "\n" . map show $ generateSwapCandidates graph
   return (0, 0)
