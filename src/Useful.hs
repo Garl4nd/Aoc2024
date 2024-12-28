@@ -18,7 +18,9 @@ module Useful (
   charGridToStr,
   saveGridToFile,
   appendGridToFile,
-  neighbors4, neighbors8, neighborsDiag,
+  neighbors4,
+  neighbors8,
+  neighborsDiag,
   CharGrid,
   CharGridU,
   GridPos,
@@ -118,14 +120,13 @@ saveGridToFile filename charGrid =
     writeFile filename content
 
 neighbors4 :: GridPos -> [GridPos]
-neighbors4 (y,x) = [(y+a, x+b) | a<- [-1..1], b<- [-1..1], a==0 && b /=0 || a /=0 && b ==0]
+neighbors4 (y, x) = [(y + a, x + b) | a <- [-1 .. 1], b <- [-1 .. 1], a == 0 && b /= 0 || a /= 0 && b == 0]
 
 neighbors8 :: GridPos -> [GridPos]
-neighbors8 (y,x) = [(y+a, x+b) | a<- [-1..1], b<- [-1..1], not (a==0 && b ==0)]
+neighbors8 (y, x) = [(y + a, x + b) | a <- [-1 .. 1], b <- [-1 .. 1], not (a == 0 && b == 0)]
 
 neighborsDiag :: GridPos -> [GridPos]
-neighborsDiag (y,x) = [(y+a ,x+b) | a<- [-1,1], b <- [-1,1]] 
-
+neighborsDiag (y, x) = [(y + a, x + b) | a <- [-1, 1], b <- [-1, 1]]
 
 appendGridToFile :: (A.IArray a Char) => String -> a GridPos Char -> IO ()
 appendGridToFile filename charGrid =
