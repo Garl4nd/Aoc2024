@@ -1,7 +1,7 @@
 module N25 (getSolutions25) where
 
 import Control.Arrow
-import Control.Monad (join, (>=>))
+import Control.Monad ((>=>))
 import Data.List (partition, transpose)
 
 type ListGrid = [[Char]]

@@ -36,11 +36,8 @@ fileParser =
   let
     cstNodeParser :: SParser (String, Node)
     cstNodeParser = do
-      (target, value) <- (,) <$> (manyTill anySingle $ string ": ") <*> (L.decimal)
+      (target, value) <- (,) <$> manyTill anySingle (string ": ") <*> L.decimal
       return (target, Node{val = Just value, op = CONST, edgesIn = [], edgesOut = []})
-    toBool :: Int64 -> Bool
-    toBool 0 = False
-    toBool _ = True
     opNodeParser :: SParser (String, Node)
     opNodeParser = do
       n1 <- manyTill anySingle $ char ' '
@@ -50,8 +47,7 @@ fileParser =
       return (target, Node{val = Nothing, op = read opName, edgesIn = [n1, n2], edgesOut = []})
    in
     do
-      startNodes <- manyTill (cstNodeParser <* newline) newline -- do
-      -- return startNodes
+      startNodes <- manyTill (cstNodeParser <* newline) newline
       regularNodes <- manyTill opNodeParser eof
       let finalNode = ("final", Node{val = Nothing, op = COMBINE, edgesOut = [], edgesIn = sort [name | (name, _) <- startNodes ++ regularNodes, head name == 'z']})
       return $ fillOutEdges . M.fromList $ startNodes ++ regularNodes ++ [finalNode]
@@ -59,7 +55,7 @@ fileParser =
 fillOutEdges :: WireGraph -> WireGraph
 fillOutEdges wireGraph = M.mapWithKey fillNode wireGraph
  where
-  fillNode key node@Node{edgesOut} =
+  fillNode key node =
     let
       outNodes = M.keys $ M.filter ((key `elem`) . edgesIn) wireGraph
      in
@@ -134,8 +130,6 @@ swapCandidates :: WireGraph -> Int -> [S.Set (String, String)]
 swapCandidates graph n = intersectList $ [S.fromList $ goodSwaps graph passGateMap (n - 1) x y | let pow = 2 ^ n, x <- [0, pow, 2 * pow], y <- [0, pow, 2 * pow], let (_, _, same) = checkNumbers graph x y, not same]
  where
   passGateMap = M.fromList [(key, passGates graph key) | key <- M.keys graph]
-
-swapList = ["rst", "z07", "jpj", "z12", "kgj", "z26", "chv", "vvw"]
 
 rectifiedGraphs :: WireGraph -> [WireGraph]
 rectifiedGraphs graph =
